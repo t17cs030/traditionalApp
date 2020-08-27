@@ -35,7 +35,48 @@ public class MainActivity extends AppCompatActivity {
     private double centerIndex = 0;//中央のワインのインデックス(初期値は0)
     private double magnification=1;//拡大率
 
-    private int imageViewId[]={R.drawable.ball};//画像のIDを配列に格納//最終的にDisplayViewsに移動予定
+    private int imageViewId[]={
+            R.drawable.wine_01,
+            R.drawable.wine_02,
+            R.drawable.wine_03,
+            R.drawable.wine_04,
+            R.drawable.wine_05,
+            R.drawable.wine_06,
+            R.drawable.wine_07,
+            R.drawable.wine_08,
+            R.drawable.wine_09,
+            R.drawable.wine_10,
+            R.drawable.wine_11,
+            R.drawable.wine_12,
+            R.drawable.wine_13,
+            R.drawable.wine_14,
+            R.drawable.wine_15,
+            R.drawable.wine_16,
+            R.drawable.wine_17,
+            R.drawable.wine_18,
+            R.drawable.wine_19,
+            R.drawable.wine_20,
+            R.drawable.wine_21,
+            R.drawable.wine_22,
+            R.drawable.wine_23,
+            R.drawable.wine_24,
+            R.drawable.wine_25,
+            R.drawable.wine_26,
+            R.drawable.wine_27,
+            R.drawable.wine_28,
+            R.drawable.wine_29,
+            R.drawable.wine_30,
+            R.drawable.wine_31,
+            R.drawable.wine_32,
+            R.drawable.wine_33,
+            R.drawable.wine_34,
+            R.drawable.wine_35,
+            R.drawable.wine_36,
+            R.drawable.wine_37,
+            R.drawable.wine_38,
+            R.drawable.wine_39,
+            R.drawable.wine_40
+    };//画像のIDを配列に格納//最終的にDisplayViewsに移動予定
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -215,10 +256,12 @@ public class MainActivity extends AppCompatActivity {
             imageView[i] = new ImageView(this);
             textIndexView[i] = new TextView(this);
 
-            imageView[i].setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[0]));
+            double wineIndex = wineData.getWineIndexList().get(i);
+            imageView[i].setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
             textIndexView[i].setText(String.valueOf(wineData.getWineIndexList().get(i)));
 
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)(30*magnification), (int)(30*magnification));
+            //RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)(200*magnification), (int)(200*magnification));
+            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)(200), (int)(200));
             RelativeLayout.LayoutParams Ilp = new RelativeLayout.LayoutParams((int)(100*magnification), (int)(100*magnification));
 
             int xZero = zeroPoint.getxZeroPoint();
@@ -237,10 +280,10 @@ public class MainActivity extends AppCompatActivity {
             Ilp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
 
             usingLayout.addView(imageView[i], lp);
-            usingLayout.addView(textIndexView[i], Ilp);
+            //usingLayout.addView(textIndexView[i], Ilp);
 
             imageView[i].layout(0, 0, imageView[i].getWidth(), imageView[i].getHeight());
-            textIndexView[i].layout(0, 0, textIndexView[i].getWidth(), textIndexView[i].getHeight());
+            //textIndexView[i].layout(0, 0, textIndexView[i].getWidth(), textIndexView[i].getHeight());
         }
     }
 
