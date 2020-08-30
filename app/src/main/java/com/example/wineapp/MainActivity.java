@@ -288,6 +288,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void drawPicture(){//画像の再描画
+        
 
         //画像の初期設定
         displayingViews = new DisplayingViews(wineData.getWineNum());
