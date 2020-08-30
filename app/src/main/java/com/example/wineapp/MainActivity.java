@@ -92,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 magnification *=1.5;
                 deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
-                drawPicture(centerIndex);
+                drawPicture();
             }
         });
 
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 magnification /=1.5;
                 deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
-                drawPicture(centerIndex);
+                drawPicture();
             }
         });
 
@@ -158,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case MotionEvent.ACTION_UP://タッチアップが発生した際の処理
                 deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
-                drawPicture(centerIndex);
+                drawPicture();
                 break;
         }
         //タッチした位置を画像の位置に更新する
@@ -180,7 +180,7 @@ public class MainActivity extends AppCompatActivity {
         Button wineMap = findViewById(R.id.wineMap);
         zeroPoint = new ZeroPoint((int)( (point[0]+usingLayout.getWidth())/2 ), (int)( (point[1]+usingLayout.getHeight()-wineMap.getHeight())/2) ) ;
 
-        drawPicture(centerIndex);
+        drawPicture();
 
     }
 
@@ -287,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void drawPicture(double picIndex){//画像の再描画
+    public void drawPicture(){//画像の再描画
 
         //画像の初期設定
         displayingViews = new DisplayingViews(wineData.getWineNum());
