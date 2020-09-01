@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
 
             ArrayList<Double> xPoints = viewsPoint.getxPoints();
             ArrayList<Double> yPoints = viewsPoint.getyPoints();
-
+ 
             TextView textView = findViewById(R.id.text_view2);
             String str = "X=" + xZero + "y=" + yZero;
             textView.setText(str);
@@ -287,8 +287,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setListener(ImageView[] imageView){
+
+        //画像にリスナーを設定
+        for(int i=0;i<wineData.getWineNum();i++) {
+            final int thisWineNum = i;
+            final RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
+
+            imageView[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //画像が押された時のやつ
+                    ImageView winePicture = findViewById(R.id.wine_info);
+                    double wineIndex = wineData.getWineIndexList().get(thisWineNum);
+
+                    TextView wine_name = findViewById(R.id.wine_name);
+                    String str_wine = "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン";
+                    wine_name.setText(str_wine);
+
+                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
+                    winePicture.bringToFront();
+
+
+
+                    //クリックしたワインを表示(デバック用)
+                    TextView textView = findViewById(R.id.text_view);
+                    String str = "画像をクリックしました" + wineData.getWineIndexList().get(thisWineNum);
+                    textView.setText(str);
+                }
+            });
+        }
+    }
+
     public void drawPicture(){//画像の再描画
-        
+
 
         //画像の初期設定
         displayingViews = new DisplayingViews(wineData.getWineNum());
@@ -296,6 +328,7 @@ public class MainActivity extends AppCompatActivity {
         calPoint(centerIndex);
         //画像の張り付け
         setPicture(displayingViews.getImageView(), displayingViews.getTextIndexView());
+        setListener(displayingViews.getImageView());
 
         TextView textView = findViewById(R.id.text_view);
         String str = "現在の中央=" + centerIndex;
