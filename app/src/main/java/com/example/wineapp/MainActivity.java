@@ -2,6 +2,7 @@ package com.example.wineapp;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -269,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
             ArrayList<Double> xPoints = viewsPoint.getxPoints();
             ArrayList<Double> yPoints = viewsPoint.getyPoints();
- 
+
             TextView textView = findViewById(R.id.text_view2);
             String str = "X=" + xZero + "y=" + yZero;
             textView.setText(str);
@@ -294,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
             final int thisWineNum = i;
             final RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
 
+
             imageView[i].setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -304,9 +306,32 @@ public class MainActivity extends AppCompatActivity {
                     TextView wine_name = findViewById(R.id.wine_name);
                     String str_wine = "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン";
                     wine_name.setText(str_wine);
+                    wine_name.setBackgroundColor(Color.WHITE);
+                    wine_name.setVisibility(View.VISIBLE);
+
+                    TextView to_wine_list = findViewById(R.id.to_wine_list);
+                    to_wine_list.setBackgroundColor(Color.WHITE);
+                    to_wine_list.setVisibility(View.VISIBLE);
+
 
                     winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
-                    winePicture.bringToFront();
+                    winePicture.setVisibility(View.VISIBLE);
+
+                    usingLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ImageView winePicture = findViewById(R.id.wine_info);
+                            TextView wine_name = findViewById(R.id.wine_name);
+                            TextView to_wine_list = findViewById(R.id.to_wine_list);
+
+                            wine_name.setVisibility(View.INVISIBLE);
+                            to_wine_list.setVisibility(View.INVISIBLE);
+                            winePicture.setVisibility(View.INVISIBLE);
+
+                            usingLayout.setClickable(false);
+                        }
+                    });
+
 
 
 
