@@ -2,6 +2,7 @@ package com.example.wineapp;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -287,7 +288,64 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setListener(ImageView[] imageView){
+
+        //画像にリスナーを設定
+        for(int i=0;i<wineData.getWineNum();i++) {
+            final int thisWineNum = i;
+            final RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
+
+
+            imageView[i].setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //画像が押された時のやつ
+                    ImageView winePicture = findViewById(R.id.wine_info);
+                    double wineIndex = wineData.getWineIndexList().get(thisWineNum);
+
+                    TextView wine_name = findViewById(R.id.wine_name);
+                    String str_wine = "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン";
+                    wine_name.setText(str_wine);
+                    wine_name.setBackgroundColor(Color.WHITE);
+                    wine_name.setVisibility(View.VISIBLE);
+
+                    TextView to_wine_list = findViewById(R.id.to_wine_list);
+                    to_wine_list.setBackgroundColor(Color.WHITE);
+                    to_wine_list.setVisibility(View.VISIBLE);
+
+
+                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
+                    winePicture.setVisibility(View.VISIBLE);
+
+                    usingLayout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ImageView winePicture = findViewById(R.id.wine_info);
+                            TextView wine_name = findViewById(R.id.wine_name);
+                            TextView to_wine_list = findViewById(R.id.to_wine_list);
+
+                            wine_name.setVisibility(View.INVISIBLE);
+                            to_wine_list.setVisibility(View.INVISIBLE);
+                            winePicture.setVisibility(View.INVISIBLE);
+
+                            usingLayout.setClickable(false);
+                        }
+                    });
+
+
+
+
+                    //クリックしたワインを表示(デバック用)
+                    TextView textView = findViewById(R.id.text_view);
+                    String str = "画像をクリックしました" + wineData.getWineIndexList().get(thisWineNum);
+                    textView.setText(str);
+                }
+            });
+        }
+    }
+
     public void drawPicture(){//画像の再描画
+
 
         //画像の初期設定
         displayingViews = new DisplayingViews(wineData.getWineNum());
@@ -295,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
         calPoint(centerIndex);
         //画像の張り付け
         setPicture(displayingViews.getImageView(), displayingViews.getTextIndexView());
+        setListener(displayingViews.getImageView());
 
         TextView textView = findViewById(R.id.text_view);
         String str = "現在の中央=" + centerIndex;
