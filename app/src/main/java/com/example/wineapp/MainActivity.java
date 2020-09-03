@@ -311,6 +311,17 @@ public class MainActivity extends AppCompatActivity {
                     //簡易情報の乗っているレイアウトを表示
                     RelativeLayout wine_info_layout = findViewById(R.id.for_wine_info);
                     wine_info_layout.setVisibility(View.VISIBLE);
+
+                    TextView to_wine_list = findViewById(R.id.to_wine_list);
+                    to_wine_list.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //ワインリストへ登録ボタンが押されたときの処理(仮)
+                            Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                            startActivity(intent);
+                        }
+                    });
+
                     //簡易情報をクリックした際のアクション
                     wine_info_layout.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -338,6 +349,25 @@ public class MainActivity extends AppCompatActivity {
                                     //詳細情報がクリックされたときは何もしない
                                 }
                             });
+
+                            TextView to_wine_list_2 = findViewById(R.id.to_wine_list_2);
+                            to_wine_list_2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //ワインリストへ登録ボタンが押されたときの処理(仮)
+                                    Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+
+                            TextView to_want_drink = findViewById(R.id.to_want_drink);
+                            to_want_drink.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //飲みたいボタンが押された時の処理
+                                }
+                            });
+
                             for (int i = 0; i < wineData.getWineNum(); i++) {
                                 imageView[i].setClickable(false);
                             }
