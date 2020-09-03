@@ -3,6 +3,7 @@ package com.example.wineapp;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -135,8 +136,22 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.winery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), WineryActivity.class);
+                //手抜き画面遷移APIを使わないver
+
+                
+                //Intent intent = new Intent(getApplication(), WineryActivity.class);
+                //startActivity(intent);
+
+                String winery_name = "SADOYA";
+                Uri uri = Uri.parse("geo:0,0?q=" + winery_name);
+                //Uri uri = Uri.parse("geo:35.681382,139.766084?z=16");
+
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
                 startActivity(intent);
+                if (intent.resolveActivity(getPackageManager()) != null) {
+                    startActivity(intent);
+                }
+
             }
         });
     }
