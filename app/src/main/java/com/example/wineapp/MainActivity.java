@@ -34,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewsPoint viewsPoint = new ViewsPoint();//各ビューの座標を保存するクラス
 
     private double centerIndex = 0;//中央のワインのインデックス(初期値は0)
-    private double magnification=1;//拡大率
+    private double magnification=2;//拡大率
 
     private int imageViewId[]={
             R.drawable.wine_01,
@@ -288,12 +288,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void setListener(ImageView[] imageView){
+    public void setListener(final ImageView[] imageView){
 
         //画像にリスナーを設定
         for(int i=0;i<wineData.getWineNum();i++) {
             final int thisWineNum = i;
-            final RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
+            final RelativeLayout usingLayout = findViewById(R.id.layout);
 
 
             imageView[i].setOnClickListener(new View.OnClickListener() {
@@ -302,33 +302,92 @@ public class MainActivity extends AppCompatActivity {
                     //画像が押された時のやつ
                     ImageView winePicture = findViewById(R.id.wine_info);
                     double wineIndex = wineData.getWineIndexList().get(thisWineNum);
+                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
 
                     TextView wine_name = findViewById(R.id.wine_name);
                     String str_wine = "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン";
                     wine_name.setText(str_wine);
-                    wine_name.setBackgroundColor(Color.WHITE);
-                    wine_name.setVisibility(View.VISIBLE);
+
+                    //簡易情報の乗っているレイアウトを表示
+                    RelativeLayout wine_info_layout = findViewById(R.id.for_wine_info);
+                    wine_info_layout.setVisibility(View.VISIBLE);
 
                     TextView to_wine_list = findViewById(R.id.to_wine_list);
-                    to_wine_list.setBackgroundColor(Color.WHITE);
-                    to_wine_list.setVisibility(View.VISIBLE);
+                    to_wine_list.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //ワインリストへ登録ボタンが押されたときの処理(仮)
+                            Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                            startActivity(intent);
+                        }
+                    });
 
+                    //簡易情報をクリックした際のアクション
+                    wine_info_layout.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ImageView winePicture = findViewById(R.id.wine_detail_info);
+                            double wineIndex = wineData.getWineIndexList().get(thisWineNum);
+                            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int) wineIndex - 1]));
 
-                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
-                    winePicture.setVisibility(View.VISIBLE);
+                            TextView wine_name = findViewById(R.id.wine_detail_name);
+                            String str_wine =
+                                    "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン" + "\n"
+                                            + "ワインの色:" + "\n" + "価格:";
+                            wine_name.setText(str_wine);
+
+                            TextView wine_explanation = findViewById(R.id.wine_detail_explanation);
+                            String str_wine_exp =
+                                    wineData.getWineIndexList().get(thisWineNum) + "番目のワインの説明";
+                            wine_explanation.setText(str_wine_exp);
+
+                            RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
+                            wine_detail_info_layout.setVisibility(View.VISIBLE);
+                            wine_detail_info_layout.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //詳細情報がクリックされたときは何もしない
+                                }
+                            });
+
+                            TextView to_wine_list_2 = findViewById(R.id.to_wine_list_2);
+                            to_wine_list_2.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //ワインリストへ登録ボタンが押されたときの処理(仮)
+                                    Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                                    startActivity(intent);
+                                }
+                            });
+
+                            TextView to_want_drink = findViewById(R.id.to_want_drink);
+                            to_want_drink.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    //飲みたいボタンが押された時の処理
+                                }
+                            });
+
+                            for (int i = 0; i < wineData.getWineNum(); i++) {
+                                imageView[i].setClickable(false);
+                            }
+                        }
+                    });
 
                     usingLayout.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            ImageView winePicture = findViewById(R.id.wine_info);
-                            TextView wine_name = findViewById(R.id.wine_name);
-                            TextView to_wine_list = findViewById(R.id.to_wine_list);
 
-                            wine_name.setVisibility(View.INVISIBLE);
-                            to_wine_list.setVisibility(View.INVISIBLE);
-                            winePicture.setVisibility(View.INVISIBLE);
+                            //簡易情報と詳細情報の乗っているレイアウトを非表示
+                            RelativeLayout wine_info_layout = findViewById(R.id.for_wine_info);
+                            wine_info_layout.setVisibility(View.INVISIBLE);
+                            RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
+                            wine_detail_info_layout.setVisibility(View.INVISIBLE);
 
                             usingLayout.setClickable(false);
+                            for (int i = 0; i < wineData.getWineNum(); i++) {
+                                imageView[i].setClickable(true);
+                            }
                         }
                     });
 
