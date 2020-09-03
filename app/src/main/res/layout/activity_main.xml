@@ -119,17 +119,18 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <RelativeLayout
+            android:id="@+id/for_wine_info"
             android:layout_width="410dp"
             android:layout_height="150dp"
             android:layout_marginTop="495dp"
-            android:elevation="2dp">
+            android:elevation="2dp"
+            android:visibility="invisible">
 
 
             <ImageView
                 android:id="@+id/wine_info"
                 android:layout_width="150dp"
                 android:layout_height="150dp"
-                android:visibility="invisible"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
@@ -138,8 +139,8 @@
                 android:layout_height="100dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginTop="0dp"
-                android:text=""
-                android:visibility="invisible" />
+                android:background="#FFFFFF"
+                android:text="" />
 
             <TextView
                 android:id="@+id/to_wine_list"
@@ -147,8 +148,61 @@
                 android:layout_height="50dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginTop="100dp"
-                android:text="ワインリストへ登録する"
-                android:visibility="invisible"/>
+                android:background="#FFFFFF"
+                android:text="ワインリストへ登録する" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/for_wine_detail_info"
+            android:layout_width="410dp"
+            android:layout_height="345dp"
+            android:layout_marginTop="300dp"
+            android:elevation="3dp"
+            android:visibility="invisible">
+
+
+            <ImageView
+                android:id="@+id/wine_detail_info"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                tools:srcCompat="@tools:sample/avatars" />
+
+            <TextView
+                android:id="@+id/wine_detail_name"
+                android:layout_width="260dp"
+                android:layout_height="150dp"
+                android:layout_marginLeft="150dp"
+                android:layout_marginTop="0dp"
+                android:background="#FFFFFF"
+                android:text="ワイン名:" />
+
+            <TextView
+                android:id="@+id/wine_detail_explanation"
+                android:layout_width="410dp"
+                android:layout_height="145dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="150dp"
+                android:background="#FFFFFF"
+                android:text="説明:" />
+
+            <TextView
+                android:id="@+id/to_wine_list_2"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="150dp"
+                android:layout_marginTop="295dp"
+                android:background="#FFFFFF"
+                android:text="ワインリストへ登録する" />
+
+            <TextView
+                android:id="@+id/to_want_drink"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="0dp"
+                android:layout_marginTop="295dp"
+                android:background="#FFFFFF"
+                android:text="飲みたい" />
         </RelativeLayout>
 
 
