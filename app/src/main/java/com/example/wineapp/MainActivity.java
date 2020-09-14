@@ -221,6 +221,13 @@ public class MainActivity extends AppCompatActivity {
                 wineData.addWineIndexList(stringTokenizer.nextToken());
                 wineData.addWineIdoList(stringTokenizer.nextToken());
                 wineData.addWineKedoList(stringTokenizer.nextToken());
+
+                wineData.addWineNameList(stringTokenizer.nextToken());
+
+                wineData.addWineColorList(stringTokenizer.nextToken());
+                wineData.addWineTasteList(stringTokenizer.nextToken());
+                wineData.addWinePriceList(stringTokenizer.nextToken());
+
             }
             bufferReader.close();
         } catch (IOException e) {
@@ -320,7 +327,7 @@ public class MainActivity extends AppCompatActivity {
                     winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
 
                     TextView wine_name = findViewById(R.id.wine_name);
-                    String str_wine = "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン";
+                    String str_wine = "ワイン名: " + wineData.getWineNameList().get(thisWineNum);
                     wine_name.setText(str_wine);
 
                     //簡易情報の乗っているレイアウトを表示
@@ -346,14 +353,24 @@ public class MainActivity extends AppCompatActivity {
                             winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int) wineIndex - 1]));
 
                             TextView wine_name = findViewById(R.id.wine_detail_name);
-                            String str_wine =
-                                    "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン" + "\n"
-                                            + "ワインの色:" + "\n" + "価格:";
+
+                            String color;
+                            if(wineData.getWineColorList().get(thisWineNum) == 1.0)
+                                color = "白";
+                            else if(wineData.getWineColorList().get(thisWineNum) == 2.0)
+                                color = "ロゼ";
+                            else
+                                color = "赤";
+
+                            String str_wine
+                                    = "ワイン名: " + wineData.getWineNameList().get(thisWineNum) + "\n\n"
+                                    + "ワインの色: "  + color + "\n\n"
+                                    + "価格: " + wineData.getWinePriceList().get(thisWineNum) + "円";
                             wine_name.setText(str_wine);
 
                             TextView wine_explanation = findViewById(R.id.wine_detail_explanation);
                             String str_wine_exp =
-                                    wineData.getWineIndexList().get(thisWineNum) + "番目のワインの説明";
+                                    wineData.getWineNameList().get(thisWineNum) + "の説明";
                             wine_explanation.setText(str_wine_exp);
 
                             RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);

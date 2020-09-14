@@ -8,12 +8,22 @@ public class WineData {
     private ArrayList<Double> wineIndexList;
     private ArrayList<Double> wineIdoList;
     private ArrayList<Double> wineKedoList;
+    private ArrayList<String> wineNameList;
+    private ArrayList<Double> wineColorList;
+    private ArrayList<Double> wineTasteList;
+    private ArrayList<Double> winePriceList;
 
     public WineData(){
         wineNum = 0;
         wineIndexList = new ArrayList<>();
         wineIdoList = new ArrayList<>();
         wineKedoList = new ArrayList<>();
+        wineNameList = new ArrayList<>();
+        wineColorList = new ArrayList<>();
+        wineTasteList = new ArrayList<>();
+        winePriceList = new ArrayList<>();
+
+
     }
 
     public ArrayList<Double> getWineIndexList() {
@@ -27,6 +37,23 @@ public class WineData {
     public ArrayList<Double> getWineKedoList() {
         return wineKedoList;
     }
+
+    public ArrayList<String> getWineNameList() {
+        return wineNameList;
+    }
+
+    public ArrayList<Double> getWineColorList() {
+        return wineColorList;
+    }
+
+    public ArrayList<Double> getWineTasteList() {
+        return wineTasteList;
+    }
+
+    public ArrayList<Double> getWinePriceList() {
+        return winePriceList;
+    }
+
 
     public int getWineNum() {
         return wineNum;
@@ -46,5 +73,21 @@ public class WineData {
 
     public void addWineKedoList(String str){
         wineKedoList.add(Double.parseDouble(str));
+    }
+
+    public void addWineNameList(String str){
+        wineNameList.add(str);
+    }
+
+    public void addWineColorList(String str){
+        wineColorList.add(Double.parseDouble(str));
+    }
+
+    public void addWineTasteList(String str){
+        wineTasteList.add(Double.parseDouble(str));
+    }
+
+    public void addWinePriceList(String str){
+        winePriceList.add(Double.parseDouble(str));
     }
 }

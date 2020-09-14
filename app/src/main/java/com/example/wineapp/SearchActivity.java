@@ -40,6 +40,7 @@ public class SearchActivity extends AppCompatActivity
             }
         });
 
+        //検索ボタンが押されたとき(デバック用)
         Button enter = findViewById(R.id.enter);
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
