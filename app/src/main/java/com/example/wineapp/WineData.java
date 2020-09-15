@@ -1,17 +1,22 @@
 package com.example.wineapp;
 
+import android.content.Intent;
+
 import java.util.ArrayList;
 
 public class WineData {
+
+    private static final long serialVersionUID = 1L;
+
     private int wineNum;//ワインデータの数
 
-    private ArrayList<Double> wineIndexList;
+    private ArrayList<Integer> wineIndexList;
     private ArrayList<Double> wineIdoList;
     private ArrayList<Double> wineKedoList;
     private ArrayList<String> wineNameList;
-    private ArrayList<Double> wineColorList;
-    private ArrayList<Double> wineTasteList;
-    private ArrayList<Double> winePriceList;
+    private ArrayList<Integer> wineColorList;
+    private ArrayList<Integer> wineTasteList;
+    private ArrayList<Integer> winePriceList;
 
     public WineData(){
         wineNum = 0;
@@ -26,7 +31,7 @@ public class WineData {
 
     }
 
-    public ArrayList<Double> getWineIndexList() {
+    public ArrayList<Integer> getWineIndexList() {
         return wineIndexList;
     }
 
@@ -42,15 +47,15 @@ public class WineData {
         return wineNameList;
     }
 
-    public ArrayList<Double> getWineColorList() {
+    public ArrayList<Integer> getWineColorList() {
         return wineColorList;
     }
 
-    public ArrayList<Double> getWineTasteList() {
+    public ArrayList<Integer> getWineTasteList() {
         return wineTasteList;
     }
 
-    public ArrayList<Double> getWinePriceList() {
+    public ArrayList<Integer> getWinePriceList() {
         return winePriceList;
     }
 
@@ -64,7 +69,7 @@ public class WineData {
     }
 
     public void addWineIndexList(String str){
-        wineIndexList.add(Double.parseDouble(str));
+        wineIndexList.add(Integer.parseInt(str));
     }
 
     public void addWineIdoList(String str){
@@ -80,14 +85,14 @@ public class WineData {
     }
 
     public void addWineColorList(String str){
-        wineColorList.add(Double.parseDouble(str));
+        wineColorList.add(Integer.parseInt(str));
     }
 
     public void addWineTasteList(String str){
-        wineTasteList.add(Double.parseDouble(str));
+        wineTasteList.add(Integer.parseInt(str));
     }
 
     public void addWinePriceList(String str){
-        winePriceList.add(Double.parseDouble(str));
+        winePriceList.add(Integer.parseInt(str));
     }
 }
