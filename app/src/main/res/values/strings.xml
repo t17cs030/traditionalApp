@@ -1,4 +1,29 @@
 <resources>
     <string name="app_name">Wine Application</string>
     <string name="description">ball</string>
+
+    <string-array name="taste_red">
+        <item>味わいを選択</item>
+        <item>ライトボディ</item>
+        <item>ミディアムボディ</item>
+        <item>フルボディ</item>
+    </string-array>
+
+    <string-array name="taste_white">
+        <item>味わいを選択</item>
+        <item>甘口</item>
+        <item>普通</item>
+        <item>辛口</item>
+    </string-array>
+
+    <string-array name="price">
+        <item>価格を選択</item>
+        <item>0</item>
+        <item>1000</item>
+        <item>3000</item>
+        <item>5000</item>
+        <item>10000</item>
+        <item>20000</item>
+    </string-array>
+
 </resources>

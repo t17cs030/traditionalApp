@@ -2,9 +2,9 @@ package com.example.wineapp;
 
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -18,6 +18,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -34,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ViewsPoint viewsPoint = new ViewsPoint();//各ビューの座標を保存するクラス
 
-    private double centerIndex = 0;//中央のワインのインデックス(初期値は0)
+    private int centerIndex = 0;//中央のワインのインデックス(初期値は0)
     private double magnification=2;//拡大率
 
     private int imageViewId[]={
@@ -113,6 +114,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), SearchActivity.class);
+                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
                 startActivity(intent);
             }
         });
@@ -221,6 +227,13 @@ public class MainActivity extends AppCompatActivity {
                 wineData.addWineIndexList(stringTokenizer.nextToken());
                 wineData.addWineIdoList(stringTokenizer.nextToken());
                 wineData.addWineKedoList(stringTokenizer.nextToken());
+
+                wineData.addWineNameList(stringTokenizer.nextToken());
+
+                wineData.addWineColorList(stringTokenizer.nextToken());
+                wineData.addWineTasteList(stringTokenizer.nextToken());
+                wineData.addWinePriceList(stringTokenizer.nextToken());
+
             }
             bufferReader.close();
         } catch (IOException e) {
@@ -229,14 +242,14 @@ public class MainActivity extends AppCompatActivity {
         wineData.setWineNum(wineData.getWineIndexList().size());
     }
 
-    public void calPoint(Double index){//選んだワインを中心にした時の各ワインの座標を計算する
+    public void calPoint(int index){//選んだワインを中心にした時の各ワインの座標を計算する
 
-        ArrayList<Double> Index = wineData.getWineIndexList();
+        ArrayList<Integer> Index = wineData.getWineIndexList();
         ArrayList<Double> Ido = wineData.getWineIdoList();
         ArrayList<Double> Kedo = wineData.getWineKedoList();
 
         //選んだワインの緯度と経度を求める
-        int picIndexNum = Index.indexOf(centerIndex);//選んだワインのインデックス番号を取得
+        int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
         double phi0 = Ido.get(picIndexNum);
         double theta0 = Kedo.get(picIndexNum);
         double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
@@ -270,15 +283,19 @@ public class MainActivity extends AppCompatActivity {
         //画像を設定
         for(int i=0;i<wineData.getWineNum();i++) {
             imageView[i] = new ImageView(this);
-            textIndexView[i] = new TextView(this);
 
             double wineIndex = wineData.getWineIndexList().get(i);
             imageView[i].setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
-            textIndexView[i].setText(String.valueOf(wineData.getWineIndexList().get(i)));
+            RelativeLayout.LayoutParams lp;
 
-            //RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)(200*magnification), (int)(200*magnification));
-            RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)(200), (int)(200));
-            RelativeLayout.LayoutParams Ilp = new RelativeLayout.LayoutParams((int)(100*magnification), (int)(100*magnification));
+            Intent me = getIntent();
+            boolean[] deleteFlag = me.getBooleanArrayExtra("DELETE_FLAG");
+            if(deleteFlag != null && deleteFlag[wineData.getWineIndexList().get(i)-1]){
+                lp = new RelativeLayout.LayoutParams((int)(50), (int)(50));
+            }
+            else {
+                lp = new RelativeLayout.LayoutParams((int) (200), (int) (200));
+            }
 
             int xZero = zeroPoint.getxZeroPoint();
             int yZero = zeroPoint.getyZeroPoint();
@@ -292,14 +309,10 @@ public class MainActivity extends AppCompatActivity {
 
             lp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification);
             lp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
-            Ilp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification);
-            Ilp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
 
             usingLayout.addView(imageView[i], lp);
-            //usingLayout.addView(textIndexView[i], Ilp);
 
             imageView[i].layout(0, 0, imageView[i].getWidth(), imageView[i].getHeight());
-            //textIndexView[i].layout(0, 0, textIndexView[i].getWidth(), textIndexView[i].getHeight());
         }
     }
 
@@ -320,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                     winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
 
                     TextView wine_name = findViewById(R.id.wine_name);
-                    String str_wine = "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン";
+                    String str_wine = "ワイン名: " + wineData.getWineNameList().get(thisWineNum);
                     wine_name.setText(str_wine);
 
                     //簡易情報の乗っているレイアウトを表示
@@ -346,14 +359,24 @@ public class MainActivity extends AppCompatActivity {
                             winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int) wineIndex - 1]));
 
                             TextView wine_name = findViewById(R.id.wine_detail_name);
-                            String str_wine =
-                                    "ワイン名:" + wineData.getWineIndexList().get(thisWineNum) + "番目のワイン" + "\n"
-                                            + "ワインの色:" + "\n" + "価格:";
+
+                            String color;
+                            if(wineData.getWineColorList().get(thisWineNum) == 1)
+                                color = "白";
+                            else if(wineData.getWineColorList().get(thisWineNum) == 2)
+                                color = "ロゼ";
+                            else
+                                color = "赤";
+
+                            String str_wine
+                                    = "ワイン名: " + wineData.getWineNameList().get(thisWineNum) + "\n\n"
+                                    + "ワインの色: "  + color + "\n\n"
+                                    + "価格: " + wineData.getWinePriceList().get(thisWineNum) + "円";
                             wine_name.setText(str_wine);
 
                             TextView wine_explanation = findViewById(R.id.wine_detail_explanation);
                             String str_wine_exp =
-                                    wineData.getWineIndexList().get(thisWineNum) + "番目のワインの説明";
+                                    wineData.getWineNameList().get(thisWineNum) + "の説明";
                             wine_explanation.setText(str_wine_exp);
 
                             RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
@@ -462,25 +485,15 @@ public class MainActivity extends AppCompatActivity {
             imageView[i].layout(dx, dy, imgW, imgH);
 
             if(distance > getDistance(dx, dy)){
+                //ここで中心を変える
                 centerIndex = wineData.getWineIndexList().get(i);
             }
         }
     }
 
-    public void slideText(TextView[] textIndexView, int newX, int newY){//文字(インデックス)をスライドする
-        for(int i=0; i<wineData.getWineNum(); i++) {
-            int dx = textIndexView[i].getLeft() + (newX - xPoint);
-            int dy = textIndexView[i].getTop() + (newY - yPoint);
-            int textW = dx + textIndexView[i].getWidth();
-            int textH = dy + textIndexView[i].getHeight();
-
-            textIndexView[i].layout(dx, dy, textW, textH);
-        }
-    }
 
     public void slideViews(ImageView[] imageView, TextView[] textView, int newX, int newY){//画面に表示されているものをスライドする
         slideImage(imageView, newX, newY);
-        slideText(textView, newX, newY);
     }
 
     public int randCenter(){
