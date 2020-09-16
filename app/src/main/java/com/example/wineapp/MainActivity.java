@@ -127,6 +127,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
                 startActivity(intent);
             }
         });
@@ -135,6 +140,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), MainActivity.class);
+                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
                 startActivity(intent);
             }
         });
@@ -153,6 +163,11 @@ public class MainActivity extends AppCompatActivity {
                 //Uri uri = Uri.parse("geo:35.681382,139.766084?z=16");
 
                 Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
                 startActivity(intent);
                 if (intent.resolveActivity(getPackageManager()) != null) {
                     startActivity(intent);
