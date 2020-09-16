@@ -8,6 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -172,9 +173,20 @@ public class SearchActivity extends AppCompatActivity
                     top_price = 20000;
 
                 //文字入力の自由検索
-                EditText search = findViewById(R.id.editTextTextSearch);
-                SpannableStringBuilder sb = (SpannableStringBuilder)search.getText();
-                String word = sb.toString();
+                final SearchView search = findViewById(R.id.free_search);
+                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        return false;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        return false;
+                    }
+                });
+
+                //SpannableStringBuilder sb = (SpannableStringBuilder)search.getText();
+                //String word = sb.toString();
 
                 for(int i=0; i<searchedWineData.getWineNum(); i++){
                     //色についての検索
@@ -202,15 +214,15 @@ public class SearchActivity extends AppCompatActivity
                         }
                     }
                     //自由検索についての検索
-                    if(!(searchedWineData.getWineNameList().get(i).contains(word))){
+                    if(!(searchedWineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
                         deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
                     }
                 }
 
 
                 //デバック
-                /*
-                String result = word;
+/*
+                String result = search.getQuery().toString();
                 result += "\n";
                 TextView result_text = findViewById(R.id.result);
 
@@ -219,7 +231,9 @@ public class SearchActivity extends AppCompatActivity
                 }
                 result_text.setText(result);
 
-                 */
+ */
+
+
 
 
 

@@ -295,15 +295,13 @@
         app:layout_constraintBottom_toTopOf="@+id/RadioGroup_Color"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <EditText
-        android:id="@+id/editTextTextSearch"
+    <SearchView
+        android:id="@+id/free_search"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:ems="10"
-        android:hint="ワイン名, ワイナリー名を入力"
-        android:inputType="textPersonName"
+        android:queryHint="ワイン名, ワイナリー名を入力"
+        android:iconifiedByDefault="false"
         app:layout_constraintBottom_toTopOf="@+id/text_color"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
