@@ -11,6 +11,7 @@ public class LabelActivity extends AppCompatActivity
 
 {  //クリックリスナーを実装
     private SearchedWineData searchedWineData = new SearchedWineData();
+    private int centerIndex = 0;
     @Override
     protected void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -23,6 +24,8 @@ public class LabelActivity extends AppCompatActivity
         searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("NAME_PRICE"));
 
         searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
+
+        centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         setContentView(R.layout.activity_label);
         findViewById(R.id.wineMap).setOnClickListener(this);
@@ -55,6 +58,7 @@ public class LabelActivity extends AppCompatActivity
         intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
         intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
         intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+        intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
 }

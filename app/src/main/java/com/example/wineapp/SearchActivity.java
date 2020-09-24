@@ -26,6 +26,7 @@ public class SearchActivity extends AppCompatActivity
 {  //クリックリスナーを実装
 
     private SearchedWineData searchedWineData = new SearchedWineData();
+    private int centerIndex = 0;
 
 
     @Override
@@ -41,6 +42,8 @@ public class SearchActivity extends AppCompatActivity
         searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("NAME_PRICE"));
 
         searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
+
+        centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         final boolean [] deleteFlag = new boolean[searchedWineData.getWineNum()];
 
@@ -241,6 +244,7 @@ public class SearchActivity extends AppCompatActivity
 
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("DELETE_FLAG", deleteFlag);
+                intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
 
 
@@ -273,6 +277,7 @@ public class SearchActivity extends AppCompatActivity
         intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
         intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
         intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+        intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
 }
