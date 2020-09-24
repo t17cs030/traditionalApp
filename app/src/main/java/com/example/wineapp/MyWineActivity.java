@@ -5,11 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class MyWineActivity extends AppCompatActivity
         implements View.OnClickListener
@@ -17,6 +24,9 @@ public class MyWineActivity extends AppCompatActivity
 {  //クリックリスナーを実装
     private SearchedWineData searchedWineData = new SearchedWineData();
     private  int centerIndex = 0;
+
+    private ArrayList<Integer> myWineListIndex = new ArrayList<>();
+    private int myWineListLength = 0;
 
     private int imageViewId[]={
             R.drawable.wine_01,
@@ -86,22 +96,23 @@ public class MyWineActivity extends AppCompatActivity
         //リスナーをボタンに登録
 
 
-
+        readMyWineList();
         // レイアウトからリストビューを取得
         ListView listView = (ListView)findViewById(R.id.my_wine_list);
-
         // リストビューに表示する要素を設定
         ArrayList<MyWineListItem> listItems = new ArrayList<>();
-        for (int i = 0; i < searchedWineData.getWineNum(); i++) {
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[i]);  // 今回はサンプルなのでデフォルトのAndroid Iconを利用
-            int indexNum = searchedWineData.getWineIndexList().indexOf(i+1);
+        for (int i = 0; i < myWineListLength; i++) {
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);  // 今回はサンプルなのでデフォルトのAndroid Iconを利用
+            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
             MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
             listItems.add(item);
         }
-
         // 出力結果をリストビューに表示
         MyWineListAdapter adapter = new MyWineListAdapter(this, R.layout.my_wine_list_item, listItems);
         listView.setAdapter(adapter);
+
+
+        listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
     }
     //ボタンが押された時の処理
     public void onClick (View view){
@@ -129,4 +140,50 @@ public class MyWineActivity extends AppCompatActivity
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
+
+    public void readMyWineList() {//MyWineリストのCSVを読み込む関数
+        try {
+            InputStream inputStream =
+                    getResources().getAssets().open("myWineList.csv");
+
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream);
+
+            BufferedReader bufferReader =
+                    new BufferedReader(inputStreamReader);
+
+            String line = "";
+
+            while ((line = bufferReader.readLine()) != null) {
+                StringTokenizer stringTokenizer =
+                        new StringTokenizer(line, ",");
+
+                myWineListIndex.add(Integer.parseInt(stringTokenizer.nextToken()));
+
+            }
+            bufferReader.close();
+            myWineListLength = myWineListIndex.size();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * リストビューのタップイベント
+     */
+    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            // タップしたアイテムの取得
+            ListView listView = (ListView)parent;
+            MyWineListItem item = (MyWineListItem)listView.getItemAtPosition(position);  // SampleListItemにキャスト
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
+            builder.setTitle("Tap No. " + String.valueOf(position));
+            builder.setMessage(item.getTitle());
+            builder.show();
+        }
+    };
+
 }
+
