@@ -79,7 +79,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.100000024">
+        app:layout_constraintVertical_bias="0.2">
 
         <RadioButton
             android:id="@+id/Color_Red"
@@ -103,70 +103,53 @@
             android:id="@+id/Color_All"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text=" ALL  "
-            android:checked="true"></RadioButton>
+            android:checked="true"
+            android:text=" ALL  "></RadioButton>
     </RadioGroup>
-
-    <TextView
-        android:id="@+id/text_color"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="180dp"
-        android:layout_marginLeft="180dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="180dp"
-        android:layout_marginRight="180dp"
-        android:text="ALL"
-        app:layout_constraintBottom_toTopOf="@+id/search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
-        app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
         android:id="@+id/spinner_taste_red_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
         android:layout_marginTop="50dp"
         android:entries="@array/taste_red"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_color"
+        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/spinner_taste_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:text="～"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_red_top"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_red_bottom"
-        app:layout_constraintTop_toBottomOf="@+id/text_color"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <Spinner
         android:id="@+id/spinner_taste_red_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
         android:entries="@array/taste_red"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text_color"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
+        app:layout_constraintVertical_bias="0.100000024" />
 
     <Spinner
         android:id="@+id/spinner_taste_white_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:entries="@array/taste_white"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_white"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_red_bottom"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -184,27 +167,29 @@
 
     <Spinner
         android:id="@+id/spinner_taste_white_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:entries="@array/taste_white"
         app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_white"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_red_bottom"
         app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
         android:id="@+id/spinner_price_bottom"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:entries="@array/price"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toStartOf="@+id/spinner_price"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_white_bottom"
         app:layout_constraintVertical_bias="0.0" />
 
@@ -222,13 +207,14 @@
 
     <Spinner
         android:id="@+id/spinner_price_top"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="190dp"
+        android:layout_height="25dp"
         android:layout_marginStart="10dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:entries="@array/price"
         app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner_price"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_white_bottom"
         app:layout_constraintVertical_bias="0.0" />
@@ -252,5 +238,72 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter" />
+
+    <TextView
+        android:id="@+id/text_taste_red"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="味わい(赤)"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_taste_red_bottom"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_taste_white"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="味わい(白)"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_taste_white_bottom"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="価格"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/spinner_price_bottom"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginBottom="8dp"
+        android:text="色"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/RadioGroup_Color"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <SearchView
+        android:id="@+id/free_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:queryHint="ワイン名, ワイナリー名を入力"
+        android:iconifiedByDefault="false"
+        app:layout_constraintBottom_toTopOf="@+id/text_color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,10 +2,13 @@ package com.example.wineapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ public class SearchActivity extends AppCompatActivity
 {  //クリックリスナーを実装
 
     private SearchedWineData searchedWineData = new SearchedWineData();
+    private int centerIndex = 0;
 
 
     @Override
@@ -39,6 +43,8 @@ public class SearchActivity extends AppCompatActivity
 
         searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
 
+        centerIndex = me.getIntExtra("CENTER_WINE", 0);
+
         final boolean [] deleteFlag = new boolean[searchedWineData.getWineNum()];
 
 
@@ -53,9 +59,9 @@ public class SearchActivity extends AppCompatActivity
         color.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkedRadioButtonId) {
-                RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
-                TextView color = findViewById(R.id.text_color);
-                color.setText(checkedButton.getText());
+                //RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
+                //TextView color = findViewById(R.id.text_color);
+                //color.setText(checkedButton.getText());
             }
         });
 
@@ -169,6 +175,21 @@ public class SearchActivity extends AppCompatActivity
                 else if(selected_price_top.equals("20000"))
                     top_price = 20000;
 
+                //文字入力の自由検索
+                final SearchView search = findViewById(R.id.free_search);
+                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        return false;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        return false;
+                    }
+                });
+
+                //SpannableStringBuilder sb = (SpannableStringBuilder)search.getText();
+                //String word = sb.toString();
 
                 for(int i=0; i<searchedWineData.getWineNum(); i++){
                     //色についての検索
@@ -195,24 +216,37 @@ public class SearchActivity extends AppCompatActivity
                             deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
                         }
                     }
+                    //自由検索についての検索
+                    if(!(searchedWineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
+                        deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
+                    }
                 }
 
-                /*デバック
+
+                //デバック
+/*
+                String result = search.getQuery().toString();
                 result += "\n";
-                //result += "a" + selected_red_bottom + "a\n";
-                result += taste_white_B + " " + taste_white_T + "\n";
-                for(int i=0; i<deleteFlag.length; i++){
+                TextView result_text = findViewById(R.id.result);
+
+                for(int i=0; i<searchedWineData.getWineNum(); i++){
                     result += deleteFlag[i] + " ";
                 }
-
                 result_text.setText(result);
 
-                 */
+ */
+
+
+
+
+
 
 
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("DELETE_FLAG", deleteFlag);
+                intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
+
 
 
 
@@ -238,6 +272,12 @@ public class SearchActivity extends AppCompatActivity
         else{//検索画面を維持
             intent = new Intent(this, SearchActivity.class);
         }
+        intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
+        intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
+        intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
+        intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
+        intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+        intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
 }
