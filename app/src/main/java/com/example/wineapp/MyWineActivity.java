@@ -99,30 +99,6 @@ public class MyWineActivity extends AppCompatActivity
         //リスナーをボタンに登録
 
         updateMyWineList();
-/*
-        try {
-            readMyWineList();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        // レイアウトからリストビューを取得
-        ListView listView = (ListView)findViewById(R.id.my_wine_list);
-        // リストビューに表示する要素を設定
-        ArrayList<MyWineListItem> listItems = new ArrayList<>();
-        for (int i = 0; i < myWineListLength; i++) {
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);  // 今回はサンプルなのでデフォルトのAndroid Iconを利用
-            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
-            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
-            listItems.add(item);
-        }
-        // 出力結果をリストビューに表示
-        MyWineListAdapter adapter = new MyWineListAdapter(this, R.layout.my_wine_list_item, listItems);
-        listView.setAdapter(adapter);
-
-
-        listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
-
- */
     }
     //ボタンが押された時の処理
     public void onClick (View view){
