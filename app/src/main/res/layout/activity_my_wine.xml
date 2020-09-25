@@ -77,7 +77,140 @@
         app:layout_constraintBottom_toTopOf="@+id/myWine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" >
+    </ListView>
+
+    <RelativeLayout
+        android:id="@+id/for_close_wine_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="2dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/for_close_delete"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="3dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/for_my_wine_info"
+        android:layout_width="match_parent"
+        android:layout_height="345dp"
+        android:elevation="4dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <ImageView
+            android:id="@+id/my_wine_info"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/my_wine_name"
+            android:layout_width="260dp"
+            android:layout_height="150dp"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="0dp"
+            android:background="#FFFFFF"
+            android:text="ワイン名:" />
+
+        <TextView
+            android:id="@+id/my_wine_explanation"
+            android:layout_width="280dp"
+            android:layout_height="195dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="150dp"
+            android:background="#FFFFFF"
+            android:text="説明:" />
+
+        <TextView
+            android:id="@+id/to_wine_map"
+            android:layout_width="205dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="150dp"
+            android:background="#FFFFFF"
+            android:text="類似度マップへ" />
+
+        <TextView
+            android:id="@+id/to_favorite"
+            android:layout_width="205dp"
+            android:layout_height="80dp"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="230dp"
+            android:background="#FFFFFF"
+            android:text="お気に入り" />
+
+        <TextView
+            android:id="@+id/to_delete"
+            android:layout_width="205dp"
+            android:layout_height="35dp"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="310dp"
+            android:background="#FFFFFF"
+            android:text="リストから削除" />
+
+
+        <RelativeLayout
+            android:id="@+id/for_delete"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:elevation="5dp"
+            android:layout_marginTop="150dp"
+            android:background="#000000"
+            android:visibility="invisible">
+
+
+            <TextView
+                android:id="@+id/delete_Q"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:background="#FFFFFF"
+                android:text="本当にリストから削除しますか？"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/delete_yes"
+                android:layout_width="205dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="280dp"
+                android:background="#0000FF"
+                android:text="はい"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/delete_no"
+                android:layout_width="205dp"
+                android:layout_height="50dp"
+                android:layout_marginLeft="280dp"
+                android:layout_marginTop="50dp"
+                android:background="#FF0000"
+                android:text="いいえ"
+                android:textColor="#FFFFFF"
+                android:textSize="36sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

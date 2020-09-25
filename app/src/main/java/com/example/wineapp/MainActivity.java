@@ -1,5 +1,6 @@
 package com.example.wineapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,9 +16,16 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -369,7 +377,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             //ワインリストへ登録ボタンが押されたときの処理(仮)
+                            addWineList(wineData.getWineIndexList().get(thisWineNum));
                             Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                            intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                            intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                            intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                            intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                            intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                            intent.putExtra("CENTER_WINE", centerIndex);
                             startActivity(intent);
                         }
                     });
@@ -417,7 +432,14 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     //ワインリストへ登録ボタンが押されたときの処理(仮)
+                                    addWineList(wineData.getWineIndexList().get(thisWineNum));
                                     Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                                    intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                                    intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                                    intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                                    intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                                    intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                                    intent.putExtra("CENTER_WINE", centerIndex);
                                     startActivity(intent);
                                 }
                             });
@@ -524,6 +546,22 @@ public class MainActivity extends AppCompatActivity {
         Random random = new Random();
         int randomValue = random.nextInt(wineData.getWineNum());
         return 1+randomValue;
+    }
+
+    private void addWineList(int wineIndex){
+        File file = new File(this.getFilesDir(), "myWineList.txt");
+        String filename = "myWineList.txt";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_APPEND);//追記モード
+            //outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
+            outputStream.write((String.valueOf(wineIndex) + "\n").getBytes());
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

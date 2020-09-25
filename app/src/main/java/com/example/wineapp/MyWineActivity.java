@@ -1,22 +1,25 @@
 package com.example.wineapp;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.StringTokenizer;
 
 public class MyWineActivity extends AppCompatActivity
         implements View.OnClickListener
@@ -82,7 +85,7 @@ public class MyWineActivity extends AppCompatActivity
         searchedWineData.setWineNameList(me.getStringArrayListExtra("WINE_NAME"));
         searchedWineData.setWineColorList(me.getIntegerArrayListExtra("WINE_COLOR"));
         searchedWineData.setWineTasteList(me.getIntegerArrayListExtra("WINE_TASTE"));
-        searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("NAME_PRICE"));
+        searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("WINE_PRICE"));
 
         searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
 
@@ -95,8 +98,13 @@ public class MyWineActivity extends AppCompatActivity
         findViewById(R.id.winery).setOnClickListener(this);
         //リスナーをボタンに登録
 
-
-        readMyWineList();
+        updateMyWineList();
+/*
+        try {
+            readMyWineList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         // レイアウトからリストビューを取得
         ListView listView = (ListView)findViewById(R.id.my_wine_list);
         // リストビューに表示する要素を設定
@@ -113,6 +121,8 @@ public class MyWineActivity extends AppCompatActivity
 
 
         listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
+
+ */
     }
     //ボタンが押された時の処理
     public void onClick (View view){
@@ -141,49 +151,234 @@ public class MyWineActivity extends AppCompatActivity
         startActivity(intent);
     }
 
-    public void readMyWineList() {//MyWineリストのCSVを読み込む関数
-        try {
-            InputStream inputStream =
-                    getResources().getAssets().open("myWineList.csv");
+    public void readMyWineList() throws IOException {//MyWineリストのCSVを読み込む関数
+        File file = new File(this.getFilesDir(), "myWineList.txt");
+        FileReader filereader = new FileReader(file);
+        BufferedReader br = new BufferedReader(filereader);
 
-            InputStreamReader inputStreamReader =
-                    new InputStreamReader(inputStream);
-
-            BufferedReader bufferReader =
-                    new BufferedReader(inputStreamReader);
-
-            String line = "";
-
-            while ((line = bufferReader.readLine()) != null) {
-                StringTokenizer stringTokenizer =
-                        new StringTokenizer(line, ",");
-
-                myWineListIndex.add(Integer.parseInt(stringTokenizer.nextToken()));
-
+        String str = br.readLine();
+        while(str != null){
+            if( !(myWineListIndex.contains(Integer.parseInt(str))) ){
+                myWineListIndex.add(Integer.parseInt(str));
             }
-            bufferReader.close();
-            myWineListLength = myWineListIndex.size();
-        } catch (IOException e) {
-            e.printStackTrace();
+            str = br.readLine();
         }
+        myWineListLength = myWineListIndex.size();
+
+        br.close();
+
     }
 
     /**
      * リストビューのタップイベント
      */
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            // タップしたアイテムの取得
-            ListView listView = (ListView)parent;
-            MyWineListItem item = (MyWineListItem)listView.getItemAtPosition(position);  // SampleListItemにキャスト
 
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
+
+            // タップしたアイテムの取得//元々あったもの
+            //ListView listView = (ListView)parent;
+            //MyWineListItem item = (MyWineListItem)listView.getItemAtPosition(position);  // SampleListItemにキャスト
+
+            //リストが押された時
+            ImageView winePicture = findViewById(R.id.my_wine_info);
+            final int wineIndex = myWineListIndex.get(position);
+            int thisWineNum = searchedWineData.getWineIndexList().indexOf(wineIndex);
+            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
+
+            TextView my_wine_name = findViewById(R.id.my_wine_name);
+
+            String color;
+            if(searchedWineData.getWineColorList().get(thisWineNum) == 1)
+                color = "白";
+            else if(searchedWineData.getWineColorList().get(thisWineNum) == 2)
+                color = "ロゼ";
+            else
+                color = "赤";
+
+            String str_wine
+                    = "ワイン名: " + searchedWineData.getWineNameList().get(thisWineNum) + "\n\n"
+                    + "ワインの色: "  + color + "\n\n"
+                    + "価格: " + searchedWineData.getWinePriceList().get(thisWineNum) + "円"
+                    ;
+            my_wine_name.setText(str_wine);
+
+            TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
+            String str_wine_exp =
+                    searchedWineData.getWineNameList().get(thisWineNum) + "の説明";
+            my_wine_explanation.setText(str_wine_exp);
+
+            //ワイン情報の乗っているレイアウトを表示
+            RelativeLayout my_wine_info_layout = findViewById(R.id.for_my_wine_info);
+            my_wine_info_layout.setVisibility(View.VISIBLE);
+
+            RelativeLayout close_my_wine_info = findViewById(R.id.for_close_wine_info);
+            close_my_wine_info.setVisibility(View.VISIBLE);
+
+            my_wine_info_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //詳細情報がクリックされたときは何もしない
+                }
+            });
+
+            close_my_wine_info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //ワイン情報閉じる用レイアウトがクリックされたときの処理
+                    RelativeLayout my_wine_info_layout = findViewById(R.id.for_my_wine_info);
+                    my_wine_info_layout.setVisibility(View.INVISIBLE);
+
+                    RelativeLayout close_my_wine_info = findViewById(R.id.for_close_wine_info);
+                    close_my_wine_info.setVisibility(View.INVISIBLE);
+                }
+            });
+
+            TextView to_wine_map = findViewById(R.id.to_wine_map);
+            to_wine_map.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //類似度マップへボタンが押されたときの処理(仮)
+                    Intent intent = new Intent(getApplication(), MainActivity.class);
+                    intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
+                    intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
+                    intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
+                    intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
+                    intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+                    intent.putExtra("CENTER_WINE", wineIndex);
+                    startActivity(intent);
+                }
+            });
+
+            TextView to_favorite = findViewById(R.id.to_favorite);
+            to_favorite.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //お気に入りボタンが押された時の処理
+                }
+            });
+
+            TextView to_delete = findViewById(R.id.to_delete);
+            to_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //削除ボタンが押された時の処理
+                    RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                    close_delete.setVisibility(View.VISIBLE);
+                    close_delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //削除タブ表示中は何を押しても何もしない
+                        }
+                    });
+
+                    RelativeLayout for_delete = findViewById(R.id.for_delete);
+                    for_delete.setVisibility(View.VISIBLE);
+                    for_delete.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //削除しますかタブを押しても何もしない
+                        }
+                    });
+
+                    TextView yes = findViewById(R.id.delete_yes);
+                    yes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //はい　が押されたときの処理
+                            myWineListIndex.remove(position);
+                            myWineListLength--;
+                            resetWineList();
+                            updateMyWineList();
+
+                            RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                            close_delete.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout for_delete = findViewById(R.id.for_delete);
+                            for_delete.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout my_wine_info_layout = findViewById(R.id.for_my_wine_info);
+                            my_wine_info_layout.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout close_my_wine_info = findViewById(R.id.for_close_wine_info);
+                            close_my_wine_info.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
+                    TextView no = findViewById(R.id.delete_no);
+                    no.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            //いいえ　が押されたときの処理
+                            RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                            close_delete.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout for_delete = findViewById(R.id.for_delete);
+                            for_delete.setVisibility(View.INVISIBLE);
+                        }
+                    });
+
+
+
+
+                }
+            });
+
+            ListView listView = findViewById(R.id.my_wine_list);
+            listView.setClickable(false);
+
+
+            /*
             AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
             builder.setTitle("Tap No. " + String.valueOf(position));
             builder.setMessage(item.getTitle());
             builder.show();
+            */
         }
     };
+
+    private void resetWineList(){
+        File file = new File(this.getFilesDir(), "myWineList.txt");
+        String filename = "myWineList.txt";
+        FileOutputStream outputStream;
+
+        try {
+            //outputStream = openFileOutput(filename, Context.MODE_APPEND);//追記モード
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
+            for(int i=0; i<myWineListLength; i++){
+                outputStream.write((String.valueOf(myWineListIndex.get(i)) + "\n").getBytes());
+            }
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void updateMyWineList(){
+        try {
+            readMyWineList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // レイアウトからリストビューを取得
+        ListView listView = (ListView)findViewById(R.id.my_wine_list);
+        // リストビューに表示する要素を設定
+        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+        for (int i = 0; i < myWineListLength; i++) {
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);  // 今回はサンプルなのでデフォルトのAndroid Iconを利用
+            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
+            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+            listItems.add(item);
+        }
+        // 出力結果をリストビューに表示
+        MyWineListAdapter adapter = new MyWineListAdapter(this, R.layout.my_wine_list_item, listItems);
+        listView.setAdapter(adapter);
+
+
+        listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
+    }
 
 }
 
