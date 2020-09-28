@@ -2,23 +2,26 @@ package com.example.wineapp;
 
 import android.graphics.Bitmap;
 
-public class MyWineListItem {
+public class MyWineListMultipleItem {
     private Bitmap mThumbnail = null;
     private String mTitle = null;
+    private Boolean mCheck = null;
 
     /**
      * 空のコンストラクタ
      */
-    public MyWineListItem() {};
+    public MyWineListMultipleItem() {};
 
     /**
      * コンストラクタ
      * @param thumbnail サムネイル画像
      * @param title タイトル
+     * @param check チェック
      */
-    public MyWineListItem(Bitmap thumbnail, String title) {
+    public MyWineListMultipleItem(Bitmap thumbnail, String title, Boolean check) {
         mThumbnail = thumbnail;
         mTitle = title;
+        mCheck = check;
     }
 
     /**
@@ -37,6 +40,13 @@ public class MyWineListItem {
         mTitle = title;
     }
 
+    /**
+     * チェックボックスを設定
+     * @param check タイトル
+     */
+    public void setCheck(Boolean check) {
+        mCheck = check;
+    }
 
     /**
      * サムネイル画像を取得
@@ -54,4 +64,11 @@ public class MyWineListItem {
         return mTitle;
     }
 
+    /**
+     * チェックボックスを取得
+     * @return チェック
+     */
+    public Boolean getCheck() {
+        return mCheck;
+    }
 }

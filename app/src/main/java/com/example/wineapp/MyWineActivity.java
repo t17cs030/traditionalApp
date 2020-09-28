@@ -1,12 +1,19 @@
 package com.example.wineapp;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.ActionMode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -98,7 +105,24 @@ public class MyWineActivity extends AppCompatActivity
         findViewById(R.id.winery).setOnClickListener(this);
         //リスナーをボタンに登録
 
+        findViewById(R.id.enter).setOnClickListener(new View.OnClickListener() {//決定ボタンが押されたときの挙動(デバック用)
+            @Override
+            public void onClick(View view) {
+                ListView listView = findViewById(R.id.my_wine_list_multiple);
+                String checked ="";
+                for(int i=0; i<myWineListLength; i++){
+                    MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
+                    checked += item.getCheck() + " ";
+                }
+                AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
+                builder.setTitle(checked);
+                builder.show();
+
+            }
+        });
+
         updateMyWineList();
+        updateMultipleMyWineList();
     }
     //ボタンが押された時の処理
     public void onClick (View view){
@@ -306,6 +330,7 @@ public class MyWineActivity extends AppCompatActivity
 
 
             /*
+            ダイアログで文字を表示
             AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
             builder.setTitle("Tap No. " + String.valueOf(position));
             builder.setMessage(item.getTitle());
@@ -313,6 +338,9 @@ public class MyWineActivity extends AppCompatActivity
             */
         }
     };
+
+
+
 
     private void resetWineList(){
         File file = new File(this.getFilesDir(), "myWineList.txt");
@@ -343,7 +371,7 @@ public class MyWineActivity extends AppCompatActivity
         // リストビューに表示する要素を設定
         ArrayList<MyWineListItem> listItems = new ArrayList<>();
         for (int i = 0; i < myWineListLength; i++) {
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);  // 今回はサンプルなのでデフォルトのAndroid Iconを利用
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
             int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
             MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
             listItems.add(item);
@@ -355,6 +383,32 @@ public class MyWineActivity extends AppCompatActivity
 
         listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
     }
+
+
+    private void updateMultipleMyWineList(){
+        try {
+            readMyWineList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        // レイアウトからリストビューを取得
+        ListView MultipleListView = (ListView)findViewById(R.id.my_wine_list_multiple);
+        // リストビューに表示する要素を設定
+        ArrayList<MyWineListMultipleItem> MultipleListMultipleItems = new ArrayList<>();
+        for (int i = 0; i < myWineListLength; i++) {
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
+            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
+            MyWineListMultipleItem item = new MyWineListMultipleItem(bmp, searchedWineData.getWineNameList().get(indexNum), false);
+            MultipleListMultipleItems.add(item);
+        }
+        // 出力結果をリストビューに表示
+        MyWineListMultipleAdapter adapter = new MyWineListMultipleAdapter(this, R.layout.my_wine_list_multiple_choice, MultipleListMultipleItems);
+        MultipleListView.setAdapter(adapter);
+    }
+
+
+
+
 
 }
 

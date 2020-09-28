@@ -74,6 +74,7 @@
         android:id="@+id/my_wine_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/myWine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -211,6 +212,28 @@
 
 
     </RelativeLayout>
+
+    <ListView
+        android:id="@+id/my_wine_list_multiple"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:choiceMode="multipleChoice"
+        android:visibility="visible"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ListView>
+
+    <Button
+        android:id="@+id/enter"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:text="決定"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></Button>
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

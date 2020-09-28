@@ -5,23 +5,28 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.List;
 
-public class MyWineListAdapter extends ArrayAdapter<MyWineListItem> {
+public class MyWineListMultipleAdapter extends ArrayAdapter<MyWineListMultipleItem> {
 
     private int mResource;
-    private List<MyWineListItem> mItems;
+    private List<MyWineListMultipleItem> mItems;
     private LayoutInflater mInflater;
 
     /**
      * コンストラクタ
      * @param context コンテキスト
      * @param resource リソースID
+     * @param items リストビューの要素
      */
-    public MyWineListAdapter(Context context, int resource, List<MyWineListItem> items) {
+    public MyWineListMultipleAdapter(Context context, int resource, List<MyWineListMultipleItem> items) {
         super(context, resource, items);
 
         mResource = resource;
@@ -30,7 +35,7 @@ public class MyWineListAdapter extends ArrayAdapter<MyWineListItem> {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
 
         if (convertView != null) {
@@ -41,7 +46,7 @@ public class MyWineListAdapter extends ArrayAdapter<MyWineListItem> {
         }
 
         // リストビューに表示する要素を取得
-        MyWineListItem item = mItems.get(position);
+        MyWineListMultipleItem item = mItems.get(position);
 
         // サムネイル画像を設定
         ImageView thumbnail = (ImageView)view.findViewById(R.id.thumbnail);
@@ -50,6 +55,17 @@ public class MyWineListAdapter extends ArrayAdapter<MyWineListItem> {
         // タイトルを設定
         TextView title = (TextView)view.findViewById(R.id.title);
         title.setText(item.getTitle());
+
+        //チェックボックス
+        CheckBox check = view.findViewById(R.id.checkBox);
+        check.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener(){
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                MyWineListMultipleItem thisItem = mItems.get(position);
+                mItems.set(position, new MyWineListMultipleItem(thisItem.getThumbnail(), thisItem.getTitle(), isChecked));
+            }
+        });
+        check.setChecked(mItems.get(position).getCheck());
 
         return view;
     }
