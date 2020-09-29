@@ -495,5 +495,154 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/search_list_menu"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="5dp"
+        android:visibility="invisible"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/bar_search">
+
+        <TextView
+            android:id="@+id/text_my_wine_list_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Myワインリストフィルター"
+            android:background="#00BFFF"
+            android:textColor="#000000"
+            android:textSize="30sp" />
+
+        <TextView
+            android:id="@+id/text_my_wine_list_color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_my_wine_list_filter"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="色"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/text_my_wine_list_filter" />
+
+        <RadioGroup
+            android:id="@+id/RadioGroup_my_wine_list_Color"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_my_wine_list_color"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="50dp"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toTopOf="@+id/text_my_wine_list_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <RadioButton
+                android:id="@+id/my_wine_Color_Red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="　赤　"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/my_wine_Color_Rose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=" ロゼ　"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/my_wine_Color_white"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="　白　"></RadioButton>
+
+            <RadioButton
+                android:id="@+id/my_wine_Color_All"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text=" ALL  "></RadioButton>
+        </RadioGroup>
+
+        <TextView
+            android:id="@+id/text_my_wine_list_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/RadioGroup_my_wine_list_Color"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:text="価格"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/spinner_my_wine_price_bottom"
+            android:layout_width="190dp"
+            android:layout_height="25dp"
+            android:layout_below="@+id/text_my_wine_list_price"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginRight="10dp"
+            android:entries="@array/price"/>
+
+        <TextView
+            android:id="@+id/spinner_my_wine_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_my_wine_list_price"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/spinner_my_wine_price_bottom"
+            android:layout_toRightOf="@+id/spinner_my_wine_price_bottom"
+            android:text="～" />
+
+        <Spinner
+            android:id="@+id/spinner_my_wine_price_top"
+            android:layout_width="190dp"
+            android:layout_height="25dp"
+            android:layout_below="@+id/text_my_wine_list_price"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/spinner_my_wine_price"
+            android:layout_toRightOf="@+id/spinner_my_wine_price"
+            android:entries="@array/price" />
+
+        <Button
+            android:id="@+id/enter_my_wine"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_my_wine_list_filter"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="150dp"
+            android:layout_marginLeft="150dp"
+            android:layout_marginTop="450dp"
+            android:layout_marginEnd="150dp"
+            android:layout_marginRight="150dp"
+            android:layout_marginBottom="50dp"
+            android:text="検索" />
+
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
