@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
@@ -27,6 +28,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MyWineActivity extends AppCompatActivity
         implements View.OnClickListener
@@ -98,6 +100,9 @@ public class MyWineActivity extends AppCompatActivity
 
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
+        final boolean [] deleteFlag = new boolean[searchedWineData.getWineNum()];
+        Arrays.fill(deleteFlag, true);
+
         findViewById(R.id.wineMap).setOnClickListener(this);
         findViewById(R.id.search).setOnClickListener(this);
 //        findViewById(R.id.myWine).setOnClickListener(this);
@@ -105,21 +110,23 @@ public class MyWineActivity extends AppCompatActivity
         findViewById(R.id.winery).setOnClickListener(this);
         //リスナーをボタンに登録
 
-        findViewById(R.id.enter).setOnClickListener(new View.OnClickListener() {//決定ボタンが押されたときの挙動(デバック用)
+        //類似度マップへボタンが押されたとき
+        findViewById(R.id.to_wine_map_multiple).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 ListView listView = findViewById(R.id.my_wine_list_multiple);
-                String checked ="";
                 for(int i=0; i<myWineListLength; i++){
                     MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
-                    checked += item.getCheck() + " ";
+                    if( item.getCheck() )
+                        deleteFlag[myWineListIndex.get(i)-1] = false;
                 }
-                AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
-                builder.setTitle(checked);
-                builder.show();
-
+                Intent intent = new Intent(getApplication(), MainActivity.class);
+                intent.putExtra("DELETE_FLAG", deleteFlag);
+                startActivity(intent);
             }
         });
+
+        setButtonClick();
 
         updateMyWineList();
         updateMultipleMyWineList();
@@ -291,6 +298,7 @@ public class MyWineActivity extends AppCompatActivity
                             myWineListLength--;
                             resetWineList();
                             updateMyWineList();
+                            updateMultipleMyWineList();
 
                             RelativeLayout close_delete = findViewById(R.id.for_close_delete);
                             close_delete.setVisibility(View.INVISIBLE);
@@ -404,6 +412,161 @@ public class MyWineActivity extends AppCompatActivity
         // 出力結果をリストビューに表示
         MyWineListMultipleAdapter adapter = new MyWineListMultipleAdapter(this, R.layout.my_wine_list_multiple_choice, MultipleListMultipleItems);
         MultipleListView.setAdapter(adapter);
+    }
+
+    public void setButtonClick(){
+        //検索ボタンが押されたとき
+        findViewById(R.id.search_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bar_search).setVisibility(View.VISIBLE);
+                findViewById(R.id.return_search_mode).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                        findViewById(R.id.bar_search).setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+        });
+
+        //ソートボタンが押されたとき
+        findViewById(R.id.sort).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bar_sort).setVisibility(View.VISIBLE);
+                findViewById(R.id.return_sort_mode).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                        findViewById(R.id.bar_sort).setVisibility(View.INVISIBLE);
+                    }
+                });
+            }
+        });
+
+        //選択ボタンが押されたとき
+        findViewById(R.id.choice).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bar_choice).setVisibility(View.VISIBLE);
+                findViewById(R.id.my_wine_list).setVisibility(View.INVISIBLE);
+                findViewById(R.id.my_wine_list_multiple).setVisibility(View.VISIBLE);
+                findViewById(R.id.action_choice).setVisibility(View.VISIBLE);
+
+                findViewById(R.id.return_choice_mode).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                        findViewById(R.id.bar_choice).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.my_wine_list).setVisibility(View.VISIBLE);
+                        findViewById(R.id.my_wine_list_multiple).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.action_choice).setVisibility(View.INVISIBLE);
+                    }
+                });
+                findViewById(R.id.all_choice).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ListView listView = findViewById(R.id.my_wine_list_multiple);
+                        for(int i=0; i<myWineListLength; i++){
+                            MyWineListMultipleAdapter adapter = (MyWineListMultipleAdapter) listView.getAdapter();
+                            MyWineListMultipleItem item = adapter.getItem(i);
+                            item.setCheck(true);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                findViewById(R.id.all_clear).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ListView listView = findViewById(R.id.my_wine_list_multiple);
+                        for(int i=0; i<myWineListLength; i++){
+                            MyWineListMultipleAdapter adapter = (MyWineListMultipleAdapter) listView.getAdapter();
+                            MyWineListMultipleItem item = adapter.getItem(i);
+                            item.setCheck(false);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                });
+                findViewById(R.id.to_favorite_multiple).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //お気に入りへボタンが押されたとき
+                    }
+                });
+                findViewById(R.id.delete_multiple).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                        close_delete.setVisibility(View.VISIBLE);
+                        close_delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //削除タブ表示中は何を押しても何もしない
+                            }
+                        });
+
+                        RelativeLayout for_delete = findViewById(R.id.for_delete_multiple);
+                        for_delete.setVisibility(View.VISIBLE);
+                        for_delete.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //削除しますかタブを押しても何もしない
+                            }
+                        });
+
+                        TextView yes = findViewById(R.id.delete_yes_multiple);
+                        yes.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //はい　が押されたときの処理
+                                ListView listView = findViewById(R.id.my_wine_list_multiple);
+                                for(int i=0; i<myWineListLength; i++){
+                                    MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
+                                    if( (item.getCheck()) ) {
+                                        myWineListIndex.remove(i);
+                                        myWineListLength--;
+                                    }
+                                }
+                                resetWineList();
+                                updateMyWineList();
+                                updateMultipleMyWineList();
+                                findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                                findViewById(R.id.bar_choice).setVisibility(View.INVISIBLE);
+                                findViewById(R.id.my_wine_list).setVisibility(View.VISIBLE);
+                                findViewById(R.id.my_wine_list_multiple).setVisibility(View.INVISIBLE);
+                                findViewById(R.id.action_choice).setVisibility(View.INVISIBLE);
+
+                                findViewById(R.id.for_close_delete).setVisibility(View.INVISIBLE);
+                                findViewById(R.id.for_delete_multiple).setVisibility(View.INVISIBLE);
+                            }
+                        });
+
+                        TextView no = findViewById(R.id.delete_no_multiple);
+                        no.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //いいえ　が押されたときの処理
+                                findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                                findViewById(R.id.bar_choice).setVisibility(View.INVISIBLE);
+                                findViewById(R.id.my_wine_list).setVisibility(View.VISIBLE);
+                                findViewById(R.id.my_wine_list_multiple).setVisibility(View.INVISIBLE);
+                                findViewById(R.id.action_choice).setVisibility(View.INVISIBLE);
+
+                                findViewById(R.id.for_close_delete).setVisibility(View.INVISIBLE);
+                                findViewById(R.id.for_delete_multiple).setVisibility(View.INVISIBLE);
+                            }
+                        });
+                    }
+                });
+
+
+            }
+        });
+
     }
 
 

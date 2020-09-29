@@ -74,12 +74,11 @@
         android:id="@+id/my_wine_list"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:visibility="invisible"
+        android:visibility="visible"
         app:layout_constraintBottom_toTopOf="@+id/myWine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" >
-    </ListView>
+        app:layout_constraintTop_toBottomOf="@+id/bar_list"></ListView>
 
     <RelativeLayout
         android:id="@+id/for_close_wine_info"
@@ -218,22 +217,283 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:choiceMode="multipleChoice"
-        android:visibility="visible"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/action_choice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/my_wine_list"></ListView>
+
+    <RelativeLayout
+        android:id="@+id/bar_list"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/search_list"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="#00BFFF"
+            android:text="🔍" />
+
+        <Button
+            android:id="@+id/sort"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_toStartOf="@+id/choice"
+            android:layout_toLeftOf="@+id/choice"
+            android:layout_toEndOf="@+id/search_list"
+            android:layout_toRightOf="@+id/search_list"
+            android:background="#00FA9A"
+            android:text="並び替え" />
+
+        <Button
+            android:id="@+id/choice"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:background="#EE82EE"
+            android:text="選択" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bar_search"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/search_mode"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="#00BFFF"
+            android:text="🔍" />
+
+        <Button
+            android:id="@+id/return_search_mode"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:text="戻る" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bar_sort"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/sort_mode"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="50dp"
+            android:layout_marginLeft="50dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="0dp"
+            android:background="#00FA9A"
+            android:text="並び替え" />
+
+        <Button
+            android:id="@+id/return_sort_mode"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:text="戻る" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/bar_choice"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/return_choice_mode"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="0dp"
+            android:layout_toStartOf="@+id/all_choice"
+            android:layout_toLeftOf="@+id/all_choice"
+            android:text="戻る" />
+
+        <Button
+            android:id="@+id/all_choice"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_toStartOf="@+id/all_clear"
+            android:layout_toLeftOf="@+id/all_clear"
+            android:text="全て選択" />
+
+        <Button
+            android:id="@+id/all_clear"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_toStartOf="@+id/choice_mode"
+            android:layout_toLeftOf="@+id/choice_mode"
+            android:text="全解除" />
+
+        <Button
+            android:id="@+id/choice_mode"
+            android:layout_width="100dp"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:background="#EE82EE"
+            android:text="選択" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/action_choice"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/myWine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></ListView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
 
-    <Button
-        android:id="@+id/enter"
-        android:layout_width="100dp"
+        <Button
+            android:id="@+id/to_wine_map_multiple"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_toStartOf="@+id/to_favorite_multiple"
+            android:layout_toLeftOf="@+id/to_favorite_multiple"
+            android:background="#DC143C"
+            android:text="類似度マップへ" />
+
+        <Button
+            android:id="@+id/to_favorite_multiple"
+            android:layout_width="150dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_toStartOf="@+id/delete_multiple"
+            android:layout_toLeftOf="@+id/delete_multiple"
+            android:background="#FFD700"
+            android:text="お気に入り" />
+
+        <Button
+            android:id="@+id/delete_multiple"
+            android:layout_width="100dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:background="#6A5ACD"
+            android:text="削除" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/for_delete_multiple"
+        android:layout_width="match_parent"
         android:layout_height="100dp"
-        android:text="決定"
-        app:layout_constraintBottom_toTopOf="@+id/myWine"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"></Button>
+        android:layout_marginTop="150dp"
+        android:background="#000000"
+        android:elevation="5dp"
+        android:visibility="invisible"
+        app:layout_constraintTop_toTopOf="@+id/for_my_wine_info">
 
+
+        <TextView
+            android:id="@+id/delete_Q_multiple"
+            android:layout_width="280dp"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:text="本当にリストから削除しますか？"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/delete_yes_multiple"
+            android:layout_width="205dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="280dp"
+            android:background="#0000FF"
+            android:text="はい"
+            android:textColor="#FFFFFF"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/delete_no_multiple"
+            android:layout_width="205dp"
+            android:layout_height="50dp"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="50dp"
+            android:background="#FF0000"
+            android:text="いいえ"
+            android:textColor="#FFFFFF"
+            android:textSize="36sp"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -34,6 +34,10 @@ public class MyWineListMultipleAdapter extends ArrayAdapter<MyWineListMultipleIt
         mInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
+    public List<MyWineListMultipleItem> getmItems(){
+        return mItems;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         View view;
