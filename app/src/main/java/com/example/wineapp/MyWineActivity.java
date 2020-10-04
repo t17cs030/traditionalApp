@@ -17,7 +17,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,8 +31,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Locale;
 
 public class MyWineActivity extends AppCompatActivity
         implements View.OnClickListener
@@ -421,11 +428,17 @@ public class MyWineActivity extends AppCompatActivity
             public void onClick(View view) {
                 findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
                 findViewById(R.id.bar_search).setVisibility(View.VISIBLE);
+                findViewById(R.id.search_list_menu).setVisibility(View.VISIBLE);
+                //検索のエンターが押されたとき
+                searchMyWine();
+                //タブ上の戻るボタンが押されたとき
                 findViewById(R.id.return_search_mode).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
                         findViewById(R.id.bar_search).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.search_list_menu).setVisibility(View.INVISIBLE);
+                        updateMyWineList();
                     }
                 });
             }
@@ -437,11 +450,33 @@ public class MyWineActivity extends AppCompatActivity
             public void onClick(View view) {
                 findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
                 findViewById(R.id.bar_sort).setVisibility(View.VISIBLE);
+                findViewById(R.id.sort_my_wine).setVisibility(View.VISIBLE);
+                //名前で並び変えボタンが押されたとき
+                findViewById(R.id.sort_name).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        for (int i = 0; i < myWineListLength; i++) {
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
+                            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
+                            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+                            listItems.add(item);
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new NameComparator());
+                        adapter.notifyDataSetChanged();
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
                 findViewById(R.id.return_sort_mode).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
                         findViewById(R.id.bar_sort).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                        updateMyWineList();
                     }
                 });
             }
@@ -567,6 +602,108 @@ public class MyWineActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    public void searchMyWine(){
+        //検索のエンターが押されたとき
+        findViewById(R.id.enter_my_wine).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //押されているラジオボタン
+                RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_my_wine_list_Color);
+                int checkedRadioButtonId = color.getCheckedRadioButtonId();
+                RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
+
+                //価格
+                Spinner spinner_price_bottom = (Spinner) findViewById(R.id.spinner_my_wine_price_bottom);
+                Spinner spinner_price_top = (Spinner) findViewById(R.id.spinner_my_wine_price_top);
+                String selected_price_bottom = (String) spinner_price_bottom.getSelectedItem();
+                String selected_price_top = (String) spinner_price_top.getSelectedItem();
+
+                //入力値を実数値に変換
+                int colorNum = 0;
+                if(checkedButton.getId() == R.id.my_wine_Color_Red)
+                    colorNum = 3;
+                else if(checkedButton.getId() == R.id.my_wine_Color_Rose)
+                    colorNum = 2;
+                else if(checkedButton.getId() == R.id.my_wine_Color_white)
+                    colorNum = 1;
+
+                //価格下
+                int bottom_price = -1;
+                if(selected_price_bottom.equals("0"))
+                    bottom_price = 0;
+                else if(selected_price_bottom.equals("1000"))
+                    bottom_price = 1000;
+                else if(selected_price_bottom.equals("3000"))
+                    bottom_price = 3000;
+                else if(selected_price_bottom.equals("5000"))
+                    bottom_price = 5000;
+                else if(selected_price_bottom.equals("10000"))
+                    bottom_price = 10000;
+                else if(selected_price_bottom.equals("20000"))
+                    bottom_price = 20000;
+
+                //価格上
+                int top_price = -1;
+                if(selected_price_top.equals("0"))
+                    top_price = 0;
+                else if(selected_price_top.equals("1000"))
+                    top_price = 1000;
+                else if(selected_price_top.equals("3000"))
+                    top_price = 3000;
+                else if(selected_price_top.equals("5000"))
+                    top_price = 5000;
+                else if(selected_price_top.equals("10000"))
+                    top_price = 10000;
+                else if(selected_price_top.equals("20000"))
+                    top_price = 20000;
+
+                ArrayList<Integer> searchedMyWineListIndex = new ArrayList<>();
+                int searchedMyWineListLength = 0;
+                for(int i=0; i<myWineListLength; i++){
+                    int thisWineNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
+                    //色についての検索
+                    if(colorNum != 0) {
+                        if(searchedWineData.getWineColorList().get(thisWineNum) == colorNum){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                    }
+                    //価格についての検索
+                    if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price < top_price) ){
+                        if( ((searchedWineData.getWinePriceList().get(thisWineNum) < top_price) || (bottom_price < searchedWineData.getWinePriceList().get(thisWineNum)))){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                    }
+                }
+
+                if( ( !(colorNum == 0) && ( (bottom_price == -1) && (top_price == -1) ) ) ) {
+                    // レイアウトからリストビューを取得
+                    ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                    // リストビューに表示する要素を設定
+                    ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                    for (int i = 0; i < searchedMyWineListLength; i++) {
+                        Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[searchedMyWineListIndex.get(i) - 1]);
+                        int indexNum = searchedWineData.getWineIndexList().indexOf(searchedMyWineListIndex.get(i));
+                        MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+                        listItems.add(item);
+                    }
+                    // 出力結果をリストビューに表示
+                    MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                    listView.setAdapter(adapter);
+
+
+                    listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
+                }
+                findViewById(R.id.search_list_menu).setVisibility(View.INVISIBLE);
+            }
+        });
     }
 
 
