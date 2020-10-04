@@ -1,5 +1,7 @@
 package com.example.wineapp;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,9 +17,17 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -34,6 +44,9 @@ public class MainActivity extends AppCompatActivity {
     private WineData wineData = new WineData();//ワインのインデックスや緯度経度リストのクラス
 
     private ViewsPoint viewsPoint = new ViewsPoint();//各ビューの座標を保存するクラス
+
+    private ArrayList<Integer> myWineListIndex = new ArrayList<>();
+    private int myWineListLength = 0;
 
     private int centerIndex = 0;//中央のワインのインデックス(初期値は0)
     private double magnification=2;//拡大率
@@ -87,6 +100,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         readCSV();//最初にデータを読み込む
+        try {
+            readMyWineList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         Intent me = getIntent();
         int center = me.getIntExtra("CENTER_WINE", 0);
         if(center == 0)
@@ -369,8 +387,25 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             //ワインリストへ登録ボタンが押されたときの処理(仮)
+                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                            builder.setTitle(wineData.getWineNameList().get(thisWineNum));
+                            if( addWineList(wineData.getWineIndexList().get(thisWineNum)) ) {
+                                builder.setMessage("Myワインリストへ登録しました");
+                            }
+                            else
+                                builder.setMessage("既に登録されています");
+                            builder.show();
+                            /*
                             Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                            intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                            intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                            intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                            intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                            intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                            intent.putExtra("CENTER_WINE", centerIndex);
                             startActivity(intent);
+
+                             */
                         }
                     });
 
@@ -417,8 +452,25 @@ public class MainActivity extends AppCompatActivity {
                                 @Override
                                 public void onClick(View view) {
                                     //ワインリストへ登録ボタンが押されたときの処理(仮)
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                                    builder.setTitle(wineData.getWineNameList().get(thisWineNum));
+                                    if( addWineList(wineData.getWineIndexList().get(thisWineNum)) ) {
+                                        builder.setMessage("Myワインリストへ登録しました");
+                                    }
+                                    else
+                                        builder.setMessage("既に登録されています");
+                                    builder.show();
+                                    /*
                                     Intent intent = new Intent(getApplication(), MyWineActivity.class);
+                                    intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
+                                    intent.putExtra("WINE_NAME", wineData.getWineNameList());
+                                    intent.putExtra("WINE_COLOR", wineData.getWineColorList());
+                                    intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
+                                    intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                                    intent.putExtra("CENTER_WINE", centerIndex);
                                     startActivity(intent);
+
+                                     */
                                 }
                             });
 
@@ -524,6 +576,48 @@ public class MainActivity extends AppCompatActivity {
         Random random = new Random();
         int randomValue = random.nextInt(wineData.getWineNum());
         return 1+randomValue;
+    }
+
+    private boolean addWineList(int wineIndex){
+        File file = new File(this.getFilesDir(), "myWineList.txt");
+        String filename = "myWineList.txt";
+        FileOutputStream outputStream;
+        int before_myWineListLength = myWineListLength;
+
+        try {
+            if( !(myWineListIndex.contains(Integer.parseInt(String.valueOf(wineIndex)))) ){
+                myWineListIndex.add(Integer.parseInt(String.valueOf(wineIndex)));
+                myWineListLength++;
+            }
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
+            for(int i=0; i<myWineListLength; i++){
+                outputStream.write((String.valueOf(myWineListIndex.get(i)) + "\n").getBytes());
+            }
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return (before_myWineListLength != myWineListLength);
+
+    }
+
+    public void readMyWineList() throws IOException {//MyWineリストのCSVを読み込む関数
+        File file = new File(this.getFilesDir(), "myWineList.txt");
+        FileReader filereader = new FileReader(file);
+        BufferedReader br = new BufferedReader(filereader);
+
+        String str = br.readLine();
+        while(str != null){
+            if( !(myWineListIndex.contains(Integer.parseInt(str))) ){
+                myWineListIndex.add(Integer.parseInt(str));
+            }
+            str = br.readLine();
+        }
+        myWineListLength = myWineListIndex.size();
+
+        br.close();
+
     }
 
 }
