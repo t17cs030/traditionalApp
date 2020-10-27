@@ -558,14 +558,22 @@ public class MyWineActivity extends AppCompatActivity
                             @Override
                             public void onClick(View view) {
                                 //はい　が押されたときの処理
+                                ArrayList<Integer> newMyWine = new ArrayList<>();
+                                newMyWine = myWineListIndex;
+                                int newMyWineLength = newMyWine.size();
+                                int deleteNum = 0;
+
                                 ListView listView = findViewById(R.id.my_wine_list_multiple);
                                 for(int i=0; i<myWineListLength; i++){
                                     MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
                                     if( (item.getCheck()) ) {
-                                        myWineListIndex.remove(i);
-                                        myWineListLength--;
+                                        newMyWine.remove(i-deleteNum);
+                                        newMyWineLength--;
+                                        deleteNum++;
                                     }
                                 }
+                                myWineListIndex = newMyWine;
+                                myWineListLength = newMyWineLength;
                                 resetWineList();
                                 updateMyWineList();
                                 updateMultipleMyWineList();
