@@ -19,6 +19,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.location.Location;
@@ -38,6 +39,9 @@ public class WineryActivity extends AppCompatActivity
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
 
+
+    private static final LatLng SADOYA = new LatLng(35.667524, 138.573845);
+    private static final LatLng KOFU_STATION = new LatLng(35.666870, 138.568774);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +74,15 @@ public class WineryActivity extends AppCompatActivity
         mMap.setOnMyLocationButtonClickListener(this);
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
+
+        mMap.addMarker(new MarkerOptions()
+                .position(SADOYA)
+                .title("サドヤワイナリー")
+                .snippet("〒400-0024 山梨県甲府市北口３丁目３−２４"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(KOFU_STATION));
+
+
+
     }
 
     private void enableMyLocation() {
@@ -78,6 +91,7 @@ public class WineryActivity extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
+                zoomMap(KOFU_STATION);
             }
         } else {
             // Permission to access the location is missing. Show rationale and request permission
@@ -87,8 +101,30 @@ public class WineryActivity extends AppCompatActivity
         // [END maps_check_location_permission]
     }
 
+    private void zoomMap(LatLng latlng){
+        // 表示する東西南北の緯度経度を設定
+        double south = latlng.latitude * (1-0.00005);
+        double west = latlng.longitude * (1-0.00005);
+        double north = latlng.latitude * (1+0.00005);
+        double east = latlng.longitude * (1+0.00005);
+
+        // LatLngBounds (LatLng southwest, LatLng northeast)
+        LatLngBounds bounds = LatLngBounds.builder()
+                .include(new LatLng(south , west))
+                .include(new LatLng(north, east))
+                .build();
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+
+        // static CameraUpdate.newLatLngBounds(LatLngBounds bounds, int width, int height, int padding)
+        mMap.moveCamera(CameraUpdateFactory.
+                newLatLngBounds(bounds, width, height, 0));
+
+    }
+
     @Override
-    public boolean onMyLocationButtonClick() {
+    public boolean onMyLocationButtonClick() {//右上の現在地ボタンが押されたときの処理
         Toast.makeText(this, "MyLocation button clicked", Toast.LENGTH_SHORT).show();
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
@@ -96,7 +132,7 @@ public class WineryActivity extends AppCompatActivity
     }
 
     @Override
-    public void onMyLocationClick(@NonNull Location location) {
+    public void onMyLocationClick(@NonNull Location location) {//現在地のマーカーが押されたときの処理
         Toast.makeText(this, "Current location:\n" + location, Toast.LENGTH_LONG).show();
     }
 
