@@ -164,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.label).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplication(), MainActivity.class);
+                Intent intent = new Intent(getApplication(), LabelActivity.class);
                 intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
                 intent.putExtra("WINE_NAME", wineData.getWineNameList());
                 intent.putExtra("WINE_COLOR", wineData.getWineColorList());
@@ -178,17 +178,7 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.winery).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //手抜き画面遷移APIを使わないver
-
-                
-                //Intent intent = new Intent(getApplication(), WineryActivity.class);
-                //startActivity(intent);
-
-                String winery_name = "SADOYA";
-                Uri uri = Uri.parse("geo:0,0?q=" + winery_name);
-                //Uri uri = Uri.parse("geo:35.681382,139.766084?z=16");
-
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                Intent intent = new Intent(getApplication(), WineryActivity.class);
                 intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
                 intent.putExtra("WINE_NAME", wineData.getWineNameList());
                 intent.putExtra("WINE_COLOR", wineData.getWineColorList());
@@ -196,10 +186,6 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                }
-
             }
         });
     }
