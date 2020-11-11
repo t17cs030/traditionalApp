@@ -160,6 +160,7 @@ public class MyWineActivity extends AppCompatActivity
         searchedWineData.setWineColorList(me.getIntegerArrayListExtra("WINE_COLOR"));
         searchedWineData.setWineTasteList(me.getIntegerArrayListExtra("WINE_TASTE"));
         searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("WINE_PRICE"));
+        searchedWineData.setWineFriganaList(me.getStringArrayListExtra("WINE_FURIGANA"));
 
         searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
 
@@ -219,6 +220,7 @@ public class MyWineActivity extends AppCompatActivity
         intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
         intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
         intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+        intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
@@ -318,6 +320,7 @@ public class MyWineActivity extends AppCompatActivity
                     intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
                     intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
                     intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+                    intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
                     intent.putExtra("CENTER_WINE", wineIndex);
                     startActivity(intent);
                 }
@@ -446,7 +449,7 @@ public class MyWineActivity extends AppCompatActivity
         for (int i = 0; i < myWineListLength; i++) {
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
             int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
-            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum), searchedWineData.getWineFuriganaList().get(indexNum));
             listItems.add(item);
         }
         // 出力結果をリストビューに表示
@@ -517,7 +520,7 @@ public class MyWineActivity extends AppCompatActivity
                         for (int i = 0; i < myWineListLength; i++) {
                             Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
                             int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
-                            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+                            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum), searchedWineData.getWineFuriganaList().get(indexNum));
                             listItems.add(item);
                         }
                         MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
@@ -757,7 +760,7 @@ public class MyWineActivity extends AppCompatActivity
                     for (int i = 0; i < searchedMyWineListLength; i++) {
                         Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[searchedMyWineListIndex.get(i) - 1]);
                         int indexNum = searchedWineData.getWineIndexList().indexOf(searchedMyWineListIndex.get(i));
-                        MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+                        MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum), searchedWineData.getWineFuriganaList().get(indexNum));
                         listItems.add(item);
                     }
                     // 出力結果をリストビューに表示

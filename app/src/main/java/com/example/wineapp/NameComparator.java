@@ -7,6 +7,6 @@ class NameComparator implements Comparator<MyWineListItem>
 {
     @Override
     public int compare(MyWineListItem lhs, MyWineListItem rhs) {
-        return lhs.getTitle().compareTo(rhs.getTitle());
+        return lhs.getFurigana().compareTo(rhs.getFurigana());
     }
 }

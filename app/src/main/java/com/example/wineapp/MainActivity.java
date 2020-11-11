@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("WINE_COLOR", wineData.getWineColorList());
                 intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
                 intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -214,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("WINE_COLOR", wineData.getWineColorList());
                 intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
                 intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -228,6 +230,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("WINE_COLOR", wineData.getWineColorList());
                 intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
                 intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -242,6 +245,7 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("WINE_COLOR", wineData.getWineColorList());
                 intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
                 intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
+                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -441,17 +445,6 @@ public class MainActivity extends AppCompatActivity {
                             else
                                 builder.setMessage("既に登録されています");
                             builder.show();
-                            /*
-                            Intent intent = new Intent(getApplication(), MyWineActivity.class);
-                            intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
-                            intent.putExtra("WINE_NAME", wineData.getWineNameList());
-                            intent.putExtra("WINE_COLOR", wineData.getWineColorList());
-                            intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
-                            intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
-                            intent.putExtra("CENTER_WINE", centerIndex);
-                            startActivity(intent);
-
-                             */
                         }
                     });
 
