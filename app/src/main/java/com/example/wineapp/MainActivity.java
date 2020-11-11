@@ -91,7 +91,65 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.wine_37,
             R.drawable.wine_38,
             R.drawable.wine_39,
-            R.drawable.wine_40
+            R.drawable.wine_40,
+            R.drawable.wine_41,
+            R.drawable.wine_42,
+            R.drawable.wine_43,
+            R.drawable.wine_44,
+            R.drawable.wine_45,
+            R.drawable.wine_46,
+            R.drawable.wine_47,
+            R.drawable.wine_48,
+            R.drawable.wine_49,
+            R.drawable.wine_50,
+            R.drawable.wine_51,
+            R.drawable.wine_52,
+            R.drawable.wine_53,
+            R.drawable.wine_54,
+            R.drawable.wine_55,
+            R.drawable.wine_56,
+            R.drawable.wine_57,
+            R.drawable.wine_58,
+            R.drawable.wine_59,
+            R.drawable.wine_60,
+            R.drawable.wine_61,
+            R.drawable.wine_62,
+            R.drawable.wine_63,
+            R.drawable.wine_64,
+            R.drawable.wine_65,
+            R.drawable.wine_66,
+            R.drawable.wine_67,
+            R.drawable.wine_68,
+            R.drawable.wine_69,
+            R.drawable.wine_70,
+            R.drawable.wine_71,
+            R.drawable.wine_72,
+            R.drawable.wine_73,
+            R.drawable.wine_74,
+            R.drawable.wine_75,
+            R.drawable.wine_76,
+            R.drawable.wine_77,
+            R.drawable.wine_78,
+            R.drawable.wine_79,
+            R.drawable.wine_80,
+            R.drawable.wine_81,
+            R.drawable.wine_82,
+            R.drawable.wine_83,
+            R.drawable.wine_84,
+            R.drawable.wine_85,
+            R.drawable.wine_86,
+            R.drawable.wine_87,
+            R.drawable.wine_88,
+            R.drawable.wine_89,
+            R.drawable.wine_90,
+            R.drawable.wine_91,
+            R.drawable.wine_92,
+            R.drawable.wine_93,
+            R.drawable.wine_94,
+            R.drawable.wine_95,
+            R.drawable.wine_96,
+            R.drawable.wine_97,
+            R.drawable.wine_98
     };//画像のIDを配列に格納//最終的にDisplayViewsに移動予定
 
     @Override
@@ -255,13 +313,15 @@ public class MainActivity extends AppCompatActivity {
                 wineData.addWineIndexList(stringTokenizer.nextToken());
                 wineData.addWineIdoList(stringTokenizer.nextToken());
                 wineData.addWineKedoList(stringTokenizer.nextToken());
-
-                wineData.addWineNameList(stringTokenizer.nextToken());
-
                 wineData.addWineColorList(stringTokenizer.nextToken());
+                wineData.addWineTypeList(stringTokenizer.nextToken());
                 wineData.addWineTasteList(stringTokenizer.nextToken());
                 wineData.addWinePriceList(stringTokenizer.nextToken());
-
+                wineData.addWineCapacityList(stringTokenizer.nextToken());
+                wineData.addWineNameList(stringTokenizer.nextToken());
+                wineData.addWineFuriganaList(stringTokenizer.nextToken());
+                wineData.addWineryNameList(stringTokenizer.nextToken());
+                wineData.addWineExplanationList(stringTokenizer.nextToken());
             }
             bufferReader.close();
         } catch (IOException e) {
@@ -413,15 +473,25 @@ public class MainActivity extends AppCompatActivity {
                             else
                                 color = "赤";
 
+                            String type;
+                            if(wineData.getWineTypeList().get(thisWineNum) == 1)
+                                type = "スティル";
+                            else
+                                type = "スパークリング";
+
                             String str_wine
                                     = "ワイン名: " + wineData.getWineNameList().get(thisWineNum) + "\n\n"
-                                    + "ワインの色: "  + color + "\n\n"
-                                    + "価格: " + wineData.getWinePriceList().get(thisWineNum) + "円";
+                                    + "ワインの色: "  + color + "\n"
+                                    + "ワインタイプ: " + type + "\n"
+                                    + "価格: " + wineData.getWinePriceList().get(thisWineNum) + "円" + " "
+                                    + "容量: " + wineData.getWineCapacityList().get(thisWineNum) + "mL" + "\n"
+                                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineNum);
                             wine_name.setText(str_wine);
 
                             TextView wine_explanation = findViewById(R.id.wine_detail_explanation);
                             String str_wine_exp =
-                                    wineData.getWineNameList().get(thisWineNum) + "の説明";
+                                    wineData.getWineNameList().get(thisWineNum) + ": " + "\n\n"
+                                    + wineData.getWineExplanationList().get(thisWineNum);
                             wine_explanation.setText(str_wine_exp);
 
                             RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
