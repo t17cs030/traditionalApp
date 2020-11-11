@@ -376,13 +376,14 @@ public class MainActivity extends AppCompatActivity {
         for(int i=0;i<wineData.getWineNum();i++) {
             imageView[i] = new ImageView(this);
 
-            double wineIndex = wineData.getWineIndexList().get(i);
-            imageView[i].setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+            imageView[i].setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
             RelativeLayout.LayoutParams lp;
 
             Intent me = getIntent();
             boolean[] deleteFlag = me.getBooleanArrayExtra("DELETE_FLAG");
-            if(deleteFlag != null && deleteFlag[wineData.getWineIndexList().get(i)-1]){
+            if(deleteFlag != null && deleteFlag[thisWineIndex]){
                 lp = new RelativeLayout.LayoutParams((int)(50), (int)(50));
             }
             else {
@@ -421,8 +422,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onClick(View v) {
                     //画像が押された時のやつ
                     ImageView winePicture = findViewById(R.id.wine_info);
-                    double wineIndex = wineData.getWineIndexList().get(thisWineNum);
-                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
+                    double wineID = wineData.getWineIndexList().get(thisWineNum);
+                    int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
                     TextView wine_name = findViewById(R.id.wine_name);
                     String str_wine = "ワイン名: " + wineData.getWineNameList().get(thisWineNum);
@@ -453,8 +455,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             ImageView winePicture = findViewById(R.id.wine_detail_info);
-                            double wineIndex = wineData.getWineIndexList().get(thisWineNum);
-                            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int) wineIndex - 1]));
+                            double wineID = wineData.getWineIndexList().get(thisWineNum);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
                             TextView wine_name = findViewById(R.id.wine_detail_name);
 
@@ -509,17 +512,6 @@ public class MainActivity extends AppCompatActivity {
                                     else
                                         builder.setMessage("既に登録されています");
                                     builder.show();
-                                    /*
-                                    Intent intent = new Intent(getApplication(), MyWineActivity.class);
-                                    intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
-                                    intent.putExtra("WINE_NAME", wineData.getWineNameList());
-                                    intent.putExtra("WINE_COLOR", wineData.getWineColorList());
-                                    intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
-                                    intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
-                                    intent.putExtra("CENTER_WINE", centerIndex);
-                                    startActivity(intent);
-
-                                     */
                                 }
                             });
 
@@ -624,7 +616,8 @@ public class MainActivity extends AppCompatActivity {
     public int randCenter(){
         Random random = new Random();
         int randomValue = random.nextInt(wineData.getWineNum());
-        return 1+randomValue;
+        int centerIndex = wineData.getWineIndexList().get(randomValue);
+        return centerIndex;
     }
 
     private boolean addWineList(int wineIndex){

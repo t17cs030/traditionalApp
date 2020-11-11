@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class SearchActivity extends AppCompatActivity
         implements View.OnClickListener
@@ -47,6 +48,7 @@ public class SearchActivity extends AppCompatActivity
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         final boolean [] deleteFlag = new boolean[searchedWineData.getWineNum()];
+        Arrays.fill(deleteFlag, false);
 
 
         findViewById(R.id.wineMap).setOnClickListener(this);
@@ -108,9 +110,9 @@ public class SearchActivity extends AppCompatActivity
                 //入力値を実数値に変換
                 int colorNum = 0;
                 if(checkedButton.getId() == R.id.Color_Red)
-                    colorNum = 3;
+                    colorNum = 5;
                 else if(checkedButton.getId() == R.id.Color_Rose)
-                    colorNum = 2;
+                    colorNum = 3;
                 else if(checkedButton.getId() == R.id.Color_white)
                     colorNum = 1;
 
@@ -193,51 +195,39 @@ public class SearchActivity extends AppCompatActivity
                 //String word = sb.toString();
 
                 for(int i=0; i<searchedWineData.getWineNum(); i++){
+
+                    double wineID = searchedWineData.getWineIndexList().get(i);
+                    int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
                     //色についての検索
                     if(colorNum != 0) {
                         if(searchedWineData.getWineColorList().get(i) != colorNum){
-                            deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
+                            deleteFlag[thisWineIndex] = true;
                         }
                     }
                     //味わい赤についての検索
                     if(!( (taste_Red_B == 0 || taste_Red_T == 0) || (taste_Red_B > taste_Red_T) )){
                         if( (searchedWineData.getWineColorList().get(i) == 3) && ((searchedWineData.getWineTasteList().get(i) < taste_Red_B) || (taste_Red_T <searchedWineData.getWineTasteList().get(i)))){
-                            deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
+                            deleteFlag[thisWineIndex] = true;
                         }
                     }
                     //味わい白についての検索
                     if(!( (taste_white_B == 0 || taste_white_T == 0) || (taste_white_B > taste_white_T) )){
                         if( ((searchedWineData.getWineColorList().get(i) == 1) || (searchedWineData.getWineColorList().get(i) == 2)) && ((searchedWineData.getWineTasteList().get(i) < taste_white_B) || (taste_white_T <searchedWineData.getWineTasteList().get(i)))){
-                            deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
+                            deleteFlag[thisWineIndex] = true;
                         }
                     }
                     //価格についての検索
                     if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price > top_price) ){
                         if( ((searchedWineData.getWinePriceList().get(i) < bottom_price) || (top_price < searchedWineData.getWinePriceList().get(i)))){
-                            deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
+                            deleteFlag[thisWineIndex] = true;
                         }
                     }
                     //自由検索についての検索
                     if(!(searchedWineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
-                        deleteFlag[searchedWineData.getWineIndexList().get(i)-1] = true;
+                        deleteFlag[thisWineIndex] = true;
                     }
                 }
-
-
-                //デバック
-/*
-                String result = search.getQuery().toString();
-                result += "\n";
-                TextView result_text = findViewById(R.id.result);
-
-                for(int i=0; i<searchedWineData.getWineNum(); i++){
-                    result += deleteFlag[i] + " ";
-                }
-                result_text.setText(result);
-
- */
-
-
 
 
 
