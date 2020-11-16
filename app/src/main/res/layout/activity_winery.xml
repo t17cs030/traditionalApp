@@ -6,15 +6,19 @@
     android:layout_height="match_parent"
     tools:context=".WineryActivity">
 
-    <TextView
-        android:id="@+id/textWinery"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="ワイナリーマップダミー画面"
-        app:layout_constraintBottom_toBottomOf="parent"
+    <fragment
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.MapFragment"
+        xmlns:tools="http://schemas.android.com/tools"
+        class="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="-1dp"
+        app:layout_constraintBottom_toTopOf="@+id/winery"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        tools:context=".WineryActivity"/>
 
     <Button
         android:id="@+id/wineMap"
@@ -79,5 +83,58 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+    <RelativeLayout
+        android:id="@+id/for_close_winery_info"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:visibility="invisible"
+        android:elevation="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/for_winery_info"
+        android:layout_width="match_parent"
+        android:layout_height="160dp"
+        android:visibility="invisible"
+        android:elevation="2dp"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/winery_info"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:background="#FFFFFF"
+            android:text="ワイナリー名:" />
+
+        <TextView
+            android:id="@+id/to_wine_map_winery"
+            android:layout_width="205dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="100dp"
+            android:background="#FFFFFF"
+            android:text="類似度マップへ" />
+
+        <TextView
+            android:id="@+id/route"
+            android:layout_width="205dp"
+            android:layout_height="60dp"
+            android:layout_marginLeft="205dp"
+            android:layout_marginTop="100dp"
+            android:background="#FFFFFF"
+            android:text="経路を表示" />
+
+    </RelativeLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

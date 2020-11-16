@@ -87,7 +87,65 @@ public class MyWineActivity extends AppCompatActivity
             R.drawable.wine_37,
             R.drawable.wine_38,
             R.drawable.wine_39,
-            R.drawable.wine_40
+            R.drawable.wine_40,
+            R.drawable.wine_41,
+            R.drawable.wine_42,
+            R.drawable.wine_43,
+            R.drawable.wine_44,
+            R.drawable.wine_45,
+            R.drawable.wine_46,
+            R.drawable.wine_47,
+            R.drawable.wine_48,
+            R.drawable.wine_49,
+            R.drawable.wine_50,
+            R.drawable.wine_51,
+            R.drawable.wine_52,
+            R.drawable.wine_53,
+            R.drawable.wine_54,
+            R.drawable.wine_55,
+            R.drawable.wine_56,
+            R.drawable.wine_57,
+            R.drawable.wine_58,
+            R.drawable.wine_59,
+            R.drawable.wine_60,
+            R.drawable.wine_61,
+            R.drawable.wine_62,
+            R.drawable.wine_63,
+            R.drawable.wine_64,
+            R.drawable.wine_65,
+            R.drawable.wine_66,
+            R.drawable.wine_67,
+            R.drawable.wine_68,
+            R.drawable.wine_69,
+            R.drawable.wine_70,
+            R.drawable.wine_71,
+            R.drawable.wine_72,
+            R.drawable.wine_73,
+            R.drawable.wine_74,
+            R.drawable.wine_75,
+            R.drawable.wine_76,
+            R.drawable.wine_77,
+            R.drawable.wine_78,
+            R.drawable.wine_79,
+            R.drawable.wine_80,
+            R.drawable.wine_81,
+            R.drawable.wine_82,
+            R.drawable.wine_83,
+            R.drawable.wine_84,
+            R.drawable.wine_85,
+            R.drawable.wine_86,
+            R.drawable.wine_87,
+            R.drawable.wine_88,
+            R.drawable.wine_89,
+            R.drawable.wine_90,
+            R.drawable.wine_91,
+            R.drawable.wine_92,
+            R.drawable.wine_93,
+            R.drawable.wine_94,
+            R.drawable.wine_95,
+            R.drawable.wine_96,
+            R.drawable.wine_97,
+            R.drawable.wine_98
     };//画像のIDを配列に格納//最終的にDisplayViewsに移動予定
 
 
@@ -102,6 +160,7 @@ public class MyWineActivity extends AppCompatActivity
         searchedWineData.setWineColorList(me.getIntegerArrayListExtra("WINE_COLOR"));
         searchedWineData.setWineTasteList(me.getIntegerArrayListExtra("WINE_TASTE"));
         searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("WINE_PRICE"));
+        searchedWineData.setWineFriganaList(me.getStringArrayListExtra("WINE_FURIGANA"));
 
         searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
 
@@ -124,8 +183,11 @@ public class MyWineActivity extends AppCompatActivity
                 ListView listView = findViewById(R.id.my_wine_list_multiple);
                 for(int i=0; i<myWineListLength; i++){
                     MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
-                    if( item.getCheck() )
-                        deleteFlag[myWineListIndex.get(i)-1] = false;
+                    if( item.getCheck() ) {
+                        double wineID = myWineListIndex.get(i);
+                        int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+                        deleteFlag[thisWineIndex] = false;
+                    }
                 }
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("DELETE_FLAG", deleteFlag);
@@ -161,6 +223,7 @@ public class MyWineActivity extends AppCompatActivity
         intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
         intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
         intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+        intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
@@ -197,30 +260,34 @@ public class MyWineActivity extends AppCompatActivity
 
             //リストが押された時
             ImageView winePicture = findViewById(R.id.my_wine_info);
-            final int wineIndex = myWineListIndex.get(position);
-            int thisWineNum = searchedWineData.getWineIndexList().indexOf(wineIndex);
-            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[(int)wineIndex-1]));
+
+            final double wineID = myWineListIndex.get(position);
+            final int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
+            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
             TextView my_wine_name = findViewById(R.id.my_wine_name);
 
             String color;
-            if(searchedWineData.getWineColorList().get(thisWineNum) == 1)
+            if(searchedWineData.getWineColorList().get(thisWineIndex) == 1)
                 color = "白";
-            else if(searchedWineData.getWineColorList().get(thisWineNum) == 2)
+            else if(searchedWineData.getWineColorList().get(thisWineIndex) == 3)
                 color = "ロゼ";
-            else
+            else if(searchedWineData.getWineColorList().get(thisWineIndex) == 5)
                 color = "赤";
+            else
+                color = "オレンジ";
 
             String str_wine
-                    = "ワイン名: " + searchedWineData.getWineNameList().get(thisWineNum) + "\n\n"
+                    = "ワイン名: " + searchedWineData.getWineNameList().get(thisWineIndex) + "\n\n"
                     + "ワインの色: "  + color + "\n\n"
-                    + "価格: " + searchedWineData.getWinePriceList().get(thisWineNum) + "円"
+                    + "価格: " + searchedWineData.getWinePriceList().get(thisWineIndex) + "円"
                     ;
             my_wine_name.setText(str_wine);
 
             TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
             String str_wine_exp =
-                    searchedWineData.getWineNameList().get(thisWineNum) + "の説明";
+                    searchedWineData.getWineNameList().get(thisWineIndex) + "の説明";
             my_wine_explanation.setText(str_wine_exp);
 
             //ワイン情報の乗っているレイアウトを表示
@@ -260,7 +327,8 @@ public class MyWineActivity extends AppCompatActivity
                     intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
                     intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
                     intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
-                    intent.putExtra("CENTER_WINE", wineIndex);
+                    intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
+                    intent.putExtra("CENTER_WINE", (int)wineID);
                     startActivity(intent);
                 }
             });
@@ -386,9 +454,11 @@ public class MyWineActivity extends AppCompatActivity
         // リストビューに表示する要素を設定
         ArrayList<MyWineListItem> listItems = new ArrayList<>();
         for (int i = 0; i < myWineListLength; i++) {
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
-            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
-            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+            double wineID = myWineListIndex.get(i);
+            int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), searchedWineData.getWineFuriganaList().get(thisWineIndex));
             listItems.add(item);
         }
         // 出力結果をリストビューに表示
@@ -411,9 +481,11 @@ public class MyWineActivity extends AppCompatActivity
         // リストビューに表示する要素を設定
         ArrayList<MyWineListMultipleItem> MultipleListMultipleItems = new ArrayList<>();
         for (int i = 0; i < myWineListLength; i++) {
-            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
-            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
-            MyWineListMultipleItem item = new MyWineListMultipleItem(bmp, searchedWineData.getWineNameList().get(indexNum), false);
+            double wineID = myWineListIndex.get(i);
+            int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
+            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+            MyWineListMultipleItem item = new MyWineListMultipleItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), false);
             MultipleListMultipleItems.add(item);
         }
         // 出力結果をリストビューに表示
@@ -456,15 +528,20 @@ public class MyWineActivity extends AppCompatActivity
                     @Override
                     public void onClick(View view) {
                         ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
                         for (int i = 0; i < myWineListLength; i++) {
-                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[myWineListIndex.get(i)-1]);
-                            int indexNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
-                            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+                            double wineID = myWineListIndex.get(i);
+                            int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), searchedWineData.getWineFuriganaList().get(thisWineIndex));
+
                             listItems.add(item);
                         }
                         MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
                         Collections.sort(listItems, new NameComparator());
                         adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
 
 
                         findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
@@ -631,9 +708,9 @@ public class MyWineActivity extends AppCompatActivity
                 //入力値を実数値に変換
                 int colorNum = 0;
                 if(checkedButton.getId() == R.id.my_wine_Color_Red)
-                    colorNum = 3;
+                    colorNum = 5;
                 else if(checkedButton.getId() == R.id.my_wine_Color_Rose)
-                    colorNum = 2;
+                    colorNum = 3;
                 else if(checkedButton.getId() == R.id.my_wine_Color_white)
                     colorNum = 1;
 
@@ -667,39 +744,52 @@ public class MyWineActivity extends AppCompatActivity
                 else if(selected_price_top.equals("20000"))
                     top_price = 20000;
 
+
                 ArrayList<Integer> searchedMyWineListIndex = new ArrayList<>();
                 int searchedMyWineListLength = 0;
                 for(int i=0; i<myWineListLength; i++){
-                    int thisWineNum = searchedWineData.getWineIndexList().indexOf(myWineListIndex.get(i));
+                    double wineID = myWineListIndex.get(i);
+                    int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
                     //色についての検索
                     if(colorNum != 0) {
-                        if(searchedWineData.getWineColorList().get(thisWineNum) == colorNum){
+                        if(searchedWineData.getWineColorList().get(thisWineIndex) == colorNum){
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
                             }
                         }
                     }
+
                     //価格についての検索
                     if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price < top_price) ){
-                        if( ((searchedWineData.getWinePriceList().get(thisWineNum) < top_price) || (bottom_price < searchedWineData.getWinePriceList().get(thisWineNum)))){
+                        if( ((searchedWineData.getWinePriceList().get(thisWineIndex) < top_price) && (bottom_price < searchedWineData.getWinePriceList().get(thisWineIndex)))){
+
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
+
                             }
                         }
                     }
                 }
 
-                if( ( !(colorNum == 0) && ( (bottom_price == -1) && (top_price == -1) ) ) ) {
+
+
+
+
+
+                if( colorNum != 0 || bottom_price != -1 || top_price != -1) {
                     // レイアウトからリストビューを取得
                     ListView listView = (ListView) findViewById(R.id.my_wine_list);
                     // リストビューに表示する要素を設定
                     ArrayList<MyWineListItem> listItems = new ArrayList<>();
                     for (int i = 0; i < searchedMyWineListLength; i++) {
-                        Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[searchedMyWineListIndex.get(i) - 1]);
-                        int indexNum = searchedWineData.getWineIndexList().indexOf(searchedMyWineListIndex.get(i));
-                        MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(indexNum));
+                        double wineID = searchedMyWineListIndex.get(i);
+                        int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+
+                        Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                        MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), searchedWineData.getWineFuriganaList().get(thisWineIndex));
                         listItems.add(item);
                     }
                     // 出力結果をリストビューに表示

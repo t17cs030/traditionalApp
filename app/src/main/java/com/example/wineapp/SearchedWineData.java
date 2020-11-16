@@ -11,6 +11,7 @@ public class SearchedWineData {
     private ArrayList<Integer> wineColorList;
     private ArrayList<Integer> wineTasteList;
     private ArrayList<Integer> winePriceList;
+    private ArrayList<String> wineFriganaList;
 
 
     public SearchedWineData(){
@@ -20,6 +21,7 @@ public class SearchedWineData {
         wineColorList = new ArrayList<>();
         wineTasteList = new ArrayList<>();
         winePriceList = new ArrayList<>();
+        wineFriganaList = new ArrayList<>();
     }
 
 
@@ -41,6 +43,10 @@ public class SearchedWineData {
 
     public ArrayList<Integer> getWinePriceList() {
         return winePriceList;
+    }
+
+    public ArrayList<String> getWineFuriganaList() {
+        return wineFriganaList;
     }
 
     public int getWineNum(){
@@ -67,6 +73,10 @@ public class SearchedWineData {
 
     public void setWinePriceList(ArrayList<Integer> winePriceList) {
         this.winePriceList = winePriceList;
+    }
+
+    public void setWineFriganaList(ArrayList<String> wineFriganaList){
+        this.wineFriganaList = wineFriganaList;
     }
 
 

@@ -108,6 +108,7 @@
         android:layout_height="345dp"
         android:elevation="4dp"
         android:visibility="invisible"
+        android:background="#FFFFFF"
         app:layout_constraintBottom_toTopOf="@+id/myWine"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -506,6 +507,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/bar_search">
+
 
         <TextView
             android:id="@+id/text_my_wine_list_filter"
