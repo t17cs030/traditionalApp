@@ -19,10 +19,10 @@
     <string-array name="price">
         <item>価格を選択</item>
         <item>0</item>
-        <item>1000</item>
+        <item>2000</item>
         <item>3000</item>
+        <item>4000</item>
         <item>5000</item>
-        <item>10000</item>
         <item>20000</item>
     </string-array>
 
