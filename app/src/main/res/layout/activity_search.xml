@@ -70,42 +70,68 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
 
-    <RadioGroup
-        android:id="@+id/RadioGroup_Color"
+
+    <CheckBox
+        android:id="@+id/color_Red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/wineMap"
+        android:text="赤"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.15"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.2">
+        app:layout_constraintVertical_bias="0.2" />
 
-        <RadioButton
-            android:id="@+id/Color_Red"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="　赤　"></RadioButton>
+    <CheckBox
+        android:id="@+id/color_Rose"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ロゼ"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toEndOf="@+id/color_Red"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
 
-        <RadioButton
-            android:id="@+id/Color_Rose"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text=" ロゼ　"></RadioButton>
+    <CheckBox
+        android:id="@+id/color_White"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="白"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toEndOf="@+id/color_Rose"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
 
-        <RadioButton
-            android:id="@+id/Color_white"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="　白　"></RadioButton>
+    <CheckBox
+        android:id="@+id/color_Other"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="その他"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toEndOf="@+id/color_White"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
 
-        <RadioButton
-            android:id="@+id/Color_All"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:checked="true"
-            android:text=" ALL  "></RadioButton>
-    </RadioGroup>
+    <CheckBox
+        android:id="@+id/color_All"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ALL"
+        android:checked="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.05"
+        app:layout_constraintStart_toEndOf="@+id/color_Other"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.2" />
+
 
     <Spinner
         android:id="@+id/spinner_taste_red_bottom"
@@ -115,29 +141,31 @@
         android:entries="@array/taste_red"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
+        app:layout_constraintTop_toBottomOf="@+id/color_Red"
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/spinner_taste_red"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
         android:text="～"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_red_top"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_red_bottom"
-        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintTop_toBottomOf="@+id/color_Red"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
         android:id="@+id/spinner_taste_red_top"
         android:layout_width="190dp"
         android:layout_height="25dp"
+        android:layout_marginTop="50dp"
         android:entries="@array/taste_red"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/RadioGroup_Color"
-        app:layout_constraintVertical_bias="0.100000024" />
+        app:layout_constraintTop_toBottomOf="@+id/color_Red"
+        app:layout_constraintVertical_bias="0.0" />
 
     <Spinner
         android:id="@+id/spinner_taste_white_bottom"
@@ -224,10 +252,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="検索"
+        android:elevation="0dp"
         app:layout_constraintBottom_toTopOf="@+id/search"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/spinner_price" />
+        app:layout_constraintTop_toBottomOf="@+id/open_grape" />
 
     <TextView
         android:id="@+id/result"
@@ -292,8 +321,24 @@
         android:textColor="#000000"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/RadioGroup_Color"
+        app:layout_constraintBottom_toTopOf="@+id/color_Red"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/text_grape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginTop="8dp"
+        android:text="ぶどう品種"
+        android:textColor="#000000"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_price_bottom"
+        app:layout_constraintVertical_bias="0.0" />
 
     <SearchView
         android:id="@+id/free_search"
@@ -304,6 +349,69 @@
         app:layout_constraintBottom_toTopOf="@+id/text_color"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/open_grape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="　　　　▼　　　　"
+        android:elevation="0dp"
+        app:layout_constraintEnd_toEndOf="@+id/text_grape"
+        app:layout_constraintStart_toStartOf="@+id/text_grape"
+        app:layout_constraintTop_toBottomOf="@+id/text_grape" />
+
+    <RelativeLayout
+        android:id="@+id/for_close_search_grape"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="1dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/for_search_grape"
+        android:layout_width="match_parent"
+        android:layout_height="345dp"
+        android:elevation="2dp"
+        android:visibility="invisible"
+        android:background="#FFFFFF"
+        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+
+        <TextView
+            android:id="@+id/text_grape_open"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:text="ぶどう品種"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <CheckBox
+            android:id="@+id/MBA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_grape_open"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:text="マスカット・ベーリーA" />
+
+    </RelativeLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.SpannableStringBuilder;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -56,9 +57,30 @@ public class SearchActivity extends AppCompatActivity
         findViewById(R.id.myWine).setOnClickListener(this);
         findViewById(R.id.label).setOnClickListener(this);
         findViewById(R.id.winery).setOnClickListener(this);
-        //リスナーをボタンに登録
+
+        findViewById(R.id.open_grape).setOnClickListener(new View.OnClickListener() {//ブドウ品種で検索
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.for_search_grape).setVisibility(View.VISIBLE);
+                findViewById(R.id.for_close_search_grape).setVisibility(View.VISIBLE);
+            }
+        });
+        findViewById(R.id.for_search_grape).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //ブドウの品種で検索ウィンドウが押されたとき
+            }
+        });
+        findViewById(R.id.for_close_search_grape).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.for_search_grape).setVisibility(View.INVISIBLE);
+                findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
+            }
+        });
 
         //ラジオボタンを登録
+        /*
         RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_Color);
         color.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -68,6 +90,19 @@ public class SearchActivity extends AppCompatActivity
                 //color.setText(checkedButton.getText());
             }
         });
+         */
+
+        //色のチェックボックス
+        final CheckBox color_Red = findViewById(R.id.color_Red);
+        final CheckBox color_Rose = findViewById(R.id.color_Rose);
+        final CheckBox color_White = findViewById(R.id.color_White);
+        final CheckBox color_Other = findViewById(R.id.color_Other);
+        final CheckBox color_All = findViewById(R.id.color_All);
+
+        //チェックボックスのアクション
+        color_check_box();
+
+
 
         //検索ボタンが押されたとき(デバック用)
         Button enter = findViewById(R.id.enter);
@@ -75,9 +110,12 @@ public class SearchActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 //押されているラジオボタン
+                /*
                 RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_Color);
                 int checkedRadioButtonId = color.getCheckedRadioButtonId();
                 RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
+                 */
+
 
                 //赤ワインの味わい
                 Spinner spinner_taste_red_bottom = (Spinner) findViewById(R.id.spinner_taste_red_bottom);
@@ -111,6 +149,7 @@ public class SearchActivity extends AppCompatActivity
 
 
                 //入力値を実数値に変換
+                /*
                 int colorNum = 0;
                 if(checkedButton.getId() == R.id.Color_Red)
                     colorNum = 5;
@@ -118,6 +157,7 @@ public class SearchActivity extends AppCompatActivity
                     colorNum = 3;
                 else if(checkedButton.getId() == R.id.Color_white)
                     colorNum = 1;
+                 */
 
                 int taste_Red_B = 0;
                 if(selected_red_bottom.equals("フルボディ"))
@@ -214,8 +254,17 @@ public class SearchActivity extends AppCompatActivity
 
 
                     //色についての検索
-                    if(colorNum != 0) {
-                        if(searchedWineData.getWineColorList().get(i) == colorNum){
+                    if(! (color_All.isChecked()) ) {
+                        if(searchedWineData.getWineColorList().get(i) == 1 && color_White.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(searchedWineData.getWineColorList().get(i) == 3 && color_Rose.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(searchedWineData.getWineColorList().get(i) == 5 && color_Red.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(searchedWineData.getWineColorList().get(i) != 1 && searchedWineData.getWineColorList().get(i) != 3 && searchedWineData.getWineColorList().get(i) != 5 && color_Other.isChecked()) {
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
@@ -269,10 +318,6 @@ public class SearchActivity extends AppCompatActivity
                 }
 
 
-
-
-
-
             }
         });
 
@@ -305,4 +350,90 @@ public class SearchActivity extends AppCompatActivity
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
+
+    public void color_check_box(){
+        //色のチェックボックス
+        final CheckBox color_Red = findViewById(R.id.color_Red);
+        final CheckBox color_Rose = findViewById(R.id.color_Rose);
+        final CheckBox color_White = findViewById(R.id.color_White);
+        final CheckBox color_Other = findViewById(R.id.color_Other);
+        final CheckBox color_All = findViewById(R.id.color_All);
+
+        color_Red.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Rose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_White.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_All.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_All.isChecked()) {
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+    }
 }
+
