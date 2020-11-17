@@ -41,7 +41,7 @@ public class MyWineActivity extends AppCompatActivity
         implements View.OnClickListener
 
 {  //クリックリスナーを実装
-    private SearchedWineData searchedWineData = new SearchedWineData();
+    private WineData wineData = new WineData();
     private  int centerIndex = 0;
 
     private ArrayList<Integer> myWineListIndex = new ArrayList<>();
@@ -155,18 +155,11 @@ public class MyWineActivity extends AppCompatActivity
         setContentView(R.layout.activity_my_wine);
 
         Intent me = getIntent();
-        searchedWineData.setWineIndexList(me.getIntegerArrayListExtra("WINE_INDEX"));
-        searchedWineData.setWineNameList(me.getStringArrayListExtra("WINE_NAME"));
-        searchedWineData.setWineColorList(me.getIntegerArrayListExtra("WINE_COLOR"));
-        searchedWineData.setWineTasteList(me.getIntegerArrayListExtra("WINE_TASTE"));
-        searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("WINE_PRICE"));
-        searchedWineData.setWineFriganaList(me.getStringArrayListExtra("WINE_FURIGANA"));
 
-        searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
-
+        wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
-        final boolean [] deleteFlag = new boolean[searchedWineData.getWineNum()];
+        final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
         Arrays.fill(deleteFlag, true);
 
         findViewById(R.id.wineMap).setOnClickListener(this);
@@ -174,7 +167,9 @@ public class MyWineActivity extends AppCompatActivity
 //        findViewById(R.id.myWine).setOnClickListener(this);
         findViewById(R.id.label).setOnClickListener(this);
         findViewById(R.id.winery).setOnClickListener(this);
-        //リスナーをボタンに登録
+
+        //チェックボックスのアクション
+        color_check_box();
 
         //類似度マップへボタンが押されたとき
         findViewById(R.id.to_wine_map_multiple).setOnClickListener(new View.OnClickListener() {
@@ -185,7 +180,7 @@ public class MyWineActivity extends AppCompatActivity
                     MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
                     if( item.getCheck() ) {
                         double wineID = myWineListIndex.get(i);
-                        int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+                        int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
                         deleteFlag[thisWineIndex] = false;
                     }
                 }
@@ -218,12 +213,7 @@ public class MyWineActivity extends AppCompatActivity
         else{//MYワインを維持
             intent = new Intent(this, MyWineActivity.class);
         }
-        intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
-        intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
-        intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
-        intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
-        intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
-        intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
+        intent.putExtra("WINE_DATA", wineData);
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
@@ -262,32 +252,32 @@ public class MyWineActivity extends AppCompatActivity
             ImageView winePicture = findViewById(R.id.my_wine_info);
 
             final double wineID = myWineListIndex.get(position);
-            final int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+            final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
             winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
             TextView my_wine_name = findViewById(R.id.my_wine_name);
 
             String color;
-            if(searchedWineData.getWineColorList().get(thisWineIndex) == 1)
+            if(wineData.getWineColorList().get(thisWineIndex) == 1)
                 color = "白";
-            else if(searchedWineData.getWineColorList().get(thisWineIndex) == 3)
+            else if(wineData.getWineColorList().get(thisWineIndex) == 3)
                 color = "ロゼ";
-            else if(searchedWineData.getWineColorList().get(thisWineIndex) == 5)
+            else if(wineData.getWineColorList().get(thisWineIndex) == 5)
                 color = "赤";
             else
                 color = "オレンジ";
 
             String str_wine
-                    = "ワイン名: " + searchedWineData.getWineNameList().get(thisWineIndex) + "\n\n"
+                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n\n"
                     + "ワインの色: "  + color + "\n\n"
-                    + "価格: " + searchedWineData.getWinePriceList().get(thisWineIndex) + "円"
+                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex) + "円"
                     ;
             my_wine_name.setText(str_wine);
 
             TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
             String str_wine_exp =
-                    searchedWineData.getWineNameList().get(thisWineIndex) + "の説明";
+                    wineData.getWineNameList().get(thisWineIndex) + "の説明";
             my_wine_explanation.setText(str_wine_exp);
 
             //ワイン情報の乗っているレイアウトを表示
@@ -322,12 +312,7 @@ public class MyWineActivity extends AppCompatActivity
                 public void onClick(View view) {
                     //類似度マップへボタンが押されたときの処理(仮)
                     Intent intent = new Intent(getApplication(), MainActivity.class);
-                    intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
-                    intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
-                    intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
-                    intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
-                    intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
-                    intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
+                    intent.putExtra("WINE_DATA", wineData);
                     intent.putExtra("CENTER_WINE", (int)wineID);
                     startActivity(intent);
                 }
@@ -455,10 +440,10 @@ public class MyWineActivity extends AppCompatActivity
         ArrayList<MyWineListItem> listItems = new ArrayList<>();
         for (int i = 0; i < myWineListLength; i++) {
             double wineID = myWineListIndex.get(i);
-            int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), searchedWineData.getWineFuriganaList().get(thisWineIndex));
+            MyWineListItem item = new MyWineListItem(bmp, wineData.getWineNameList().get(thisWineIndex), wineData.getWineFuriganaList().get(thisWineIndex));
             listItems.add(item);
         }
         // 出力結果をリストビューに表示
@@ -482,10 +467,10 @@ public class MyWineActivity extends AppCompatActivity
         ArrayList<MyWineListMultipleItem> MultipleListMultipleItems = new ArrayList<>();
         for (int i = 0; i < myWineListLength; i++) {
             double wineID = myWineListIndex.get(i);
-            int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
             Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-            MyWineListMultipleItem item = new MyWineListMultipleItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), false);
+            MyWineListMultipleItem item = new MyWineListMultipleItem(bmp, wineData.getWineNameList().get(thisWineIndex), false);
             MultipleListMultipleItems.add(item);
         }
         // 出力結果をリストビューに表示
@@ -531,10 +516,10 @@ public class MyWineActivity extends AppCompatActivity
                         ListView listView = (ListView) findViewById(R.id.my_wine_list);
                         for (int i = 0; i < myWineListLength; i++) {
                             double wineID = myWineListIndex.get(i);
-                            int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
                             Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-                            MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), searchedWineData.getWineFuriganaList().get(thisWineIndex));
+                            MyWineListItem item = new MyWineListItem(bmp, wineData.getWineNameList().get(thisWineIndex), wineData.getWineFuriganaList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -694,10 +679,20 @@ public class MyWineActivity extends AppCompatActivity
         findViewById(R.id.enter_my_wine).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                //色のチェックボックス
+                final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
+                final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
+                final CheckBox color_White = findViewById(R.id.my_wine_color_White);
+                final CheckBox color_Other = findViewById(R.id.my_wine_color_Other);
+                final CheckBox color_All = findViewById(R.id.my_wine_color_All);
+
                 //押されているラジオボタン
+                /*
                 RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_my_wine_list_Color);
                 int checkedRadioButtonId = color.getCheckedRadioButtonId();
                 RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
+                 */
 
                 //価格
                 Spinner spinner_price_bottom = (Spinner) findViewById(R.id.spinner_my_wine_price_bottom);
@@ -706,6 +701,7 @@ public class MyWineActivity extends AppCompatActivity
                 String selected_price_top = (String) spinner_price_top.getSelectedItem();
 
                 //入力値を実数値に変換
+                /*
                 int colorNum = 0;
                 if(checkedButton.getId() == R.id.my_wine_Color_Red)
                     colorNum = 5;
@@ -714,18 +710,20 @@ public class MyWineActivity extends AppCompatActivity
                 else if(checkedButton.getId() == R.id.my_wine_Color_white)
                     colorNum = 1;
 
+                 */
+
                 //価格下
                 int bottom_price = -1;
                 if(selected_price_bottom.equals("0"))
                     bottom_price = 0;
-                else if(selected_price_bottom.equals("1000"))
-                    bottom_price = 1000;
+                else if(selected_price_bottom.equals("2000"))
+                    bottom_price = 2000;
                 else if(selected_price_bottom.equals("3000"))
                     bottom_price = 3000;
+                else if(selected_price_bottom.equals("4000"))
+                    bottom_price = 4000;
                 else if(selected_price_bottom.equals("5000"))
                     bottom_price = 5000;
-                else if(selected_price_bottom.equals("10000"))
-                    bottom_price = 10000;
                 else if(selected_price_bottom.equals("20000"))
                     bottom_price = 20000;
 
@@ -733,14 +731,14 @@ public class MyWineActivity extends AppCompatActivity
                 int top_price = -1;
                 if(selected_price_top.equals("0"))
                     top_price = 0;
-                else if(selected_price_top.equals("1000"))
-                    top_price = 1000;
+                else if(selected_price_top.equals("2000"))
+                    top_price = 2000;
                 else if(selected_price_top.equals("3000"))
                     top_price = 3000;
+                else if(selected_price_top.equals("4000"))
+                    top_price = 4000;
                 else if(selected_price_top.equals("5000"))
                     top_price = 5000;
-                else if(selected_price_top.equals("10000"))
-                    top_price = 10000;
                 else if(selected_price_top.equals("20000"))
                     top_price = 20000;
 
@@ -749,11 +747,41 @@ public class MyWineActivity extends AppCompatActivity
                 int searchedMyWineListLength = 0;
                 for(int i=0; i<myWineListLength; i++){
                     double wineID = myWineListIndex.get(i);
-                    int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+                    int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
                     //色についての検索
+                    /*
                     if(colorNum != 0) {
-                        if(searchedWineData.getWineColorList().get(thisWineIndex) == colorNum){
+                        if(wineData.getWineColorList().get(thisWineIndex) == colorNum){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                    }
+
+                     */
+                    //色についての検索
+                    if(! (color_All.isChecked()) ) {
+                        if(wineData.getWineColorList().get(thisWineIndex) == 1 && color_White.isChecked()){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                        else if(wineData.getWineColorList().get(thisWineIndex) == 3 && color_Rose.isChecked()){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                        else if(wineData.getWineColorList().get(thisWineIndex) == 5 && color_Red.isChecked()){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                        else if(wineData.getWineColorList().get(thisWineIndex) != 1 && wineData.getWineColorList().get(thisWineIndex) != 3 && wineData.getWineColorList().get(thisWineIndex) != 5 && color_Other.isChecked()) {
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
@@ -762,8 +790,8 @@ public class MyWineActivity extends AppCompatActivity
                     }
 
                     //価格についての検索
-                    if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price < top_price) ){
-                        if( ((searchedWineData.getWinePriceList().get(thisWineIndex) < top_price) && (bottom_price < searchedWineData.getWinePriceList().get(thisWineIndex)))){
+                    if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price <= top_price) ){
+                        if( ((wineData.getWinePriceList().get(thisWineIndex) <= top_price) && (bottom_price <= wineData.getWinePriceList().get(thisWineIndex)))){
 
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
@@ -779,17 +807,17 @@ public class MyWineActivity extends AppCompatActivity
 
 
 
-                if( colorNum != 0 || bottom_price != -1 || top_price != -1) {
+                if( !color_All.isChecked() || bottom_price != -1 || top_price != -1) {
                     // レイアウトからリストビューを取得
                     ListView listView = (ListView) findViewById(R.id.my_wine_list);
                     // リストビューに表示する要素を設定
                     ArrayList<MyWineListItem> listItems = new ArrayList<>();
                     for (int i = 0; i < searchedMyWineListLength; i++) {
                         double wineID = searchedMyWineListIndex.get(i);
-                        int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+                        int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
                         Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-                        MyWineListItem item = new MyWineListItem(bmp, searchedWineData.getWineNameList().get(thisWineIndex), searchedWineData.getWineFuriganaList().get(thisWineIndex));
+                        MyWineListItem item = new MyWineListItem(bmp, wineData.getWineNameList().get(thisWineIndex), wineData.getWineFuriganaList().get(thisWineIndex));
                         listItems.add(item);
                     }
                     // 出力結果をリストビューに表示
@@ -800,6 +828,91 @@ public class MyWineActivity extends AppCompatActivity
                     listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
                 }
                 findViewById(R.id.search_list_menu).setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    public void color_check_box(){
+        //色のチェックボックス
+        final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
+        final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
+        final CheckBox color_White = findViewById(R.id.my_wine_color_White);
+        final CheckBox color_Other = findViewById(R.id.my_wine_color_Other);
+        final CheckBox color_All = findViewById(R.id.my_wine_color_All);
+
+        color_Red.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Rose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_White.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Other.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_All.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_All.isChecked()) {
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Other.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
             }
         });
     }
