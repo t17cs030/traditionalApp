@@ -195,12 +195,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), SearchActivity.class);
-                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
-                intent.putExtra("WINE_NAME", wineData.getWineNameList());
-                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
-                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
-                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
-                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
+                intent.putExtra("WINE_DATA", wineData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -210,12 +205,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), MyWineActivity.class);
-                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
-                intent.putExtra("WINE_NAME", wineData.getWineNameList());
-                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
-                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
-                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
-                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
+                intent.putExtra("WINE_DATA", wineData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -225,12 +215,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), LabelActivity.class);
-                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
-                intent.putExtra("WINE_NAME", wineData.getWineNameList());
-                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
-                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
-                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
-                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
+                intent.putExtra("WINE_DATA", wineData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -240,12 +225,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), WineryActivity.class);
-                intent.putExtra("WINE_INDEX", wineData.getWineIndexList());
-                intent.putExtra("WINE_NAME", wineData.getWineNameList());
-                intent.putExtra("WINE_COLOR", wineData.getWineColorList());
-                intent.putExtra("WINE_TASTE", wineData.getWineTasteList());
-                intent.putExtra("WINE_PRICE", wineData.getWinePriceList());
-                intent.putExtra("WINE_FURIGANA", wineData.getWineFuriganaList());
+                intent.putExtra("WINE_DATA", wineData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }

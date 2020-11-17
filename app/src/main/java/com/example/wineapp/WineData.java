@@ -2,9 +2,10 @@ package com.example.wineapp;
 
 import android.content.Intent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class WineData {
+public class WineData implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -39,6 +40,22 @@ public class WineData {
         wineExplanationList = new ArrayList<>();
     }
 
+    public void setWineData(WineData wineData){
+        setWineIndexList(wineData.getWineIndexList());
+        setWineIdoList(wineData.getWineIdoList());
+        setWineKedoList(wineData.getWineKedoList());
+        setWineColorList(wineData.getWineColorList());
+        setWineTypeList(wineData.getWineTypeList());
+        setWineTasteList(wineData.getWineTasteList());
+        setWinePriceList(wineData.getWinePriceList());
+        setWineCapacityList(wineData.getWineCapacityList());
+        setWineNameList(wineData.getWineNameList());
+        setWineFuriganaList(wineData.getWineFuriganaList());
+        setWineryNameList(wineData.getWineryNameList());
+        setWineExplanationList(wineData.getWineExplanationList());
+        setWineNum(wineData.getWineNum());
+    }
+
     public ArrayList<Integer> getWineIndexList() {
         return wineIndexList;
     }
@@ -50,8 +67,6 @@ public class WineData {
     public ArrayList<Double> getWineKedoList() {
         return wineKedoList;
     }
-
-
 
     public ArrayList<Integer> getWineColorList() {
         return wineColorList;
@@ -90,6 +105,55 @@ public class WineData {
     }
 
 
+    public void setWineIndexList(ArrayList<Integer> wineIndexList) {
+        this.wineIndexList = wineIndexList;
+    }
+
+    public void setWineIdoList(ArrayList<Double> wineIdoList) {
+        this.wineIdoList = wineIdoList;
+    }
+
+    public void setWineKedoList(ArrayList<Double> wineKedoList) {
+        this.wineKedoList = wineKedoList;
+    }
+
+    public void setWineColorList(ArrayList<Integer> wineColorList) {
+        this.wineColorList = wineColorList;
+    }
+
+    public void setWineTypeList(ArrayList<Integer> wineTypeList) {
+        this.wineTypeList = wineTypeList;
+    }
+
+    public void setWineTasteList(ArrayList<Integer> wineTasteList) {
+        this.wineTasteList = wineTasteList;
+    }
+
+    public void setWinePriceList(ArrayList<Integer> winePriceList) {
+        this.winePriceList = winePriceList;
+    }
+
+    public void setWineCapacityList(ArrayList<Integer> wineCapacityList) {
+        this.wineCapacityList = wineCapacityList;
+    }
+
+    public void setWineNameList(ArrayList<String> wineNameList) {
+        this.wineNameList = wineNameList;
+    }
+
+    public void setWineFuriganaList(ArrayList<String> wineFuriganaList) {
+        this.wineFuriganaList = wineFuriganaList;
+    }
+
+    public void setWineryNameList(ArrayList<String> wineryNameList) {
+        this.wineryNameList = wineryNameList;
+    }
+
+    public void setWineExplanationList(ArrayList<String> wineExplanationList) {
+        this.wineExplanationList = wineExplanationList;
+    }
+
+
 
     public int getWineNum() {
         return wineNum;
@@ -98,6 +162,8 @@ public class WineData {
     public void setWineNum(int wineNum) {
         this.wineNum = wineNum;
     }
+
+
 
     public void addWineIndexList(String str){
         wineIndexList.add(Integer.parseInt(str));

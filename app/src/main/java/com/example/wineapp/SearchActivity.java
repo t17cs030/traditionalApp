@@ -28,7 +28,7 @@ public class SearchActivity extends AppCompatActivity
 
 {  //クリックリスナーを実装
 
-    private SearchedWineData searchedWineData = new SearchedWineData();
+    private WineData wineData = new WineData();
     private int centerIndex = 0;
 
 
@@ -38,18 +38,10 @@ public class SearchActivity extends AppCompatActivity
         setContentView(R.layout.activity_search);
 
         Intent me = getIntent();
-        searchedWineData.setWineIndexList(me.getIntegerArrayListExtra("WINE_INDEX"));
-        searchedWineData.setWineNameList(me.getStringArrayListExtra("WINE_NAME"));
-        searchedWineData.setWineColorList(me.getIntegerArrayListExtra("WINE_COLOR"));
-        searchedWineData.setWineTasteList(me.getIntegerArrayListExtra("WINE_TASTE"));
-        searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("WINE_PRICE"));
-        searchedWineData.setWineFriganaList(me.getStringArrayListExtra("WINE_FURIGANA"));
-
-        searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
-
+        wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
-        final boolean [] deleteFlag = new boolean[searchedWineData.getWineNum()];
+        final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
         Arrays.fill(deleteFlag, true);
 
 
@@ -247,54 +239,54 @@ public class SearchActivity extends AppCompatActivity
                 //SpannableStringBuilder sb = (SpannableStringBuilder)search.getText();
                 //String word = sb.toString();
 
-                for(int i=0; i<searchedWineData.getWineNum(); i++){
+                for(int i=0; i<wineData.getWineNum(); i++){
 
-                    double wineID = searchedWineData.getWineIndexList().get(i);
-                    int thisWineIndex = searchedWineData.getWineIndexList().indexOf((int)wineID);
+                    double wineID = wineData.getWineIndexList().get(i);
+                    int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
 
                     //色についての検索
                     if(! (color_All.isChecked()) ) {
-                        if(searchedWineData.getWineColorList().get(i) == 1 && color_White.isChecked()){
+                        if(wineData.getWineColorList().get(i) == 1 && color_White.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(searchedWineData.getWineColorList().get(i) == 3 && color_Rose.isChecked()){
+                        else if(wineData.getWineColorList().get(i) == 3 && color_Rose.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(searchedWineData.getWineColorList().get(i) == 5 && color_Red.isChecked()){
+                        else if(wineData.getWineColorList().get(i) == 5 && color_Red.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(searchedWineData.getWineColorList().get(i) != 1 && searchedWineData.getWineColorList().get(i) != 3 && searchedWineData.getWineColorList().get(i) != 5 && color_Other.isChecked()) {
+                        else if(wineData.getWineColorList().get(i) != 1 && wineData.getWineColorList().get(i) != 3 && wineData.getWineColorList().get(i) != 5 && color_Other.isChecked()) {
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //味わい赤についての検索
                     if(taste_Red_B != 0 && taste_Red_T != 0 && (taste_Red_B <= taste_Red_T) ){
-                        if( (searchedWineData.getWineColorList().get(i) == 5) && (searchedWineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= searchedWineData.getWineTasteList().get(i)) ){
+                        if( (wineData.getWineColorList().get(i) == 5) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)) ){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //味わい白についての検索
                     if(taste_white_B != 0 && taste_white_T != 0 && (taste_white_B <= taste_white_T) ){
-                        if( (searchedWineData.getWineColorList().get(i) != 5) && (searchedWineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= searchedWineData.getWineTasteList().get(i)) ){
+                        if( (wineData.getWineColorList().get(i) != 5) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)) ){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //価格についての検索
                     if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
-                        if( (searchedWineData.getWinePriceList().get(i) >= bottom_price) && (top_price >= searchedWineData.getWinePriceList().get(i)) ){
+                        if( (wineData.getWinePriceList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceList().get(i)) ){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //自由検索についての検索
-                    if(search.getQuery().toString().trim().length() != 0 && (searchedWineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
+                    if(search.getQuery().toString().trim().length() != 0 && (wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
                         deleteFlag[thisWineIndex] = false;
                     }
 
                 }
 
                 boolean check = false;
-                for(int j=0; j<searchedWineData.getWineNum(); j++){
+                for(int j=0; j<wineData.getWineNum(); j++){
                     if(deleteFlag[j] == false)
                         check = true;
                 }
@@ -311,10 +303,6 @@ public class SearchActivity extends AppCompatActivity
                     builder.setTitle("検索結果");
                     builder.setMessage("当てはまるワインはありません");
                     builder.show();
-                    //String result = "検索結果に当てはまるワインがありません";
-                    //TextView result_text = findViewById(R.id.result);
-                    //result_text.setText(result);
-
                 }
 
 
@@ -340,12 +328,13 @@ public class SearchActivity extends AppCompatActivity
         else{//検索画面を維持
             intent = new Intent(this, SearchActivity.class);
         }
-        intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
-        intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
-        intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
-        intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
-        intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
-        intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
+        //intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
+        //intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
+        //intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
+        //intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
+        //intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
+        //intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
+        intent.putExtra("WINE_DATA", wineData);
 
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);

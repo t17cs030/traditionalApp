@@ -10,22 +10,14 @@ public class LabelActivity extends AppCompatActivity
         implements View.OnClickListener
 
 {  //クリックリスナーを実装
-    private SearchedWineData searchedWineData = new SearchedWineData();
+    private WineData wineData = new WineData();
     private int centerIndex = 0;
     @Override
     protected void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
 
         Intent me = getIntent();
-        searchedWineData.setWineIndexList(me.getIntegerArrayListExtra("WINE_INDEX"));
-        searchedWineData.setWineNameList(me.getStringArrayListExtra("WINE_NAME"));
-        searchedWineData.setWineColorList(me.getIntegerArrayListExtra("WINE_COLOR"));
-        searchedWineData.setWineTasteList(me.getIntegerArrayListExtra("WINE_TASTE"));
-        searchedWineData.setWinePriceList(me.getIntegerArrayListExtra("NAME_PRICE"));
-        searchedWineData.setWineFriganaList(me.getStringArrayListExtra("WINE_FURIGANA"));
-
-        searchedWineData.setWineNum(searchedWineData.getWineIndexList().size());
-
+        wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         setContentView(R.layout.activity_label);
@@ -54,12 +46,7 @@ public class LabelActivity extends AppCompatActivity
         else{//ラベル読み込みを維持
             intent = new Intent(this, LabelActivity.class);
         }
-        intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
-        intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
-        intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
-        intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
-        intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
-        intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
+        intent.putExtra("WINE_DATA", wineData);
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
