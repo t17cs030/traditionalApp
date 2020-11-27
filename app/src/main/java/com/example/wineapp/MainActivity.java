@@ -49,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
     private int myWineListLength = 0;
 
     private int centerIndex = 0;//中央のワインのインデックス(初期値は0)
-    private double magnification=2;//拡大率
+    private double magnification=2.5;//拡大率
+    private double pic_magnification=1;
 
     private int imageViewId[]={
             R.drawable.wine_01,
@@ -174,7 +175,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.expansion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                magnification *=1.5;
+                if( (pic_magnification * 1.3) < 2.0) {
+                    magnification *= 1.2;
+                    pic_magnification *= 1.3;
+                }
                 deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
                 drawPicture();
             }
@@ -184,7 +188,10 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.reduction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                magnification /=1.5;
+                if( (pic_magnification / 1.3) >= 0.5) {
+                    magnification /= 1.2;
+                    pic_magnification /= 1.3;
+                }
                 deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
                 drawPicture();
             }
@@ -364,10 +371,10 @@ public class MainActivity extends AppCompatActivity {
             Intent me = getIntent();
             boolean[] deleteFlag = me.getBooleanArrayExtra("DELETE_FLAG");
             if(deleteFlag != null && deleteFlag[thisWineIndex]){
-                lp = new RelativeLayout.LayoutParams((int)(50), (int)(50));
+                lp = new RelativeLayout.LayoutParams((int)(20), (int)(50));
             }
             else {
-                lp = new RelativeLayout.LayoutParams((int) (200), (int) (200));
+                lp = new RelativeLayout.LayoutParams( (int)(pic_magnification*80), (int)(pic_magnification*200));
             }
 
             int xZero = zeroPoint.getxZeroPoint();
@@ -550,7 +557,7 @@ public class MainActivity extends AppCompatActivity {
         setListener(displayingViews.getImageView());
 
         TextView textView = findViewById(R.id.text_view);
-        String str = "現在の中央=" + centerIndex;
+        String str = "現在の中央=" + centerIndex + "　　拡大率=" + magnification + "　　画像拡大率=" + pic_magnification ;
         textView.setText(str);
 
     }
