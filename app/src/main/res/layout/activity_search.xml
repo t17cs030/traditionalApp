@@ -360,6 +360,19 @@
         app:layout_constraintStart_toStartOf="@+id/text_grape"
         app:layout_constraintTop_toBottomOf="@+id/text_grape" />
 
+    <TextView
+        android:id="@+id/text_checked_grape"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginStart="8dp"
+        android:textColor="#000000"
+        android:textSize="22sp"
+        android:text="選択中のぶどう: "
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/open_grape" />
+
     <RelativeLayout
         android:id="@+id/for_close_search_grape"
         android:layout_width="match_parent"
@@ -401,7 +414,7 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <CheckBox
-            android:id="@+id/MBA"
+            android:id="@+id/check_Kosyu"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_grape_open"
@@ -409,7 +422,204 @@
             android:layout_alignParentLeft="true"
             android:layout_marginStart="0dp"
             android:layout_marginLeft="0dp"
+            android:text="甲州" />
+
+        <CheckBox
+            android:id="@+id/check_MBA"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_grape_open"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/check_Kosyu"
+            android:layout_toRightOf="@+id/check_Kosyu"
             android:text="マスカット・ベーリーA" />
+
+        <CheckBox
+            android:id="@+id/check_Merlot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_grape_open"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/check_MBA"
+            android:layout_toRightOf="@+id/check_MBA"
+            android:text="メルロー" />
+
+        <CheckBox
+            android:id="@+id/check_CS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_Kosyu"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="カベルネ・ソーヴィニヨン" />
+
+        <CheckBox
+            android:id="@+id/check_SB"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_Kosyu"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_CS"
+            android:layout_toRightOf="@+id/check_CS"
+            android:text="ソーヴィニヨン・ブラン" />
+
+        <CheckBox
+            android:id="@+id/check_KaiN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_CS"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="甲斐ノワール" />
+
+        <CheckBox
+            android:id="@+id/check_KF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_CS"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_KaiN"
+            android:layout_toRightOf="@+id/check_KaiN"
+            android:text="カベルネ・フラン" />
+
+        <CheckBox
+            android:id="@+id/check_SS"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_CS"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_toEndOf="@+id/check_KF"
+            android:layout_toRightOf="@+id/check_KF"
+            android:text="サンセミヨン" />
+
+        <CheckBox
+            android:id="@+id/check_BQ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_KaiN"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="ブラック・クィーン" />
+
+        <CheckBox
+            android:id="@+id/check_PV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_KaiN"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_BQ"
+            android:layout_toRightOf="@+id/check_BQ"
+            android:text="プティ・ヴェルド" />
+
+        <CheckBox
+            android:id="@+id/check_Tana"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_KaiN"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_PV"
+            android:layout_toRightOf="@+id/check_PV"
+            android:text="タナ" />
+
+        <CheckBox
+            android:id="@+id/check_Delaware"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_BQ"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="デラウェア" />
+
+        <CheckBox
+            android:id="@+id/check_Tempranillo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_BQ"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_Delaware"
+            android:layout_toRightOf="@+id/check_Delaware"
+            android:text="テンプラニーリョ" />
+
+        <CheckBox
+            android:id="@+id/check_Carm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_BQ"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_Tempranillo"
+            android:layout_toRightOf="@+id/check_Tempranillo"
+            android:text="カルメネール" />
+
+        <CheckBox
+            android:id="@+id/check_Syrah"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_Delaware"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="0dp"
+            android:text="シラー" />
+
+        <CheckBox
+            android:id="@+id/check_Mourvedre"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_Delaware"
+            android:layout_marginStart="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/check_Syrah"
+            android:layout_toRightOf="@+id/check_Syrah"
+            android:text="ムールヴェードル" />
+
+        <Button
+            android:id="@+id/grape_enter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/check_Syrah"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="100dp"
+            android:layout_marginLeft="100dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="100dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="25dp"
+            android:text="ぶどう品種を決定" />
+
+
 
     </RelativeLayout>
 

@@ -70,6 +70,13 @@ public class SearchActivity extends AppCompatActivity
                 findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
             }
         });
+        findViewById(R.id.grape_enter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.for_search_grape).setVisibility(View.INVISIBLE);
+                findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
+            }
+        });
 
         //ラジオボタンを登録
         /*
