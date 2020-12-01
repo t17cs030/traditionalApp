@@ -42,6 +42,7 @@ public class MyWineActivity extends AppCompatActivity
 
 {  //クリックリスナーを実装
     private WineData wineData = new WineData();
+    private GrapeData grapeData = new GrapeData();
     private  int centerIndex = 0;
 
     private ArrayList<Integer> myWineListIndex = new ArrayList<>();
@@ -157,6 +158,7 @@ public class MyWineActivity extends AppCompatActivity
         Intent me = getIntent();
 
         wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
+        grapeData.setGrapeData((GrapeData)me.getSerializableExtra("GRAPE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
@@ -214,6 +216,7 @@ public class MyWineActivity extends AppCompatActivity
             intent = new Intent(this, MyWineActivity.class);
         }
         intent.putExtra("WINE_DATA", wineData);
+        intent.putExtra("GRAPE_DATA", grapeData);
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
@@ -313,6 +316,7 @@ public class MyWineActivity extends AppCompatActivity
                     //類似度マップへボタンが押されたときの処理(仮)
                     Intent intent = new Intent(getApplication(), MainActivity.class);
                     intent.putExtra("WINE_DATA", wineData);
+                    intent.putExtra("GRAPE_DATA", grapeData);
                     intent.putExtra("CENTER_WINE", (int)wineID);
                     startActivity(intent);
                 }

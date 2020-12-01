@@ -11,6 +11,7 @@ public class LabelActivity extends AppCompatActivity
 
 {  //クリックリスナーを実装
     private WineData wineData = new WineData();
+    private GrapeData grapeData = new GrapeData();
     private int centerIndex = 0;
     @Override
     protected void onCreate (Bundle savedInstanceState){
@@ -18,6 +19,7 @@ public class LabelActivity extends AppCompatActivity
 
         Intent me = getIntent();
         wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
+        grapeData.setGrapeData((GrapeData)me.getSerializableExtra("GRAPE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         setContentView(R.layout.activity_label);
@@ -47,6 +49,7 @@ public class LabelActivity extends AppCompatActivity
             intent = new Intent(this, LabelActivity.class);
         }
         intent.putExtra("WINE_DATA", wineData);
+        intent.putExtra("GRAPE_DATA", grapeData);
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
