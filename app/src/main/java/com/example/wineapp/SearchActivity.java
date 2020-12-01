@@ -70,6 +70,8 @@ public class SearchActivity extends AppCompatActivity
             public void onClick(View view) {
                 findViewById(R.id.for_search_grape).setVisibility(View.INVISIBLE);
                 findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
+                TextView grape = findViewById(R.id.text_selected_grape);
+                grape.setText(selectedGrapes());
             }
         });
         findViewById(R.id.grape_enter).setOnClickListener(new View.OnClickListener() {
@@ -77,6 +79,8 @@ public class SearchActivity extends AppCompatActivity
             public void onClick(View view) {
                 findViewById(R.id.for_search_grape).setVisibility(View.INVISIBLE);
                 findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
+                TextView grape = findViewById(R.id.text_selected_grape);
+                grape.setText(selectedGrapes());
             }
         });
 
@@ -246,7 +250,6 @@ public class SearchActivity extends AppCompatActivity
                  */
 
                 //SpannableStringBuilder sb = (SpannableStringBuilder)search.getText();
-                //String word = sb.toString();
 
                 for(int i=0; i<wineData.getWineNum(); i++){
 
@@ -291,7 +294,9 @@ public class SearchActivity extends AppCompatActivity
                     if(search.getQuery().toString().trim().length() != 0 && (wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
                         deleteFlag[thisWineIndex] = false;
                     }
-
+                    //ブドウの品種についての検索
+                    int thisWineIndex_for_grape = grapeData.getWineIndexList().indexOf((int)wineID);
+                    searchByGrape(thisWineIndex, thisWineIndex_for_grape, deleteFlag);
                 }
 
                 boolean check = false;
@@ -426,6 +431,159 @@ public class SearchActivity extends AppCompatActivity
                 }
             }
         });
+    }
+
+    public void searchByGrape(int wineIndex, int grapeIndex, boolean flag[]){
+        //ブドウの品種のチェックボックス
+        CheckBox MBA = findViewById(R.id.check_MBA);
+        CheckBox SS = findViewById(R.id.check_SS);
+        CheckBox Kosyu = findViewById(R.id.check_Kosyu);
+        CheckBox KS = findViewById(R.id.check_KS);
+        CheckBox Merlot = findViewById(R.id.check_Merlot);
+        CheckBox PV = findViewById(R.id.check_PV);
+        CheckBox BQ = findViewById(R.id.check_BQ);
+        CheckBox KF = findViewById(R.id.check_KF);
+        CheckBox KN = findViewById(R.id.check_KaiN);
+        CheckBox SB = findViewById(R.id.check_SB);
+        CheckBox Delaware = findViewById(R.id.check_Delaware);
+        CheckBox Tana = findViewById(R.id.check_Tana);
+        CheckBox Tempranillo = findViewById(R.id.check_Tempranillo);
+        CheckBox Syrah = findViewById(R.id.check_Syrah);
+        CheckBox Mourvedre = findViewById(R.id.check_Mourvedre);
+        CheckBox Carmenere = findViewById(R.id.check_Carm);
+        CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
+
+        //ブドウの品種についての検索
+        if(MBA.isChecked() && grapeData.getMBA().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(SS.isChecked() && grapeData.getSS().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(KS.isChecked() && grapeData.getKS().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(PV.isChecked() && grapeData.getPV().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(BQ.isChecked() && grapeData.getBQ().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(KF.isChecked() && grapeData.getKF().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(KN.isChecked() && grapeData.getKN().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(SB.isChecked() && grapeData.getSB().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Tana.isChecked() && grapeData.getTana().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+        if(Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) == 1){
+            flag[wineIndex] = false;
+        }
+    }
+
+    public String selectedGrapes(){
+        String selected = "";
+
+        CheckBox MBA = findViewById(R.id.check_MBA);
+        CheckBox SS = findViewById(R.id.check_SS);
+        CheckBox Kosyu = findViewById(R.id.check_Kosyu);
+        CheckBox KS = findViewById(R.id.check_KS);
+        CheckBox Merlot = findViewById(R.id.check_Merlot);
+        CheckBox PV = findViewById(R.id.check_PV);
+        CheckBox BQ = findViewById(R.id.check_BQ);
+        CheckBox KF = findViewById(R.id.check_KF);
+        CheckBox KN = findViewById(R.id.check_KaiN);
+        CheckBox SB = findViewById(R.id.check_SB);
+        CheckBox Delaware = findViewById(R.id.check_Delaware);
+        CheckBox Tana = findViewById(R.id.check_Tana);
+        CheckBox Tempranillo = findViewById(R.id.check_Tempranillo);
+        CheckBox Syrah = findViewById(R.id.check_Syrah);
+        CheckBox Mourvedre = findViewById(R.id.check_Mourvedre);
+        CheckBox Carmenere = findViewById(R.id.check_Carm);
+        CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
+
+        if(MBA.isChecked()){
+            selected += "マスカット・ベーリーA, ";
+        }
+        if(SS.isChecked()){
+            selected += "サンセミヨン, ";
+        }
+        if(Kosyu.isChecked()){
+            selected += "甲州, ";
+        }
+        if(KS.isChecked()){
+            selected += "カベルネ・ソーヴィニョン, ";
+        }
+        if(Merlot.isChecked()){
+            selected += "メルロー, ";
+        }
+        if(PV.isChecked()){
+            selected += "プティ・ヴェルド, ";
+        }
+        if(BQ.isChecked()){
+            selected += "ブラック・クィーン, ";
+        }
+        if(KF.isChecked()){
+            selected += "カベルネ・フラン, ";
+        }
+        if(KN.isChecked()){
+            selected += "甲斐ノワール, ";
+        }
+        if(SB.isChecked()){
+            selected += "ソーヴィニヨン・ブラン, ";
+        }
+        if(Delaware.isChecked()){
+            selected += "デラウェア, ";
+        }
+        if(Tana.isChecked()){
+            selected += "タナ, ";
+        }
+        if(Tempranillo.isChecked()){
+            selected += "テンプラニーリョ, ";
+        }
+        if(Syrah.isChecked()){
+            selected += "シラー, ";
+        }
+        if(Mourvedre.isChecked()){
+            selected += "ムールヴェール, ";
+        }
+        if(Carmenere.isChecked()){
+            selected += "カルメネール, ";
+        }
+        if(Chardonnay.isChecked()){
+            selected += "シャルドネ, ";
+        }
+
+        if(selected.equals("")){
+            selected += "なし";
+        }
+        return selected;
     }
 }
 
