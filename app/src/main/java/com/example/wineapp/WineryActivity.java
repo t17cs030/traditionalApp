@@ -43,6 +43,7 @@ public class WineryActivity extends AppCompatActivity
         ActivityCompat.OnRequestPermissionsResultCallback {
 
     private WineData wineData = new WineData();
+    private GrapeData grapeData = new GrapeData();
     private int centerIndex = 0;
 
     private GoogleMap mMap;
@@ -60,6 +61,7 @@ public class WineryActivity extends AppCompatActivity
 
         Intent me = getIntent();
         wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
+        grapeData.setGrapeData((GrapeData)me.getSerializableExtra("GRAPE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         setClickListener();
@@ -271,6 +273,7 @@ public class WineryActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -281,6 +284,7 @@ public class WineryActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), SearchActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -291,6 +295,7 @@ public class WineryActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), MyWineActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -300,6 +305,7 @@ public class WineryActivity extends AppCompatActivity
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), LabelActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }

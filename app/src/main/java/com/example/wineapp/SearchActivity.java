@@ -29,6 +29,7 @@ public class SearchActivity extends AppCompatActivity
 {  //クリックリスナーを実装
 
     private WineData wineData = new WineData();
+    private GrapeData grapeData = new GrapeData();
     private int centerIndex = 0;
 
 
@@ -39,6 +40,7 @@ public class SearchActivity extends AppCompatActivity
 
         Intent me = getIntent();
         wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
+        grapeData.setGrapeData((GrapeData)me.getSerializableExtra("GRAPE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
         final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
@@ -335,14 +337,8 @@ public class SearchActivity extends AppCompatActivity
         else{//検索画面を維持
             intent = new Intent(this, SearchActivity.class);
         }
-        //intent.putExtra("WINE_INDEX", searchedWineData.getWineIndexList());
-        //intent.putExtra("WINE_NAME", searchedWineData.getWineNameList());
-        //intent.putExtra("WINE_COLOR", searchedWineData.getWineColorList());
-        //intent.putExtra("WINE_TASTE", searchedWineData.getWineTasteList());
-        //intent.putExtra("WINE_PRICE", searchedWineData.getWinePriceList());
-        //intent.putExtra("WINE_FURIGANA", searchedWineData.getWineFuriganaList());
         intent.putExtra("WINE_DATA", wineData);
-
+        intent.putExtra("GRAPE_DATA", grapeData);
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }

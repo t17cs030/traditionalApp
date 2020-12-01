@@ -42,11 +42,12 @@ public class MainActivity extends AppCompatActivity {
     private ZeroPoint zeroPoint;//画面の原点を保持するクラス
 
     private WineData wineData = new WineData();//ワインのインデックスや緯度経度リストのクラス
+    private GrapeData grapeData = new GrapeData();//ワインに用いられているブドウのリストのクラス
 
     private ViewsPoint viewsPoint = new ViewsPoint();//各ビューの座標を保存するクラス
 
-    private ArrayList<Integer> myWineListIndex = new ArrayList<>();
-    private int myWineListLength = 0;
+    private ArrayList<Integer> myWineListIndex = new ArrayList<>();//Myワインに登録されているのワインインデックスを保存する
+    private int myWineListLength = 0;//Myワインリストの長さ
 
     private int centerIndex = 0;//中央のワインのインデックス(初期値は0)
     private double magnification=2.5;//拡大率
@@ -159,6 +160,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         readCSV();//最初にデータを読み込む
+        readGrape();
         try {
             readMyWineList();
         } catch (IOException e) {
@@ -203,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), SearchActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -213,6 +216,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), MyWineActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -223,6 +227,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), LabelActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -233,6 +238,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplication(), WineryActivity.class);
                 intent.putExtra("WINE_DATA", wineData);
+                intent.putExtra("GRAPE_DATA", grapeData);
                 intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
@@ -281,6 +287,14 @@ public class MainActivity extends AppCompatActivity {
 
         drawPicture();
 
+        //デバッグ用
+        /*
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("てすとだいあろぐ");
+        String str = String.valueOf(grapeData.getWineIndexList().get(0)) + String.valueOf(grapeData.getMBA().get(0));
+        builder.setMessage(str);
+        builder.show();
+         */
     }
 
     //ここから通常関数
@@ -319,6 +333,49 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         wineData.setWineNum(wineData.getWineIndexList().size());
+    }
+
+    public void readGrape() {//CSVファイルを読み込む関数
+        try {
+            InputStream inputStream =
+                    getResources().getAssets().open("grape.csv");
+
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream);
+
+            BufferedReader bufferReader =
+                    new BufferedReader(inputStreamReader);
+
+            String line = "";
+
+            while ((line = bufferReader.readLine()) != null) {
+                StringTokenizer stringTokenizer =
+                        new StringTokenizer(line, ",");
+
+                grapeData.addWineIndexList(stringTokenizer.nextToken());
+                grapeData.addMBA(stringTokenizer.nextToken());
+                grapeData.addSS(stringTokenizer.nextToken());
+                grapeData.addKosyu(stringTokenizer.nextToken());
+                grapeData.addKS(stringTokenizer.nextToken());
+                grapeData.addMerlot(stringTokenizer.nextToken());
+                grapeData.addPV(stringTokenizer.nextToken());
+                grapeData.addBQ(stringTokenizer.nextToken());
+                grapeData.addKF(stringTokenizer.nextToken());
+                grapeData.addKN(stringTokenizer.nextToken());
+                grapeData.addSB(stringTokenizer.nextToken());
+                grapeData.addDelaware(stringTokenizer.nextToken());
+                grapeData.addTana(stringTokenizer.nextToken());
+                grapeData.addTempranillo(stringTokenizer.nextToken());
+                grapeData.addSyrah(stringTokenizer.nextToken());
+                grapeData.addMourvale(stringTokenizer.nextToken());
+                grapeData.addCarmenere(stringTokenizer.nextToken());
+                grapeData.addChardonnay(stringTokenizer.nextToken());
+
+            }
+            bufferReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public void calPoint(int index){//選んだワインを中心にした時の各ワインの座標を計算する
