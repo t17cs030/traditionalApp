@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     tools:context=".LabelActivity">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        app:itemTextColor="@drawable/bottom_navigation_item_state"
+        app:itemIconTint="@drawable/bottom_navigation_item_state"
+        app:itemBackground="@color/colorTabBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/item_bottom_navigation"
+        app:layout_constraintHorizontal_bias="0.0"/>
+
     <TextView
         android:id="@+id/textLabel"
         android:layout_width="wrap_content"
@@ -16,12 +30,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!--
     <Button
         android:id="@+id/wineMap"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="winemap"
+        android:background="@drawable/winemap_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -34,7 +50,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="search"
+        android:background="@drawable/search_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
@@ -47,7 +64,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="mywine"
+        android:background="@drawable/mywine_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -59,7 +77,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="label"
+        android:background="@drawable/label_b"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.75"
@@ -72,12 +91,14 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="winery"
+        android:background="@drawable/winery_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+        -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

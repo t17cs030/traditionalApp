@@ -6,12 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".SearchActivity">
 
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/navigation"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        app:itemTextColor="@drawable/bottom_navigation_item_state"
+        app:itemIconTint="@drawable/bottom_navigation_item_state"
+        app:itemBackground="@color/colorTabBar"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:menu="@menu/item_bottom_navigation"
+        app:layout_constraintHorizontal_bias="0.0"/>
+
+    <!--
+
     <Button
         android:id="@+id/wineMap"
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="winemap"
+        android:background="@drawable/winemap_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -24,7 +41,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="search"
+        android:background="@drawable/search_b"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.25"
@@ -37,7 +55,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="mywine"
+        android:background="@drawable/mywine_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,7 +68,8 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="label"
+        android:background="@drawable/label_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.75"
@@ -62,13 +82,16 @@
         android:layout_width="70dp"
         android:layout_height="70dp"
         android:layout_marginTop="500dp"
-        android:text="winery"
+        android:background="@drawable/winery_g"
+        android:scaleType="centerInside"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
+
+        -->
 
 
     <CheckBox
@@ -139,7 +162,7 @@
         android:layout_height="25dp"
         android:layout_marginTop="50dp"
         android:entries="@array/taste_red"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/color_Red"
         app:layout_constraintVertical_bias="0.0" />
@@ -150,7 +173,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="～"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_red_top"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_red_bottom"
         app:layout_constraintTop_toBottomOf="@+id/color_Red"
@@ -162,7 +185,7 @@
         android:layout_height="25dp"
         android:layout_marginTop="50dp"
         android:entries="@array/taste_red"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/color_Red"
         app:layout_constraintVertical_bias="0.0" />
@@ -175,7 +198,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:entries="@array/taste_white"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_red_bottom"
@@ -187,7 +210,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="～"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_red_top"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_red_bottom"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_red_top"
@@ -201,7 +224,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:entries="@array/taste_white"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_white"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_red_bottom"
@@ -215,7 +238,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginRight="10dp"
         android:entries="@array/price"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toStartOf="@+id/spinner_price"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_white_bottom"
@@ -227,7 +250,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:text="～"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toStartOf="@+id/spinner_taste_red_top"
         app:layout_constraintStart_toEndOf="@+id/spinner_taste_red_bottom"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_white_bottom"
@@ -241,7 +264,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="50dp"
         android:entries="@array/price"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/spinner_price"
         app:layout_constraintTop_toBottomOf="@+id/spinner_taste_white_bottom"
@@ -253,20 +276,22 @@
         android:layout_height="wrap_content"
         android:text="検索"
         android:elevation="0dp"
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/open_grape" />
 
+    <!--
     <TextView
         android:id="@+id/result"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text=""
-        app:layout_constraintBottom_toTopOf="@+id/search"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/enter" />
+        -->
 
     <TextView
         android:id="@+id/text_taste_red"
@@ -354,7 +379,7 @@
         android:id="@+id/open_grape"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="　　　　▼　　　　"
+        android:text="　品種を選択する　▼　"
         android:elevation="0dp"
         app:layout_constraintEnd_toEndOf="@+id/text_grape"
         app:layout_constraintStart_toStartOf="@+id/text_grape"
@@ -364,7 +389,7 @@
         android:id="@+id/text_checked_grape"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="8dp"
         android:layout_marginStart="8dp"
         android:textColor="#000000"
@@ -389,7 +414,7 @@
         android:layout_height="0dp"
         android:elevation="1dp"
         android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
@@ -401,7 +426,7 @@
         android:elevation="2dp"
         android:visibility="invisible"
         android:background="#FFFFFF"
-        app:layout_constraintBottom_toTopOf="@+id/myWine"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

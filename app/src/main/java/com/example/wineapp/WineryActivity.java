@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.location.Location;
 
@@ -64,7 +66,51 @@ public class WineryActivity extends AppCompatActivity
         grapeData.setGrapeData((GrapeData)me.getSerializableExtra("GRAPE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
-        setClickListener();
+        //ボトムナビゲーションビューの初期値の設定
+        BottomNavigationView navi;
+        navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setSelectedItemId(R.id.winery_navi);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.wineMap_navi:
+                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        intent_wine.putExtra("WINE_DATA", wineData);
+                        intent_wine.putExtra("GRAPE_DATA", grapeData);
+                        intent_wine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_wine);
+                        return true;
+                    case R.id.search_navi:
+                        Intent intent_search = new Intent(getApplication(), SearchActivity.class);
+                        intent_search.putExtra("WINE_DATA", wineData);
+                        intent_search.putExtra("GRAPE_DATA", grapeData);
+                        intent_search.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_search);
+                        return true;
+                    case R.id.myWine_navi:
+                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        intent_myWine.putExtra("WINE_DATA", wineData);
+                        intent_myWine.putExtra("GRAPE_DATA", grapeData);
+                        intent_myWine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_myWine);
+                        return true;
+                    case R.id.label_navi:
+                        Intent intent_label = new Intent(getApplication(), LabelActivity.class);
+                        intent_label.putExtra("WINE_DATA", wineData);
+                        intent_label.putExtra("GRAPE_DATA", grapeData);
+                        intent_label.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_label);
+                        return true;
+                    case R.id.winery_navi:
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        //setClickListener();
 
         //ここからGoogleMAP
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -265,7 +311,7 @@ public class WineryActivity extends AppCompatActivity
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
-
+/*
     void setClickListener(){
 
         findViewById(R.id.wineMap).setOnClickListener(new View.OnClickListener() {
@@ -311,4 +357,6 @@ public class WineryActivity extends AppCompatActivity
             }
         });
     }
+
+ */
 }
