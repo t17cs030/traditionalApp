@@ -141,20 +141,8 @@ public class WineryActivity extends AppCompatActivity
         enableMyLocation();
 
         BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.winery);
-        //GroundOverlayOptions overlayOptions = new GroundOverlayOptions();
-        //overlayOptions.image(descriptor);
-
-        //　public GroundOverlayOptions anchor (float u, float v)
-        // (0,0):top-left, (0,1):bottom-left, (1,0):top-right, (1,1):bottom-right
-
-
-        // 張り付け画像の大きさ メートル単位
-        // public GroundOverlayOptions	position(LatLng location, float width, float height)
 
         for(int i=0; i<wineryData.getWineryNum(); i++){
-            //overlayOptions.anchor(0.1f, 0.1f);
-            //overlayOptions.position(wineryData.getWineryLatLng().get(i), 10f, 10f);
-
             mMap.addMarker(new MarkerOptions()
                     .position(wineryData.getWineryLatLng().get(i))
                     .title(wineryData.getWineryName().get(i))
