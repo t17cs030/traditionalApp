@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -23,16 +24,27 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.location.Location;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 
 public class WineryActivity extends AppCompatActivity
@@ -46,25 +58,73 @@ public class WineryActivity extends AppCompatActivity
     private GrapeData grapeData = new GrapeData();
     private int centerIndex = 0;
 
+    private WineryData wineryData = new WineryData();
+
     private GoogleMap mMap;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
 
 
-    private static final LatLng SADOYA = new LatLng(35.667524, 138.573845);
-    private static final LatLng KOFU_STATION = new LatLng(35.666870, 138.568774);
+    private LatLng lastWinery = new LatLng(35.666870, 138.568774);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_winery);
 
+        readWinery();
+        lastWinery = wineryData.getWineryLatLng().get(randWinery());
+
         Intent me = getIntent();
         wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
         grapeData.setGrapeData((GrapeData)me.getSerializableExtra("GRAPE_DATA"));
         centerIndex = me.getIntExtra("CENTER_WINE", 0);
 
-        setClickListener();
+        //ボトムナビゲーションビューの初期値の設定
+        BottomNavigationView navi;
+        navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setSelectedItemId(R.id.winery_navi);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.wineMap_navi:
+                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        intent_wine.putExtra("WINE_DATA", wineData);
+                        intent_wine.putExtra("GRAPE_DATA", grapeData);
+                        intent_wine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_wine);
+                        return true;
+                    case R.id.search_navi:
+                        Intent intent_search = new Intent(getApplication(), SearchActivity.class);
+                        intent_search.putExtra("WINE_DATA", wineData);
+                        intent_search.putExtra("GRAPE_DATA", grapeData);
+                        intent_search.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_search);
+                        return true;
+                    case R.id.myWine_navi:
+                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        intent_myWine.putExtra("WINE_DATA", wineData);
+                        intent_myWine.putExtra("GRAPE_DATA", grapeData);
+                        intent_myWine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_myWine);
+                        return true;
+                    case R.id.label_navi:
+                        Intent intent_label = new Intent(getApplication(), LabelActivity.class);
+                        intent_label.putExtra("WINE_DATA", wineData);
+                        intent_label.putExtra("GRAPE_DATA", grapeData);
+                        intent_label.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_label);
+                        return true;
+                    case R.id.winery_navi:
+                        return true;
+
+                }
+                return false;
+            }
+        });
 
         //ここからGoogleMAP
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -80,15 +140,37 @@ public class WineryActivity extends AppCompatActivity
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
 
-        mMap.addMarker(new MarkerOptions()
-                .position(SADOYA)
-                .title("サドヤワイナリー")
-                .snippet("〒400-0024 山梨県甲府市北口３丁目３−２４"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(KOFU_STATION));
+        BitmapDescriptor icon = BitmapDescriptorFactory.fromResource(R.drawable.winery);
+        //GroundOverlayOptions overlayOptions = new GroundOverlayOptions();
+        //overlayOptions.image(descriptor);
+
+        //　public GroundOverlayOptions anchor (float u, float v)
+        // (0,0):top-left, (0,1):bottom-left, (1,0):top-right, (1,1):bottom-right
+
+
+        // 張り付け画像の大きさ メートル単位
+        // public GroundOverlayOptions	position(LatLng location, float width, float height)
+
+        for(int i=0; i<wineryData.getWineryNum(); i++){
+            //overlayOptions.anchor(0.1f, 0.1f);
+            //overlayOptions.position(wineryData.getWineryLatLng().get(i), 10f, 10f);
+
+            mMap.addMarker(new MarkerOptions()
+                    .position(wineryData.getWineryLatLng().get(i))
+                    .title(wineryData.getWineryName().get(i))
+                    .snippet(wineryData.getWineryAddress().get(i))
+                    .icon(icon));
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(lastWinery));
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {//マーカーのクリックイベント
+
+                final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
+                Arrays.fill(deleteFlag, true);
+
                 //Toast.makeText(getApplication(), marker.getTitle(), Toast.LENGTH_SHORT).show();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 zoomMap(marker.getPosition());
@@ -126,6 +208,21 @@ public class WineryActivity extends AppCompatActivity
                 to_wine_map.setOnClickListener(new View.OnClickListener() {//類似度マップへが押されたとき
                     @Override
                     public void onClick(View view) {
+                        int thisWineryIndex = wineryData.getWineryName().indexOf(marker.getTitle());
+                        int thisWineryID = wineryData.getWineryID().get(thisWineryIndex);
+
+                        for(int i=0; i<wineData.getWineNum(); i++){
+                            if(wineData.getWineryIDList().get(i).equals(thisWineryID)){
+                                double wineID = wineData.getWineIndexList().get(i);
+                                int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                                deleteFlag[thisWineIndex]=false;
+                            }
+                        }
+
+                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        intent.putExtra("DELETE_FLAG", deleteFlag);
+                        intent.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent);
                         //ワイナリー名が同じであるワインだけ類似度マップで拡大表示
                     }
                 });
@@ -174,7 +271,7 @@ public class WineryActivity extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
-                zoomMap(KOFU_STATION);
+                zoomMap(lastWinery);
             }
         } else {
 
@@ -265,50 +362,38 @@ public class WineryActivity extends AppCompatActivity
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
+    public void readWinery() {//CSVファイルを読み込む関数
+        try {
+            InputStream inputStream =
+                    getResources().getAssets().open("winery.csv");
 
-    void setClickListener(){
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream);
 
-        findViewById(R.id.wineMap).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), MainActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
-            }
-        });
+            BufferedReader bufferReader =
+                    new BufferedReader(inputStreamReader);
 
-        findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), SearchActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
-            }
-        });
+            String line = "";
 
-        findViewById(R.id.myWine).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), MyWineActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
+            while ((line = bufferReader.readLine()) != null) {
+                StringTokenizer stringTokenizer =
+                        new StringTokenizer(line, ",");
+
+                wineryData.addWineryID(stringTokenizer.nextToken());
+                wineryData.addWineryName(stringTokenizer.nextToken());
+                wineryData.addWineryAddress(stringTokenizer.nextToken());
+                wineryData.addWineryLatLng(stringTokenizer.nextToken(), stringTokenizer.nextToken());
             }
-        });
-        findViewById(R.id.label).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), LabelActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
-            }
-        });
+            bufferReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        wineryData.setWineryNum(wineryData.getWineryID().size());
+    }
+
+    public int randWinery(){
+        Random random = new Random();
+        int randomValue = random.nextInt(wineryData.getWineryNum());
+        return randomValue;
     }
 }

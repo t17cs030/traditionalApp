@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -14,7 +15,10 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -173,13 +177,61 @@ public class MainActivity extends AppCompatActivity {
         else
             centerIndex = center;
 
+        //ボトムナビゲーションビューの初期値の設定
+        BottomNavigationView navi;
+        navi = (BottomNavigationView) findViewById(R.id.navigation);
+        //navi.setSelectedItemId(R.id.search_navi);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.wineMap_navi:
+                        return true;
+                    case R.id.search_navi:
+                        Intent intent_Search = new Intent(getApplication(), SearchActivity.class);
+                        intent_Search.putExtra("WINE_DATA", wineData);
+                        intent_Search.putExtra("GRAPE_DATA", grapeData);
+                        intent_Search.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_Search);
+                        return true;
+                    case R.id.myWine_navi:
+                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        intent_myWine.putExtra("WINE_DATA", wineData);
+                        intent_myWine.putExtra("GRAPE_DATA", grapeData);
+                        intent_myWine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_myWine);
+                        return true;
+                    case R.id.label_navi:
+                        Intent intent_label = new Intent(getApplication(), LabelActivity.class);
+                        intent_label.putExtra("WINE_DATA", wineData);
+                        intent_label.putExtra("GRAPE_DATA", grapeData);
+                        intent_label.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_label);
+                        return true;
+                    case R.id.winery_navi:
+                        Intent intent_winery = new Intent(getApplication(), WineryActivity.class);
+                        intent_winery.putExtra("WINE_DATA", wineData);
+                        intent_winery.putExtra("GRAPE_DATA", grapeData);
+                        intent_winery.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_winery);
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
         //拡大ボタン
         findViewById(R.id.expansion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( (pic_magnification * 1.3) < 2.0) {
+                if( (pic_magnification * 1.3) < 1.0) {
                     magnification *= 1.2;
                     pic_magnification *= 1.3;
+                }
+                else{
+                    magnification*=1.2;
+                    pic_magnification = 1.0;
                 }
                 deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
                 drawPicture();
@@ -190,7 +242,11 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.reduction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( (pic_magnification / 1.3) >= 0.5) {
+                if( (magnification / 1.2) >= 2.5) {
+                    magnification /= 1.2;
+                    pic_magnification = 1.0;
+                }
+                else{
                     magnification /= 1.2;
                     pic_magnification /= 1.3;
                 }
@@ -199,6 +255,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        /*
         //検索画面遷移
         findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -243,6 +300,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+         */
     }
 
 
@@ -282,8 +340,8 @@ public class MainActivity extends AppCompatActivity {
         //描画可能域の中心をゼロとする
         int point[] = new int[2];
         usingLayout.getLocationOnScreen(point);
-        Button wineMap = findViewById(R.id.wineMap);
-        zeroPoint = new ZeroPoint((int)( (point[0]+usingLayout.getWidth())/2 ), (int)( (point[1]+usingLayout.getHeight()-wineMap.getHeight())/2) ) ;
+        BottomNavigationView navi = findViewById(R.id.navigation);
+        zeroPoint = new ZeroPoint((int)( (point[0]+usingLayout.getWidth())/2 ), (int)( (point[1]+usingLayout.getHeight()-navi.getHeight())/2) ) ;
 
         drawPicture();
 
@@ -325,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
                 wineData.addWineCapacityList(stringTokenizer.nextToken());
                 wineData.addWineNameList(stringTokenizer.nextToken());
                 wineData.addWineFuriganaList(stringTokenizer.nextToken());
+                wineData.addWineryIDList(stringTokenizer.nextToken());
                 wineData.addWineryNameList(stringTokenizer.nextToken());
                 wineData.addWineExplanationList(stringTokenizer.nextToken());
             }
@@ -440,9 +499,9 @@ public class MainActivity extends AppCompatActivity {
             ArrayList<Double> xPoints = viewsPoint.getxPoints();
             ArrayList<Double> yPoints = viewsPoint.getyPoints();
 
-            TextView textView = findViewById(R.id.text_view2);
-            String str = "X=" + xZero + "y=" + yZero;
-            textView.setText(str);
+            //TextView textView = findViewById(R.id.text_view2);
+            //String str = "X=" + xZero + "y=" + yZero;
+            //textView.setText(str);
 
             lp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification);
             lp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
@@ -594,9 +653,9 @@ public class MainActivity extends AppCompatActivity {
 
 
                     //クリックしたワインを表示(デバック用)
-                    TextView textView = findViewById(R.id.text_view);
-                    String str = "画像をクリックしました" + wineData.getWineIndexList().get(thisWineNum);
-                    textView.setText(str);
+                    //TextView textView = findViewById(R.id.text_view);
+                    //String str = "画像をクリックしました" + wineData.getWineIndexList().get(thisWineNum);
+                    //textView.setText(str);
                 }
             });
         }
@@ -613,9 +672,9 @@ public class MainActivity extends AppCompatActivity {
         setPicture(displayingViews.getImageView(), displayingViews.getTextIndexView());
         setListener(displayingViews.getImageView());
 
-        TextView textView = findViewById(R.id.text_view);
-        String str = "現在の中央=" + centerIndex + "　　拡大率=" + magnification + "　　画像拡大率=" + pic_magnification ;
-        textView.setText(str);
+        //TextView textView = findViewById(R.id.text_view);
+        //String str = "現在の中央=" + centerIndex + "　　拡大率=" + magnification + "　　画像拡大率=" + pic_magnification ;
+        //textView.setText(str);
 
     }
 

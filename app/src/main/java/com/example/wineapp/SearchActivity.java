@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.SpannableStringBuilder;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -15,7 +16,10 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import org.w3c.dom.Text;
 
@@ -23,10 +27,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SearchActivity extends AppCompatActivity
-        implements View.OnClickListener
 
 
-{  //クリックリスナーを実装
+{
 
     private WineData wineData = new WineData();
     private GrapeData grapeData = new GrapeData();
@@ -46,11 +49,54 @@ public class SearchActivity extends AppCompatActivity
         final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
         Arrays.fill(deleteFlag, true);
 
+        //ボトムナビゲーションビューの初期値の設定
+        BottomNavigationView navi;
+        navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setSelectedItemId(R.id.search_navi);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.wineMap_navi:
+                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        intent_wine.putExtra("WINE_DATA", wineData);
+                        intent_wine.putExtra("GRAPE_DATA", grapeData);
+                        intent_wine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_wine);
+                        return true;
+                    case R.id.search_navi:
+                        return true;
+                    case R.id.myWine_navi:
+                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        intent_myWine.putExtra("WINE_DATA", wineData);
+                        intent_myWine.putExtra("GRAPE_DATA", grapeData);
+                        intent_myWine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_myWine);
+                        return true;
+                    case R.id.label_navi:
+                        Intent intent_label = new Intent(getApplication(), LabelActivity.class);
+                        intent_label.putExtra("WINE_DATA", wineData);
+                        intent_label.putExtra("GRAPE_DATA", grapeData);
+                        intent_label.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_label);
+                        return true;
+                    case R.id.winery_navi:
+                        Intent intent_winery = new Intent(getApplication(), WineryActivity.class);
+                        intent_winery.putExtra("WINE_DATA", wineData);
+                        intent_winery.putExtra("GRAPE_DATA", grapeData);
+                        intent_winery.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_winery);
+                        return true;
 
-        findViewById(R.id.wineMap).setOnClickListener(this);
-        findViewById(R.id.myWine).setOnClickListener(this);
-        findViewById(R.id.label).setOnClickListener(this);
-        findViewById(R.id.winery).setOnClickListener(this);
+                }
+                return false;
+            }
+        });
+
+        //findViewById(R.id.wineMap).setOnClickListener(this);
+        //findViewById(R.id.myWine).setOnClickListener(this);
+        //findViewById(R.id.label).setOnClickListener(this);
+        //findViewById(R.id.winery).setOnClickListener(this);
 
         findViewById(R.id.open_grape).setOnClickListener(new View.OnClickListener() {//ブドウ品種で検索
             @Override
@@ -325,6 +371,7 @@ public class SearchActivity extends AppCompatActivity
 
     }
     //ボタンが押された時の処理
+    /*
     public void onClick (View view){
         Intent intent;
         if (view.getId() == R.id.wineMap) {//ワインマップ画面へ
@@ -347,6 +394,8 @@ public class SearchActivity extends AppCompatActivity
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
+
+     */
 
     public void color_check_box(){
         //色のチェックボックス

@@ -24,7 +24,10 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -38,7 +41,6 @@ import java.util.Collections;
 import java.util.Locale;
 
 public class MyWineActivity extends AppCompatActivity
-        implements View.OnClickListener
 
 {  //クリックリスナーを実装
     private WineData wineData = new WineData();
@@ -164,11 +166,55 @@ public class MyWineActivity extends AppCompatActivity
         final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
         Arrays.fill(deleteFlag, true);
 
-        findViewById(R.id.wineMap).setOnClickListener(this);
-        findViewById(R.id.search).setOnClickListener(this);
+        //ボトムナビゲーションビューの初期値の設定
+        BottomNavigationView navi;
+        navi = (BottomNavigationView) findViewById(R.id.navigation);
+        navi.setSelectedItemId(R.id.myWine_navi);
+        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.wineMap_navi:
+                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        intent_wine.putExtra("WINE_DATA", wineData);
+                        intent_wine.putExtra("GRAPE_DATA", grapeData);
+                        intent_wine.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_wine);
+                        return true;
+                    case R.id.search_navi:
+                        Intent intent_search = new Intent(getApplication(), SearchActivity.class);
+                        intent_search.putExtra("WINE_DATA", wineData);
+                        intent_search.putExtra("GRAPE_DATA", grapeData);
+                        intent_search.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_search);
+                        return true;
+                    case R.id.myWine_navi:
+                        return true;
+                    case R.id.label_navi:
+                        Intent intent_label = new Intent(getApplication(), LabelActivity.class);
+                        intent_label.putExtra("WINE_DATA", wineData);
+                        intent_label.putExtra("GRAPE_DATA", grapeData);
+                        intent_label.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_label);
+                        return true;
+                    case R.id.winery_navi:
+                        Intent intent_winery = new Intent(getApplication(), WineryActivity.class);
+                        intent_winery.putExtra("WINE_DATA", wineData);
+                        intent_winery.putExtra("GRAPE_DATA", grapeData);
+                        intent_winery.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent_winery);
+                        return true;
+
+                }
+                return false;
+            }
+        });
+
+        //findViewById(R.id.wineMap).setOnClickListener(this);
+        //findViewById(R.id.search).setOnClickListener(this);
 //        findViewById(R.id.myWine).setOnClickListener(this);
-        findViewById(R.id.label).setOnClickListener(this);
-        findViewById(R.id.winery).setOnClickListener(this);
+        //findViewById(R.id.label).setOnClickListener(this);
+        //findViewById(R.id.winery).setOnClickListener(this);
 
         //チェックボックスのアクション
         color_check_box();
@@ -188,6 +234,7 @@ public class MyWineActivity extends AppCompatActivity
                 }
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("DELETE_FLAG", deleteFlag);
+                intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
         });
@@ -197,6 +244,7 @@ public class MyWineActivity extends AppCompatActivity
         updateMyWineList();
         updateMultipleMyWineList();
     }
+    /*
     //ボタンが押された時の処理
     public void onClick (View view){
         Intent intent;
@@ -220,6 +268,8 @@ public class MyWineActivity extends AppCompatActivity
         intent.putExtra("CENTER_WINE", centerIndex);
         startActivity(intent);
     }
+
+     */
 
     public void readMyWineList() throws IOException {//MyWineリストのCSVを読み込む関数
         File file = new File(this.getFilesDir(), "myWineList.txt");
@@ -279,8 +329,7 @@ public class MyWineActivity extends AppCompatActivity
             my_wine_name.setText(str_wine);
 
             TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
-            String str_wine_exp =
-                    wineData.getWineNameList().get(thisWineIndex) + "の説明";
+            String str_wine_exp = wineData.getWineNameList().get(thisWineIndex) + ": " + "\n\n" + wineData.getWineExplanationList().get(thisWineIndex);
             my_wine_explanation.setText(str_wine_exp);
 
             //ワイン情報の乗っているレイアウトを表示

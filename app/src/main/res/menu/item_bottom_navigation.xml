@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/wineMap_navi"
+        android:icon="@drawable/winemap_g"
+        android:title="ワインを見つける" />
+
+    <item
+        android:id="@+id/search_navi"
+        android:icon="@drawable/search_g"
+        android:title="検索" />
+
+    <item
+        android:id="@+id/myWine_navi"
+        android:icon="@drawable/mywine_g"
+        android:title="マイワイン" />
+
+    <item
+        android:id="@+id/label_navi"
+        android:icon="@drawable/label_g"
+        android:title="ラベル読込み" />
+
+    <item
+        android:id="@+id/winery_navi"
+        android:icon="@drawable/winery_g"
+        android:title="ワイナリーマップ" />
+
+</menu>
