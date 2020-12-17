@@ -34,7 +34,13 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import android.location.Location;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Locale;
+import java.util.Random;
+import java.util.StringTokenizer;
 
 
 public class WineryActivity extends AppCompatActivity
@@ -48,18 +54,22 @@ public class WineryActivity extends AppCompatActivity
     private GrapeData grapeData = new GrapeData();
     private int centerIndex = 0;
 
+    private WineryData wineryData = new WineryData();
+
     private GoogleMap mMap;
     private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
     private boolean permissionDenied = false;
 
 
-    private static final LatLng SADOYA = new LatLng(35.667524, 138.573845);
-    private static final LatLng KOFU_STATION = new LatLng(35.666870, 138.568774);
+    private LatLng lastWinery = new LatLng(35.666870, 138.568774);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_winery);
+
+        readWinery();
+        lastWinery = wineryData.getWineryLatLng().get(randWinery());
 
         Intent me = getIntent();
         wineData.setWineData((WineData)me.getSerializableExtra("WINE_DATA"));
@@ -110,8 +120,6 @@ public class WineryActivity extends AppCompatActivity
             }
         });
 
-        //setClickListener();
-
         //ここからGoogleMAP
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -126,11 +134,14 @@ public class WineryActivity extends AppCompatActivity
         mMap.setOnMyLocationClickListener(this);
         enableMyLocation();
 
-        mMap.addMarker(new MarkerOptions()
-                .position(SADOYA)
-                .title("サドヤワイナリー")
-                .snippet("〒400-0024 山梨県甲府市北口３丁目３−２４"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(KOFU_STATION));
+        for(int i=0; i<wineryData.getWineryNum(); i++){
+            mMap.addMarker(new MarkerOptions()
+                    .position(wineryData.getWineryLatLng().get(i))
+                    .title(wineryData.getWineryName().get(i))
+                    .snippet(wineryData.getWineryAddress().get(i)));
+        }
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(lastWinery));
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
@@ -220,7 +231,7 @@ public class WineryActivity extends AppCompatActivity
                 == PackageManager.PERMISSION_GRANTED) {
             if (mMap != null) {
                 mMap.setMyLocationEnabled(true);
-                zoomMap(KOFU_STATION);
+                zoomMap(lastWinery);
             }
         } else {
 
@@ -311,52 +322,38 @@ public class WineryActivity extends AppCompatActivity
                 .newInstance(true).show(getSupportFragmentManager(), "dialog");
     }
 
-/*
-    void setClickListener(){
+    public void readWinery() {//CSVファイルを読み込む関数
+        try {
+            InputStream inputStream =
+                    getResources().getAssets().open("winery.csv");
 
-        findViewById(R.id.wineMap).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), MainActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
-            }
-        });
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream);
 
-        findViewById(R.id.search).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), SearchActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
-            }
-        });
+            BufferedReader bufferReader =
+                    new BufferedReader(inputStreamReader);
 
-        findViewById(R.id.myWine).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), MyWineActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
+            String line = "";
+
+            while ((line = bufferReader.readLine()) != null) {
+                StringTokenizer stringTokenizer =
+                        new StringTokenizer(line, ",");
+
+                wineryData.addWineryID(stringTokenizer.nextToken());
+                wineryData.addWineryName(stringTokenizer.nextToken());
+                wineryData.addWineryAddress(stringTokenizer.nextToken());
+                wineryData.addWineryLatLng(stringTokenizer.nextToken(), stringTokenizer.nextToken());
             }
-        });
-        findViewById(R.id.label).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplication(), LabelActivity.class);
-                intent.putExtra("WINE_DATA", wineData);
-                intent.putExtra("GRAPE_DATA", grapeData);
-                intent.putExtra("CENTER_WINE", centerIndex);
-                startActivity(intent);
-            }
-        });
+            bufferReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        wineryData.setWineryNum(wineryData.getWineryID().size());
     }
 
- */
+    public int randWinery(){
+        Random random = new Random();
+        int randomValue = random.nextInt(wineryData.getWineryNum());
+        return randomValue;
+    }
 }
