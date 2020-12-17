@@ -383,6 +383,7 @@ public class MainActivity extends AppCompatActivity {
                 wineData.addWineCapacityList(stringTokenizer.nextToken());
                 wineData.addWineNameList(stringTokenizer.nextToken());
                 wineData.addWineFuriganaList(stringTokenizer.nextToken());
+                wineData.addWineryIDList(stringTokenizer.nextToken());
                 wineData.addWineryNameList(stringTokenizer.nextToken());
                 wineData.addWineExplanationList(stringTokenizer.nextToken());
             }
