@@ -234,6 +234,7 @@ public class MyWineActivity extends AppCompatActivity
                 }
                 Intent intent = new Intent(getApplication(), MainActivity.class);
                 intent.putExtra("DELETE_FLAG", deleteFlag);
+                intent.putExtra("CENTER_WINE", centerIndex);
                 startActivity(intent);
             }
         });

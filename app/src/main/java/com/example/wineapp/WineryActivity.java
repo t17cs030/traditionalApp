@@ -38,6 +38,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Random;
 import java.util.StringTokenizer;
@@ -62,6 +63,8 @@ public class WineryActivity extends AppCompatActivity
 
 
     private LatLng lastWinery = new LatLng(35.666870, 138.568774);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -146,6 +149,10 @@ public class WineryActivity extends AppCompatActivity
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(final Marker marker) {//マーカーのクリックイベント
+
+                final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
+                Arrays.fill(deleteFlag, true);
+
                 //Toast.makeText(getApplication(), marker.getTitle(), Toast.LENGTH_SHORT).show();
                 mMap.moveCamera(CameraUpdateFactory.newLatLng(marker.getPosition()));
                 zoomMap(marker.getPosition());
@@ -183,6 +190,21 @@ public class WineryActivity extends AppCompatActivity
                 to_wine_map.setOnClickListener(new View.OnClickListener() {//類似度マップへが押されたとき
                     @Override
                     public void onClick(View view) {
+                        int thisWineryIndex = wineryData.getWineryName().indexOf(marker.getTitle());
+                        int thisWineryID = wineryData.getWineryID().get(thisWineryIndex);
+
+                        for(int i=0; i<wineData.getWineNum(); i++){
+                            if(wineData.getWineryIDList().get(i).equals(thisWineryID)){
+                                double wineID = wineData.getWineIndexList().get(i);
+                                int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                                deleteFlag[thisWineIndex]=false;
+                            }
+                        }
+
+                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        intent.putExtra("DELETE_FLAG", deleteFlag);
+                        intent.putExtra("CENTER_WINE", centerIndex);
+                        startActivity(intent);
                         //ワイナリー名が同じであるワインだけ類似度マップで拡大表示
                     }
                 });
