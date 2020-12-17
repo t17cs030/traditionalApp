@@ -50,6 +50,12 @@ public class MyWineActivity extends AppCompatActivity
     private ArrayList<Integer> myWineListIndex = new ArrayList<>();
     private int myWineListLength = 0;
 
+    private ArrayList<Integer> nondaList = new ArrayList<>();
+    private int nondaLength = 0;
+
+    private ArrayList<Integer> nomitaiList = new ArrayList<>();
+    private int nomitaiLength = 0;
+
     private int imageViewId[]={
             R.drawable.wine_01,
             R.drawable.wine_02,
@@ -210,12 +216,6 @@ public class MyWineActivity extends AppCompatActivity
             }
         });
 
-        //findViewById(R.id.wineMap).setOnClickListener(this);
-        //findViewById(R.id.search).setOnClickListener(this);
-//        findViewById(R.id.myWine).setOnClickListener(this);
-        //findViewById(R.id.label).setOnClickListener(this);
-        //findViewById(R.id.winery).setOnClickListener(this);
-
         //チェックボックスのアクション
         color_check_box();
 
@@ -241,35 +241,16 @@ public class MyWineActivity extends AppCompatActivity
 
         setButtonClick();
 
+        try {
+            readNondaList();
+            readNomitaiList();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         updateMyWineList();
         updateMultipleMyWineList();
     }
-    /*
-    //ボタンが押された時の処理
-    public void onClick (View view){
-        Intent intent;
-        if (view.getId() == R.id.search) {//検索画面へ
-            intent = new Intent(this, SearchActivity.class);
-        }
-        else if (view.getId() == R.id.wineMap) {//ワインマップへ
-            intent = new Intent(this, MainActivity.class);
-        }
-        else if (view.getId() == R.id.label) {//ラベル読み込みへ
-            intent = new Intent(this, LabelActivity.class);
-        }
-        else if (view.getId() == R.id.winery) {//ワイナリーマップへ
-            intent = new Intent(this, WineryActivity.class);
-        }
-        else{//MYワインを維持
-            intent = new Intent(this, MyWineActivity.class);
-        }
-        intent.putExtra("WINE_DATA", wineData);
-        intent.putExtra("GRAPE_DATA", grapeData);
-        intent.putExtra("CENTER_WINE", centerIndex);
-        startActivity(intent);
-    }
-
-     */
 
     public void readMyWineList() throws IOException {//MyWineリストのCSVを読み込む関数
         File file = new File(this.getFilesDir(), "myWineList.txt");
@@ -286,7 +267,40 @@ public class MyWineActivity extends AppCompatActivity
         myWineListLength = myWineListIndex.size();
 
         br.close();
+    }
 
+    public void readNondaList() throws IOException {//のんだ！リストのCSVを読み込む関数
+        File file = new File(this.getFilesDir(), "nondaList.txt");
+        FileReader filereader = new FileReader(file);
+        BufferedReader br = new BufferedReader(filereader);
+
+        String str = br.readLine();
+        while(str != null){
+            if( !(nondaList.contains(Integer.parseInt(str))) ){
+                nondaList.add(Integer.parseInt(str));
+            }
+            str = br.readLine();
+        }
+        nondaLength = nondaList.size();
+
+        br.close();
+    }
+
+    public void readNomitaiList() throws IOException {//のみたい！リストのCSVを読み込む関数
+        File file = new File(this.getFilesDir(), "nomitaiList.txt");
+        FileReader filereader = new FileReader(file);
+        BufferedReader br = new BufferedReader(filereader);
+
+        String str = br.readLine();
+        while(str != null){
+            if( !(nomitaiList.contains(Integer.parseInt(str))) ){
+                nomitaiList.add(Integer.parseInt(str));
+            }
+            str = br.readLine();
+        }
+        nomitaiLength = nomitaiList.size();
+
+        br.close();
     }
 
     /**
@@ -371,11 +385,35 @@ public class MyWineActivity extends AppCompatActivity
                 }
             });
 
-            TextView to_favorite = findViewById(R.id.to_favorite);
-            to_favorite.setOnClickListener(new View.OnClickListener() {
+            TextView to_nonda = findViewById(R.id.to_nonda);
+            to_nonda.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    //お気に入りボタンが押された時の処理
+                    //のんだボタンが押された時の処理
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
+                    builder.setTitle(wineData.getWineNameList().get(thisWineIndex));
+                    if( addNondaList(wineData.getWineIndexList().get(thisWineIndex)) ) {
+                        builder.setMessage("飲んだ!");
+                    }
+                    else
+                        builder.setMessage("既に飲んだことがあります");
+                    builder.show();
+                }
+            });
+
+            TextView to_nomitai = findViewById(R.id.to_nomitai);
+            to_nomitai.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //のみたいボタンが押された時の処理
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
+                    builder.setTitle(wineData.getWineNameList().get(thisWineIndex));
+                    if( addNomitaiList(wineData.getWineIndexList().get(thisWineIndex)) ) {
+                        builder.setMessage("飲みたい!");
+                    }
+                    else
+                        builder.setMessage("既に飲みたいと思ったことがあります");
+                    builder.show();
                 }
             });
 
@@ -478,7 +516,50 @@ public class MyWineActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    private boolean addNondaList(int wineIndex){
+        File file = new File(this.getFilesDir(), "nondaList.txt");
+        String filename = "nondaList.txt";
+        FileOutputStream outputStream;
+        int before_nondaListLength = nondaLength;
 
+        try {
+            if( !(nondaList.contains(Integer.parseInt(String.valueOf(wineIndex)))) ){
+                nondaList.add(Integer.parseInt(String.valueOf(wineIndex)));
+                nondaLength++;
+            }
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
+            for(int i=0; i<nondaLength; i++){
+                outputStream.write((String.valueOf(nondaList.get(i)) + "\n").getBytes());
+            }
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return (before_nondaListLength != nondaLength);
+    }
+    private boolean addNomitaiList(int wineIndex){
+        File file = new File(this.getFilesDir(), "nomitaiist.txt");
+        String filename = "nomitaiList.txt";
+        FileOutputStream outputStream;
+        int before_nomitaiListLength = nomitaiLength;
+
+        try {
+            if( !(nomitaiList.contains(Integer.parseInt(String.valueOf(wineIndex)))) ){
+                nomitaiList.add(Integer.parseInt(String.valueOf(wineIndex)));
+                nomitaiLength++;
+            }
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
+            for(int i=0; i<nomitaiLength; i++){
+                outputStream.write((String.valueOf(nomitaiList.get(i)) + "\n").getBytes());
+            }
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return (before_nomitaiListLength != nomitaiLength);
     }
 
     private void updateMyWineList(){
@@ -539,6 +620,7 @@ public class MyWineActivity extends AppCompatActivity
                 findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
                 findViewById(R.id.bar_search).setVisibility(View.VISIBLE);
                 findViewById(R.id.search_list_menu).setVisibility(View.VISIBLE);
+                
                 //検索のエンターが押されたとき
                 searchMyWine();
                 //タブ上の戻るボタンが押されたとき
@@ -641,10 +723,46 @@ public class MyWineActivity extends AppCompatActivity
                         }
                     }
                 });
-                findViewById(R.id.to_favorite_multiple).setOnClickListener(new View.OnClickListener() {
+                findViewById(R.id.to_nonda_multiple).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        //お気に入りへボタンが押されたとき
+                        //のんだボタンが押されたとき
+
+                        ListView listView = findViewById(R.id.my_wine_list_multiple);
+                        for(int i=0; i<myWineListLength; i++){
+                            MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
+                            if( item.getCheck() ) {
+                                double wineID = myWineListIndex.get(i);
+                                int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                                addNondaList(wineData.getWineIndexList().get(thisWineIndex));
+                            }
+                        }
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
+                        builder.setTitle("選択したワインは");
+                        builder.setMessage("飲んだ!");
+                        builder.show();
+                    }
+                });
+                findViewById(R.id.to_nomitai_multiple).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        //のみたいボタンが押されたとき
+
+                        ListView listView = findViewById(R.id.my_wine_list_multiple);
+                        for(int i=0; i<myWineListLength; i++){
+                            MyWineListMultipleItem item = (MyWineListMultipleItem)listView.getItemAtPosition(i);
+                            if( item.getCheck() ) {
+                                double wineID = myWineListIndex.get(i);
+                                int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                                addNomitaiList(wineData.getWineIndexList().get(thisWineIndex));
+                            }
+                        }
+
+                        AlertDialog.Builder builder = new AlertDialog.Builder(MyWineActivity.this);
+                        builder.setTitle("選択したワインを");
+                        builder.setMessage("飲みたい!");
+                        builder.show();
                     }
                 });
                 findViewById(R.id.delete_multiple).setOnClickListener(new View.OnClickListener() {
@@ -740,30 +858,12 @@ public class MyWineActivity extends AppCompatActivity
                 final CheckBox color_Other = findViewById(R.id.my_wine_color_Other);
                 final CheckBox color_All = findViewById(R.id.my_wine_color_All);
 
-                //押されているラジオボタン
-                /*
-                RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_my_wine_list_Color);
-                int checkedRadioButtonId = color.getCheckedRadioButtonId();
-                RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
-                 */
 
                 //価格
                 Spinner spinner_price_bottom = (Spinner) findViewById(R.id.spinner_my_wine_price_bottom);
                 Spinner spinner_price_top = (Spinner) findViewById(R.id.spinner_my_wine_price_top);
                 String selected_price_bottom = (String) spinner_price_bottom.getSelectedItem();
                 String selected_price_top = (String) spinner_price_top.getSelectedItem();
-
-                //入力値を実数値に変換
-                /*
-                int colorNum = 0;
-                if(checkedButton.getId() == R.id.my_wine_Color_Red)
-                    colorNum = 5;
-                else if(checkedButton.getId() == R.id.my_wine_Color_Rose)
-                    colorNum = 3;
-                else if(checkedButton.getId() == R.id.my_wine_Color_white)
-                    colorNum = 1;
-
-                 */
 
                 //価格下
                 int bottom_price = -1;
@@ -795,6 +895,9 @@ public class MyWineActivity extends AppCompatActivity
                 else if(selected_price_top.equals("20000"))
                     top_price = 20000;
 
+                //色のチェックボックス
+                final CheckBox nonda = findViewById(R.id.my_wine_nonda);
+                final CheckBox nomitai = findViewById(R.id.my_wine_nomitai);
 
                 ArrayList<Integer> searchedMyWineListIndex = new ArrayList<>();
                 int searchedMyWineListLength = 0;
@@ -802,18 +905,6 @@ public class MyWineActivity extends AppCompatActivity
                     double wineID = myWineListIndex.get(i);
                     int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
-                    //色についての検索
-                    /*
-                    if(colorNum != 0) {
-                        if(wineData.getWineColorList().get(thisWineIndex) == colorNum){
-                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
-                                searchedMyWineListIndex.add(myWineListIndex.get(i));
-                                searchedMyWineListLength++;
-                            }
-                        }
-                    }
-
-                     */
                     //色についての検索
                     if(! (color_All.isChecked()) ) {
                         if(wineData.getWineColorList().get(thisWineIndex) == 1 && color_White.isChecked()){
@@ -853,6 +944,23 @@ public class MyWineActivity extends AppCompatActivity
                             }
                         }
                     }
+
+
+                    //Myワイン検索
+                    if(nondaList.contains((int)wineID) && nonda.isChecked()){
+                        if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                            searchedMyWineListIndex.add(myWineListIndex.get(i));
+                            searchedMyWineListLength++;
+                        }
+                    }
+                    if(nomitaiList.contains((int)wineID) && nomitai.isChecked()){
+                        if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                            searchedMyWineListIndex.add(myWineListIndex.get(i));
+                            searchedMyWineListLength++;
+
+                        }
+                    }
+
                 }
 
 
@@ -860,7 +968,7 @@ public class MyWineActivity extends AppCompatActivity
 
 
 
-                if( !color_All.isChecked() || bottom_price != -1 || top_price != -1) {
+                if( !color_All.isChecked() || bottom_price != -1 || top_price != -1 || nonda.isChecked() || nomitai.isChecked()) {
                     // レイアウトからリストビューを取得
                     ListView listView = (ListView) findViewById(R.id.my_wine_list);
                     // リストビューに表示する要素を設定

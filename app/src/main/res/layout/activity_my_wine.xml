@@ -20,76 +20,6 @@
         app:menu="@menu/item_bottom_navigation"
         app:layout_constraintHorizontal_bias="0.0"/>
 
-    <!--
-    <Button
-        android:id="@+id/wineMap"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="500dp"
-        android:background="@drawable/winemap_g"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/search"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="500dp"
-        android:background="@drawable/search_g"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/myWine"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="500dp"
-        android:background="@drawable/mywine_b"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/label"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="500dp"
-        android:background="@drawable/label_g"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.75"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <Button
-        android:id="@+id/winery"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="500dp"
-        android:background="@drawable/winery_g"
-        android:scaleType="centerInside"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
-        -->
 
     <ListView
         android:id="@+id/my_wine_list"
@@ -171,13 +101,22 @@
             android:text="類似度マップへ" />
 
         <TextView
-            android:id="@+id/to_favorite"
+            android:id="@+id/to_nonda"
             android:layout_width="205dp"
-            android:layout_height="80dp"
+            android:layout_height="40dp"
             android:layout_marginLeft="280dp"
             android:layout_marginTop="230dp"
             android:background="#FFFFFF"
-            android:text="お気に入り" />
+            android:text="飲んだ!" />
+
+        <TextView
+            android:id="@+id/to_nomitai"
+            android:layout_width="205dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="280dp"
+            android:layout_marginTop="270dp"
+            android:background="#FFFFFF"
+            android:text="飲みたい!" />
 
         <TextView
             android:id="@+id/to_delete"
@@ -445,21 +384,32 @@
             android:layout_marginLeft="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
-            android:layout_toStartOf="@+id/to_favorite_multiple"
-            android:layout_toLeftOf="@+id/to_favorite_multiple"
+            android:layout_toStartOf="@+id/to_nonda_multiple"
+            android:layout_toLeftOf="@+id/to_nonda_multiple"
             android:background="#DC143C"
             android:text="類似度マップへ" />
 
         <Button
-            android:id="@+id/to_favorite_multiple"
-            android:layout_width="150dp"
+            android:id="@+id/to_nonda_multiple"
+            android:layout_width="75dp"
+            android:layout_height="60dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_toStartOf="@+id/to_nomitai_multiple"
+            android:layout_toLeftOf="@+id/to_nomitai_multiple"
+            android:background="#FFD700"
+            android:text="飲んだ!" />
+
+        <Button
+            android:id="@+id/to_nomitai_multiple"
+            android:layout_width="75dp"
             android:layout_height="60dp"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
             android:layout_toStartOf="@+id/delete_multiple"
             android:layout_toLeftOf="@+id/delete_multiple"
-            android:background="#FFD700"
-            android:text="お気に入り" />
+            android:background="#FFA500"
+            android:text="飲みたい!" />
 
         <Button
             android:id="@+id/delete_multiple"
@@ -698,6 +648,46 @@
             android:layout_toRightOf="@+id/spinner_my_wine_price"
             android:entries="@array/price" />
 
+        <TextView
+            android:id="@+id/text_my_wine_list_nonda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_my_wine_price_top"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="8dp"
+            android:text="Myワイン"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/my_wine_nonda"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_my_wine_list_nonda"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="80dp"
+            android:layout_marginLeft="80dp"
+            android:layout_marginTop="8dp"
+            android:text="飲んだ!" />
+
+        <CheckBox
+            android:id="@+id/my_wine_nomitai"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/text_my_wine_list_nonda"
+            android:layout_marginStart="60dp"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/my_wine_nonda"
+            android:layout_toRightOf="@+id/my_wine_nonda"
+            android:text="飲みたい!" />
+
         <Button
             android:id="@+id/enter_my_wine"
             android:layout_width="wrap_content"
@@ -715,6 +705,22 @@
             android:layout_marginRight="150dp"
             android:layout_marginBottom="50dp"
             android:text="検索" />
+
+        <TextView
+            android:id="@+id/text_"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/my_wine_nonda"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="100dp"
+            android:text="Myワイン"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:textStyle="bold" />
 
 
     </RelativeLayout>
