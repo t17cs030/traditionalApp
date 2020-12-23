@@ -101,22 +101,13 @@
             android:text="類似度マップへ" />
 
         <TextView
-            android:id="@+id/to_nonda"
+            android:id="@+id/to_eval"
             android:layout_width="205dp"
-            android:layout_height="40dp"
+            android:layout_height="80dp"
             android:layout_marginLeft="280dp"
             android:layout_marginTop="230dp"
             android:background="#FFFFFF"
-            android:text="飲んだ!" />
-
-        <TextView
-            android:id="@+id/to_nomitai"
-            android:layout_width="205dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="280dp"
-            android:layout_marginTop="270dp"
-            android:background="#FFFFFF"
-            android:text="飲みたい!" />
+            android:text="ワインを評価する" />
 
         <TextView
             android:id="@+id/to_delete"
@@ -169,6 +160,32 @@
                 android:textSize="36sp"
                 android:textStyle="bold" />
         </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/for_eval"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:elevation="5dp"
+            android:layout_marginTop="150dp"
+            android:background="#ffffff"
+            android:visibility="invisible"
+            android:orientation="horizontal">
+
+
+            <RatingBar
+                android:id="@+id/eval_star"
+                android:layout_marginTop="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:stepSize="1" />
+
+            <TextView
+                android:id="@+id/eval_enter"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="評価" />
+
+        </LinearLayout>
 
 
     </RelativeLayout>
@@ -384,32 +401,10 @@
             android:layout_marginLeft="0dp"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
-            android:layout_toStartOf="@+id/to_nonda_multiple"
-            android:layout_toLeftOf="@+id/to_nonda_multiple"
-            android:background="#DC143C"
-            android:text="類似度マップへ" />
-
-        <Button
-            android:id="@+id/to_nonda_multiple"
-            android:layout_width="75dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_toStartOf="@+id/to_nomitai_multiple"
-            android:layout_toLeftOf="@+id/to_nomitai_multiple"
-            android:background="#FFD700"
-            android:text="飲んだ!" />
-
-        <Button
-            android:id="@+id/to_nomitai_multiple"
-            android:layout_width="75dp"
-            android:layout_height="60dp"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
             android:layout_toStartOf="@+id/delete_multiple"
             android:layout_toLeftOf="@+id/delete_multiple"
-            android:background="#FFA500"
-            android:text="飲みたい!" />
+            android:background="#DC143C"
+            android:text="類似度マップへ" />
 
         <Button
             android:id="@+id/delete_multiple"
@@ -665,7 +660,7 @@
             android:textStyle="bold" />
 
         <CheckBox
-            android:id="@+id/my_wine_nonda"
+            android:id="@+id/my_wine_eval"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/text_my_wine_list_nonda"
@@ -674,19 +669,9 @@
             android:layout_marginStart="80dp"
             android:layout_marginLeft="80dp"
             android:layout_marginTop="8dp"
-            android:text="飲んだ!" />
+            android:text="評価済みワイン" />
 
-        <CheckBox
-            android:id="@+id/my_wine_nomitai"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/text_my_wine_list_nonda"
-            android:layout_marginStart="60dp"
-            android:layout_marginLeft="60dp"
-            android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/my_wine_nonda"
-            android:layout_toRightOf="@+id/my_wine_nonda"
-            android:text="飲みたい!" />
+
 
         <Button
             android:id="@+id/enter_my_wine"
@@ -706,26 +691,11 @@
             android:layout_marginBottom="50dp"
             android:text="検索" />
 
-        <TextView
-            android:id="@+id/text_"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/my_wine_nonda"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginLeft="8dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="100dp"
-            android:text="Myワイン"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold" />
 
 
     </RelativeLayout>
 
-    <RelativeLayout
+    <LinearLayout
         android:id="@+id/sort_my_wine"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -735,60 +705,157 @@
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bar_search">
+        app:layout_constraintTop_toBottomOf="@+id/bar_search"
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/sort_name"
+        <LinearLayout
+            android:id="@+id/sort_name_layout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="120dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="#C0C0C0"
-            android:text="名前で並び替え" />
-
-        <Button
-            android:id="@+id/sort_wine_ID"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="#C0C0C0"
-            android:text="ワインIDで並び替え" />
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/sort_wine_color"
+            <Button
+                android:id="@+id/sort_name_up"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="5dp"
+                android:background="#C0C0C0"
+                android:text="名前で並び替え(昇順)" />
+
+            <Button
+                android:id="@+id/sort_name_down"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="5dp"
+                android:background="#C0C0C0"
+                android:text="名前で並び替え(降順)" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sort_wineID_layout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="230dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="#C0C0C0"
-            android:text="ワインの色で並び替え" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/sort_wine_price"
+            <Button
+                android:id="@+id/sort_wineID_up"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="5dp"
+                android:background="#C0C0C0"
+                android:text="ワイン順で並び替え(昇順)" />
+
+            <Button
+                android:id="@+id/sort_wineID_down"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="5dp"
+                android:background="#C0C0C0"
+                android:text="ワイン順で並び替え(降順)" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sort_wineColor_layout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="340dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="#C0C0C0"
-            android:text="ワインの価格で並び替え" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal" >
 
-        <Button
-            android:id="@+id/sort_winery"
+            <Button
+                android:id="@+id/sort_wineColor_up"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="5dp"
+                android:background="#C0C0C0"
+                android:text="ワインの色で並び替え(昇順)" />
+
+            <Button
+                android:id="@+id/sort_wineColor_down"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="5dp"
+                android:background="#C0C0C0"
+                android:text="ワインの色で並び替え(降順)" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sort_winePrice_layout"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:layout_marginTop="450dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:background="#C0C0C0"
-            android:text="ワイナリー名で並び替え" />
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/sort_winePrice_up"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginRight="5dp"
+                android:background="#C0C0C0"
+                android:text="ワイン価格で並び替え(昇順)" />
+
+            <Button
+                android:id="@+id/sort_winePrice_down"
+                android:layout_weight = "1"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_marginLeft="5dp"
+                android:background="#C0C0C0"
+                android:text="ワイン価格で並び替え(降順)" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/sort_winery_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:orientation="horizontal" >
+
+            <Button
+                android:id="@+id/sort_winery_up"
+                android:layout_weight = "1"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginRight="5dp"
+                android:background="#C0C0C0"
+                android:text="ワイナリーで並び替え(昇順)" />
+
+            <Button
+                android:id="@+id/sort_winery_down"
+                android:layout_weight = "1"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_marginLeft="5dp"
+                android:background="#C0C0C0"
+                android:text="ワイナリーで並び替え(降順)" />
+
+        </LinearLayout>
 
 
-    </RelativeLayout>
+    </LinearLayout>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

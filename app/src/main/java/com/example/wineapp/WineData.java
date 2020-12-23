@@ -25,6 +25,8 @@ public class WineData implements Serializable {
     private ArrayList<String> wineryNameList;
     private ArrayList<String> wineExplanationList;
 
+    private ArrayList<Integer> wineEvalList;
+
     public WineData(){
         wineNum = 0;
         wineIndexList = new ArrayList<>();
@@ -40,6 +42,8 @@ public class WineData implements Serializable {
         wineryIDList = new ArrayList<>();
         wineryNameList = new ArrayList<>();
         wineExplanationList = new ArrayList<>();
+
+        wineEvalList = new ArrayList<>();
     }
 
     public void setWineData(WineData wineData){
@@ -57,6 +61,8 @@ public class WineData implements Serializable {
         setWineryNameList(wineData.getWineryNameList());
         setWineExplanationList(wineData.getWineExplanationList());
         setWineNum(wineData.getWineNum());
+
+        setWineEvalList(wineData.getWineEvalList());
     }
 
     public ArrayList<Integer> getWineIndexList() {
@@ -111,6 +117,10 @@ public class WineData implements Serializable {
         return wineExplanationList;
     }
 
+    public ArrayList<Integer> getWineEvalList() {
+        return wineEvalList;
+    }
+
 
     public void setWineIndexList(ArrayList<Integer> wineIndexList) {
         this.wineIndexList = wineIndexList;
@@ -162,6 +172,10 @@ public class WineData implements Serializable {
 
     public void setWineExplanationList(ArrayList<String> wineExplanationList) {
         this.wineExplanationList = wineExplanationList;
+    }
+
+    public void setWineEvalList(ArrayList<Integer> wineEvalList) {
+        this.wineEvalList = wineEvalList;
     }
 
 
@@ -227,4 +241,18 @@ public class WineData implements Serializable {
     public void addWineExplanationList(String str){
         wineExplanationList.add(str);
     }
+
+    public void addWineEvalList(String num) {
+        wineEvalList.add(Integer.parseInt(num));
+    }
+
+    public void changeEvalValue(int index, int valueNum) {
+        if (wineEvalList.size() == 0){
+            for (int i = 0; i < wineNum; i++) {
+                wineEvalList.add(0);
+            }
+        }
+        wineEvalList.set(index, valueNum);
+    }
+
 }

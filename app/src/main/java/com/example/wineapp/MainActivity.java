@@ -167,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         readGrape();
         try {
             readMyWineList();
+            readEvalList();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -763,6 +764,22 @@ public class MainActivity extends AppCompatActivity {
 
         br.close();
 
+    }
+
+    public void readEvalList() throws IOException {//評価リストのCSVを読み込む関数
+        File file = new File(this.getFilesDir(), "evalList.txt");
+        FileReader filereader = new FileReader(file);
+        BufferedReader br = new BufferedReader(filereader);
+
+        String str = br.readLine();
+        for(int i=0; i<wineData.getWineNum(); i++){
+            if(str == null)
+                wineData.addWineEvalList("0");
+            else
+                wineData.addWineEvalList(str);
+            str = br.readLine();
+        }
+        br.close();
     }
 
 }
