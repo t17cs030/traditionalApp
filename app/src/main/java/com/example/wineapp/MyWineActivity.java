@@ -650,8 +650,8 @@ public class MyWineActivity extends AppCompatActivity
                 findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
                 findViewById(R.id.bar_sort).setVisibility(View.VISIBLE);
                 findViewById(R.id.sort_my_wine).setVisibility(View.VISIBLE);
-                //名前で並び変えボタンが押されたとき
-                findViewById(R.id.sort_name).setOnClickListener(new View.OnClickListener() {
+                //名前で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_name_up).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ArrayList<MyWineListItem> listItems = new ArrayList<>();
@@ -680,9 +680,39 @@ public class MyWineActivity extends AppCompatActivity
                         findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
                     }
                 });
+                //名前で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_name_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < myWineListLength; i++) {
+                            double wineID = myWineListIndex.get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
-                //ワイナリー名で並び変えボタンが押されたとき
-                findViewById(R.id.sort_winery).setOnClickListener(new View.OnClickListener() {
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp,
+                                    wineData.getWineNameList().get(thisWineIndex),
+                                    wineData.getWineFuriganaList().get(thisWineIndex),
+                                    wineData.getWineryNameList().get(thisWineIndex),
+                                    wineData.getWineIndexList().get(thisWineIndex),
+                                    wineData.getWineColorList().get(thisWineIndex),
+                                    wineData.getWinePriceList().get(thisWineIndex));
+
+                            listItems.add(item);
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new NameComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                //ワイナリー名で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_winery_up).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ArrayList<MyWineListItem> listItems = new ArrayList<>();
@@ -711,8 +741,38 @@ public class MyWineActivity extends AppCompatActivity
                         findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
                     }
                 });
-                //ワインIDで並び変えボタンが押されたとき
-                findViewById(R.id.sort_wine_ID).setOnClickListener(new View.OnClickListener() {
+                //ワイナリー名で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_winery_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < myWineListLength; i++) {
+                            double wineID = myWineListIndex.get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp,
+                                    wineData.getWineNameList().get(thisWineIndex),
+                                    wineData.getWineFuriganaList().get(thisWineIndex),
+                                    wineData.getWineryNameList().get(thisWineIndex),
+                                    wineData.getWineIndexList().get(thisWineIndex),
+                                    wineData.getWineColorList().get(thisWineIndex),
+                                    wineData.getWinePriceList().get(thisWineIndex));
+
+                            listItems.add(item);
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineryComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインIDで並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_wineID_up).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ArrayList<MyWineListItem> listItems = new ArrayList<>();
@@ -741,8 +801,38 @@ public class MyWineActivity extends AppCompatActivity
                         findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
                     }
                 });
-                //ワインの色で並び変えボタンが押されたとき
-                findViewById(R.id.sort_wine_color).setOnClickListener(new View.OnClickListener() {
+                //ワインIDで並び変えボタン降順が押されたとき
+                findViewById(R.id.sort_wineID_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < myWineListLength; i++) {
+                            double wineID = myWineListIndex.get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp,
+                                    wineData.getWineNameList().get(thisWineIndex),
+                                    wineData.getWineFuriganaList().get(thisWineIndex),
+                                    wineData.getWineryNameList().get(thisWineIndex),
+                                    wineData.getWineIndexList().get(thisWineIndex),
+                                    wineData.getWineColorList().get(thisWineIndex),
+                                    wineData.getWinePriceList().get(thisWineIndex));
+
+                            listItems.add(item);
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineIDComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインの色で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_wineColor_up).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ArrayList<MyWineListItem> listItems = new ArrayList<>();
@@ -771,8 +861,38 @@ public class MyWineActivity extends AppCompatActivity
                         findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
                     }
                 });
-                //ワインの価格で並び変えボタンが押されたとき
-                findViewById(R.id.sort_wine_price).setOnClickListener(new View.OnClickListener() {
+                //ワインの色で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_wineColor_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < myWineListLength; i++) {
+                            double wineID = myWineListIndex.get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp,
+                                    wineData.getWineNameList().get(thisWineIndex),
+                                    wineData.getWineFuriganaList().get(thisWineIndex),
+                                    wineData.getWineryNameList().get(thisWineIndex),
+                                    wineData.getWineIndexList().get(thisWineIndex),
+                                    wineData.getWineColorList().get(thisWineIndex),
+                                    wineData.getWinePriceList().get(thisWineIndex));
+
+                            listItems.add(item);
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineColorComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインの価格で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_winePrice_up).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         ArrayList<MyWineListItem> listItems = new ArrayList<>();
@@ -801,7 +921,37 @@ public class MyWineActivity extends AppCompatActivity
                         findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
                     }
                 });
-                
+                //ワインの価格で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_winePrice_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < myWineListLength; i++) {
+                            double wineID = myWineListIndex.get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp,
+                                    wineData.getWineNameList().get(thisWineIndex),
+                                    wineData.getWineFuriganaList().get(thisWineIndex),
+                                    wineData.getWineryNameList().get(thisWineIndex),
+                                    wineData.getWineIndexList().get(thisWineIndex),
+                                    wineData.getWineColorList().get(thisWineIndex),
+                                    wineData.getWinePriceList().get(thisWineIndex));
+
+                            listItems.add(item);
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WinePriceComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+
 
 
                 findViewById(R.id.return_sort_mode).setOnClickListener(new View.OnClickListener() {
