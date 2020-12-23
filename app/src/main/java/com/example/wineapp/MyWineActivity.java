@@ -1304,6 +1304,9 @@ public class MyWineActivity extends AppCompatActivity
                     color_White.setChecked(false);
                     color_Other.setChecked(false);
                 }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                    color_All.setChecked(true);
+                }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
                 }
@@ -1318,6 +1321,9 @@ public class MyWineActivity extends AppCompatActivity
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
                     color_Other.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                    color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
@@ -1334,6 +1340,9 @@ public class MyWineActivity extends AppCompatActivity
                     color_White.setChecked(false);
                     color_Other.setChecked(false);
                 }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                    color_All.setChecked(true);
+                }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
                 }
@@ -1349,6 +1358,9 @@ public class MyWineActivity extends AppCompatActivity
                     color_White.setChecked(false);
                     color_Other.setChecked(false);
                 }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                    color_All.setChecked(true);
+                }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
                 }
@@ -1363,6 +1375,9 @@ public class MyWineActivity extends AppCompatActivity
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
                     color_Other.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                    color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
