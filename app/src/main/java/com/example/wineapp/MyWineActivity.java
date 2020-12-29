@@ -1117,7 +1117,8 @@ public class MyWineActivity extends AppCompatActivity
                 final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
                 final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
                 final CheckBox color_White = findViewById(R.id.my_wine_color_White);
-                final CheckBox color_Other = findViewById(R.id.my_wine_color_Other);
+                final CheckBox color_Orange = findViewById(R.id.my_wine_color_Orange);
+                final CheckBox color_Sparkling = findViewById(R.id.my_wine_color_Sparkling);
                 final CheckBox color_All = findViewById(R.id.my_wine_color_All);
 
 
@@ -1186,7 +1187,13 @@ public class MyWineActivity extends AppCompatActivity
                                 searchedMyWineListLength++;
                             }
                         }
-                        else if( (wineData.getWineColorList().get(thisWineIndex).equals("オレンジワイン") || wineData.getWineColorList().get(thisWineIndex).equals("スパークリングワイン") ) && color_Other.isChecked()) {
+                        else if(wineData.getWineColorList().get(thisWineIndex).equals("オレンジワイン") && color_Orange.isChecked()){
+                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                searchedMyWineListLength++;
+                            }
+                        }
+                        else if(wineData.getWineColorList().get(thisWineIndex).equals("スパークリングワイン") && color_Sparkling.isChecked()){
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
@@ -1258,20 +1265,22 @@ public class MyWineActivity extends AppCompatActivity
         final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
         final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
         final CheckBox color_White = findViewById(R.id.my_wine_color_White);
-        final CheckBox color_Other = findViewById(R.id.my_wine_color_Other);
+        final CheckBox color_Orange = findViewById(R.id.my_wine_color_Orange);
+        final CheckBox color_Sparkling = findViewById(R.id.my_wine_color_Sparkling);
         final CheckBox color_All = findViewById(R.id.my_wine_color_All);
 
         color_Red.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -1282,14 +1291,15 @@ public class MyWineActivity extends AppCompatActivity
         color_Rose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -1300,14 +1310,15 @@ public class MyWineActivity extends AppCompatActivity
         color_White.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -1315,17 +1326,37 @@ public class MyWineActivity extends AppCompatActivity
                 }
             }
         });
-        color_Other.setOnClickListener(new View.OnClickListener() {
+        color_Orange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Sparkling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -1341,10 +1372,8 @@ public class MyWineActivity extends AppCompatActivity
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
-                }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
-                    color_All.setChecked(true);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
