@@ -305,34 +305,34 @@ public class SearchActivity extends AppCompatActivity
 
                     //色についての検索
                     if(! (color_All.isChecked()) ) {
-                        if(wineData.getWineColorList().get(i) == 1 && color_White.isChecked()){
+                        if(wineData.getWineColorList().get(i).equals("白ワイン") && color_White.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(wineData.getWineColorList().get(i) == 3 && color_Rose.isChecked()){
+                        else if(wineData.getWineColorList().get(i).equals("ロゼワイン") && color_Rose.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(wineData.getWineColorList().get(i) == 5 && color_Red.isChecked()){
+                        else if(wineData.getWineColorList().get(i).equals("赤ワイン") && color_Red.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(wineData.getWineColorList().get(i) != 1 && wineData.getWineColorList().get(i) != 3 && wineData.getWineColorList().get(i) != 5 && color_Other.isChecked()) {
+                        else if( (wineData.getWineColorList().get(i).equals("オレンジワイン") && wineData.getWineColorList().get(i).equals("スパークリングワイン") ) && color_Other.isChecked()) {
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //味わい赤についての検索
                     if(taste_Red_B != 0 && taste_Red_T != 0 && (taste_Red_B <= taste_Red_T) ){
-                        if( (wineData.getWineColorList().get(i) == 5) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)) ){
+                        if( (wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)) ){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //味わい白についての検索
                     if(taste_white_B != 0 && taste_white_T != 0 && (taste_white_B <= taste_white_T) ){
-                        if( (wineData.getWineColorList().get(i) != 5) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)) ){
+                        if( !(wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)) ){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //価格についての検索
                     if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
-                        if( (wineData.getWinePriceList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceList().get(i)) ){
+                        if( (wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i)) ){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }

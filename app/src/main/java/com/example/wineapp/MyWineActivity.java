@@ -312,21 +312,17 @@ public class MyWineActivity extends AppCompatActivity
 
             TextView my_wine_name = findViewById(R.id.my_wine_name);
 
-            String color;
-            if(wineData.getWineColorList().get(thisWineIndex) == 1)
-                color = "白";
-            else if(wineData.getWineColorList().get(thisWineIndex) == 3)
-                color = "ロゼ";
-            else if(wineData.getWineColorList().get(thisWineIndex) == 5)
-                color = "赤";
-            else
-                color = "オレンジ";
-
             String str_wine
-                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n\n"
-                    + "ワインの色: "  + color + "\n\n"
-                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex) + "円"
-                    ;
+                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
+                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex) + "\n"
+                    + "色: "  + wineData.getWineColorList().get(thisWineIndex) + "\n"
+                    + "タイプ: " + wineData.getWineTypeList().get(thisWineIndex) + "\n"
+                    + "容量: " + wineData.getWineCapacityList().get(thisWineIndex) + "\n"
+                    + "ぶどう品種: " + wineData.getWineGrapeList().get(thisWineIndex) + "\n"
+                    + "産地: " + wineData.getWineOriginList().get(thisWineIndex) + "\n"
+                    + "収穫年: " + wineData.getWineHarvestList().get(thisWineIndex) + "\n"
+                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex);
+
             my_wine_name.setText(str_wine);
 
             TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
@@ -393,12 +389,26 @@ public class MyWineActivity extends AppCompatActivity
                     RatingBar star = findViewById(R.id.eval_star);
                     star.setRating(wineData.getWineEvalList().get(thisWineIndex));
 
-                    RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                    RelativeLayout close_delete = findViewById(R.id.for_close_eval);
                     close_delete.setVisibility(View.VISIBLE);
                     close_delete.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             //評価タブ表示中は何を押しても何もしない
+                            RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                            close_delete.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout close_eval = findViewById(R.id.for_close_eval);
+                            close_eval.setVisibility(View.INVISIBLE);
+
+                            LinearLayout for_delete = findViewById(R.id.for_eval);
+                            for_delete.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout my_wine_info_layout = findViewById(R.id.for_my_wine_info);
+                            my_wine_info_layout.setVisibility(View.INVISIBLE);
+
+                            RelativeLayout close_my_wine_info = findViewById(R.id.for_close_wine_info);
+                            close_my_wine_info.setVisibility(View.INVISIBLE);
                         }
                     });
 
@@ -591,7 +601,7 @@ public class MyWineActivity extends AppCompatActivity
                     wineData.getWineryNameList().get(thisWineIndex),
                     wineData.getWineIndexList().get(thisWineIndex),
                     wineData.getWineColorList().get(thisWineIndex),
-                    wineData.getWinePriceList().get(thisWineIndex));
+                    wineData.getWinePriceNumList().get(thisWineIndex));
             listItems.add(item);
         }
         // 出力結果をリストビューに表示
@@ -674,7 +684,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -704,7 +714,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -735,7 +745,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -765,7 +775,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -795,7 +805,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -825,7 +835,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -855,7 +865,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -885,7 +895,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -915,7 +925,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -945,7 +955,7 @@ public class MyWineActivity extends AppCompatActivity
                                     wineData.getWineryNameList().get(thisWineIndex),
                                     wineData.getWineIndexList().get(thisWineIndex),
                                     wineData.getWineColorList().get(thisWineIndex),
-                                    wineData.getWinePriceList().get(thisWineIndex));
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
 
                             listItems.add(item);
                         }
@@ -1158,25 +1168,25 @@ public class MyWineActivity extends AppCompatActivity
 
                     //色についての検索
                     if(! (color_All.isChecked()) ) {
-                        if(wineData.getWineColorList().get(thisWineIndex) == 1 && color_White.isChecked()){
+                        if(wineData.getWineColorList().get(thisWineIndex).equals("白ワイン") && color_White.isChecked()){
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
                             }
                         }
-                        else if(wineData.getWineColorList().get(thisWineIndex) == 3 && color_Rose.isChecked()){
+                        else if(wineData.getWineColorList().get(thisWineIndex).equals("ロゼワイン") && color_Rose.isChecked()){
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
                             }
                         }
-                        else if(wineData.getWineColorList().get(thisWineIndex) == 5 && color_Red.isChecked()){
+                        else if(wineData.getWineColorList().get(thisWineIndex).equals("赤ワイン") && color_Red.isChecked()){
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
                             }
                         }
-                        else if(wineData.getWineColorList().get(thisWineIndex) != 1 && wineData.getWineColorList().get(thisWineIndex) != 3 && wineData.getWineColorList().get(thisWineIndex) != 5 && color_Other.isChecked()) {
+                        else if( (wineData.getWineColorList().get(thisWineIndex).equals("オレンジワイン") || wineData.getWineColorList().get(thisWineIndex).equals("スパークリングワイン") ) && color_Other.isChecked()) {
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
                                 searchedMyWineListLength++;
@@ -1186,7 +1196,7 @@ public class MyWineActivity extends AppCompatActivity
 
                     //価格についての検索
                     if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price <= top_price) ){
-                        if( ((wineData.getWinePriceList().get(thisWineIndex) <= top_price) && (bottom_price <= wineData.getWinePriceList().get(thisWineIndex)))){
+                        if( ((wineData.getWinePriceNumList().get(thisWineIndex) <= top_price) && (bottom_price <= wineData.getWinePriceNumList().get(thisWineIndex)))){
 
                             if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
                                 searchedMyWineListIndex.add(myWineListIndex.get(i));
@@ -1228,7 +1238,7 @@ public class MyWineActivity extends AppCompatActivity
                                 wineData.getWineryNameList().get(thisWineIndex),
                                 wineData.getWineIndexList().get(thisWineIndex),
                                 wineData.getWineColorList().get(thisWineIndex),
-                                wineData.getWinePriceList().get(thisWineIndex));
+                                wineData.getWinePriceNumList().get(thisWineIndex));
                         listItems.add(item);
                     }
                     // 出力結果をリストビューに表示

@@ -14,11 +14,15 @@ public class WineData implements Serializable {
     private ArrayList<Integer> wineIndexList;
     private ArrayList<Double> wineIdoList;
     private ArrayList<Double> wineKedoList;
-    private ArrayList<Integer> wineColorList;
-    private ArrayList<Integer> wineTypeList;
+    private ArrayList<String> wineColorList;
+    private ArrayList<String> wineTypeList;
     private ArrayList<Integer> wineTasteList;
-    private ArrayList<Integer> winePriceList;
-    private ArrayList<Integer> wineCapacityList;
+    private ArrayList<String> winePriceList;
+    private ArrayList<Integer> winePriceNumList;
+    private ArrayList<String> wineCapacityList;
+    private ArrayList<String> wineGrapeList;
+    private ArrayList<String> wineOriginList;
+    private ArrayList<String> wineHarvestList;
     private ArrayList<String> wineNameList;
     private ArrayList<String> wineFuriganaList;
     private ArrayList<Integer> wineryIDList;
@@ -26,6 +30,7 @@ public class WineData implements Serializable {
     private ArrayList<String> wineExplanationList;
 
     private ArrayList<Integer> wineEvalList;
+
 
     public WineData(){
         wineNum = 0;
@@ -36,7 +41,11 @@ public class WineData implements Serializable {
         wineTypeList = new ArrayList<>();
         wineTasteList = new ArrayList<>();
         winePriceList = new ArrayList<>();
+        winePriceNumList = new ArrayList<>();
         wineCapacityList = new ArrayList<>();
+        wineGrapeList = new ArrayList<>();
+        wineOriginList = new ArrayList<>();
+        wineHarvestList = new ArrayList<>();
         wineNameList = new ArrayList<>();
         wineFuriganaList = new ArrayList<>();
         wineryIDList = new ArrayList<>();
@@ -54,7 +63,11 @@ public class WineData implements Serializable {
         setWineTypeList(wineData.getWineTypeList());
         setWineTasteList(wineData.getWineTasteList());
         setWinePriceList(wineData.getWinePriceList());
+        setWinePriceNumList(wineData.getWinePriceNumList());
         setWineCapacityList(wineData.getWineCapacityList());
+        setWineGrapeList(wineData.getWineGrapeList());
+        setWineOriginList(wineData.getWineOriginList());
+        setWineHarvestList(wineData.getWineHarvestList());
         setWineNameList(wineData.getWineNameList());
         setWineFuriganaList(wineData.getWineFuriganaList());
         setWineryIDList(wineData.getWineryIDList());
@@ -77,24 +90,40 @@ public class WineData implements Serializable {
         return wineKedoList;
     }
 
-    public ArrayList<Integer> getWineColorList() {
+    public ArrayList<String> getWineColorList() {
         return wineColorList;
     }
 
-    public ArrayList<Integer> getWineTypeList() {
+    public ArrayList<String> getWineTypeList() {
         return wineTypeList;
     }
 
-    public ArrayList<Integer> getWineTasteList() {
+    public ArrayList<Integer> getWineTasteList(){
         return wineTasteList;
     }
 
-    public ArrayList<Integer> getWinePriceList() {
+    public ArrayList<String> getWinePriceList() {
         return winePriceList;
     }
 
-    public ArrayList<Integer> getWineCapacityList() {
+    public ArrayList<Integer> getWinePriceNumList() {
+        return winePriceNumList;
+    }
+
+    public ArrayList<String> getWineCapacityList() {
         return wineCapacityList;
+    }
+
+    public ArrayList<String> getWineGrapeList() {
+        return wineGrapeList;
+    }
+
+    public ArrayList<String> getWineOriginList() {
+        return wineOriginList;
+    }
+
+    public ArrayList<String> getWineHarvestList() {
+        return wineHarvestList;
     }
 
     public ArrayList<String> getWineNameList() {
@@ -134,11 +163,11 @@ public class WineData implements Serializable {
         this.wineKedoList = wineKedoList;
     }
 
-    public void setWineColorList(ArrayList<Integer> wineColorList) {
+    public void setWineColorList(ArrayList<String> wineColorList) {
         this.wineColorList = wineColorList;
     }
 
-    public void setWineTypeList(ArrayList<Integer> wineTypeList) {
+    public void setWineTypeList(ArrayList<String> wineTypeList) {
         this.wineTypeList = wineTypeList;
     }
 
@@ -146,12 +175,28 @@ public class WineData implements Serializable {
         this.wineTasteList = wineTasteList;
     }
 
-    public void setWinePriceList(ArrayList<Integer> winePriceList) {
+    public void setWinePriceList(ArrayList<String> winePriceList) {
         this.winePriceList = winePriceList;
     }
 
-    public void setWineCapacityList(ArrayList<Integer> wineCapacityList) {
+    public void setWinePriceNumList(ArrayList<Integer> winePriceNumList) {
+        this.winePriceNumList = winePriceNumList;
+    }
+
+    public void setWineCapacityList(ArrayList<String> wineCapacityList) {
         this.wineCapacityList = wineCapacityList;
+    }
+
+    public void setWineGrapeList(ArrayList<String> wineGrapeList) {
+        this.wineGrapeList = wineGrapeList;
+    }
+
+    public void setWineOriginList(ArrayList<String> wineOriginList) {
+        this.wineOriginList = wineOriginList;
+    }
+
+    public void setWineHarvestList(ArrayList<String> wineHarvestList) {
+        this.wineHarvestList = wineHarvestList;
     }
 
     public void setWineNameList(ArrayList<String> wineNameList) {
@@ -203,23 +248,39 @@ public class WineData implements Serializable {
     }
 
     public void addWineColorList(String str){
-        wineColorList.add(Integer.parseInt(str));
+        wineColorList.add(str);
     }
 
     public void addWineTypeList(String str){
-        wineTypeList.add(Integer.parseInt(str));
+        wineTypeList.add(str);
     }
 
-    public void addWineTasteList(String str){
+    public void addWineTasteList(String str) {
         wineTasteList.add(Integer.parseInt(str));
     }
 
     public void addWinePriceList(String str){
-        winePriceList.add(Integer.parseInt(str));
+        winePriceList.add(str);
+    }
+
+    public void addWinePriceNumList(String str) {
+        winePriceNumList.add(Integer.parseInt(str));
     }
 
     public void addWineCapacityList(String str){
-        wineCapacityList.add(Integer.parseInt(str));
+        wineCapacityList.add(str);
+    }
+
+    public void addWineGrapeList(String str){
+        wineGrapeList.add(str);
+    }
+
+    public void addWineOriginList(String str){
+        wineOriginList.add(str);
+    }
+
+    public void addWineHarvestList(String str){
+        wineHarvestList.add(str);
     }
 
     public void addWineNameList(String str){

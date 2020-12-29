@@ -54,6 +54,17 @@
         app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/for_close_eval"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="5dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
+
+    <RelativeLayout
         android:id="@+id/for_my_wine_info"
         android:layout_width="match_parent"
         android:layout_height="345dp"
@@ -161,11 +172,12 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
+
         <LinearLayout
             android:id="@+id/for_eval"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:elevation="5dp"
+            android:elevation="6dp"
             android:layout_marginTop="150dp"
             android:background="#ffffff"
             android:visibility="invisible"

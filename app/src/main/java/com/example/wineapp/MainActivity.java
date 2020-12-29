@@ -381,7 +381,11 @@ public class MainActivity extends AppCompatActivity {
                 wineData.addWineTypeList(stringTokenizer.nextToken());
                 wineData.addWineTasteList(stringTokenizer.nextToken());
                 wineData.addWinePriceList(stringTokenizer.nextToken());
+                wineData.addWinePriceNumList(stringTokenizer.nextToken());
                 wineData.addWineCapacityList(stringTokenizer.nextToken());
+                wineData.addWineGrapeList(stringTokenizer.nextToken());
+                wineData.addWineOriginList(stringTokenizer.nextToken());
+                wineData.addWineHarvestList(stringTokenizer.nextToken());
                 wineData.addWineNameList(stringTokenizer.nextToken());
                 wineData.addWineFuriganaList(stringTokenizer.nextToken());
                 wineData.addWineryIDList(stringTokenizer.nextToken());
@@ -527,11 +531,13 @@ public class MainActivity extends AppCompatActivity {
                     //画像が押された時のやつ
                     ImageView winePicture = findViewById(R.id.wine_info);
                     double wineID = wineData.getWineIndexList().get(thisWineNum);
-                    int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                    final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
                     winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
                     TextView wine_name = findViewById(R.id.wine_name);
-                    String str_wine = "ワイン名: " + wineData.getWineNameList().get(thisWineNum);
+                    String str_wine
+                            = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
+                            + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex);
                     wine_name.setText(str_wine);
 
                     //簡易情報の乗っているレイアウトを表示
@@ -544,8 +550,8 @@ public class MainActivity extends AppCompatActivity {
                         public void onClick(View view) {
                             //ワインリストへ登録ボタンが押されたときの処理(仮)
                             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setTitle(wineData.getWineNameList().get(thisWineNum));
-                            if( addWineList(wineData.getWineIndexList().get(thisWineNum)) ) {
+                            builder.setTitle(wineData.getWineNameList().get(thisWineIndex));
+                            if( addWineList(wineData.getWineIndexList().get(thisWineIndex)) ) {
                                 builder.setMessage("Myワインリストへ登録しました");
                             }
                             else
@@ -559,39 +565,29 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onClick(View view) {
                             ImageView winePicture = findViewById(R.id.wine_detail_info);
-                            double wineID = wineData.getWineIndexList().get(thisWineNum);
-                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                            double wineID = wineData.getWineIndexList().get(thisWineIndex);
+                            final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
                             winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
                             TextView wine_name = findViewById(R.id.wine_detail_name);
 
-                            String color;
-                            if(wineData.getWineColorList().get(thisWineNum) == 1)
-                                color = "白";
-                            else if(wineData.getWineColorList().get(thisWineNum) == 2)
-                                color = "ロゼ";
-                            else
-                                color = "赤";
-
-                            String type;
-                            if(wineData.getWineTypeList().get(thisWineNum) == 1)
-                                type = "スティル";
-                            else
-                                type = "スパークリング";
-
                             String str_wine
-                                    = "ワイン名: " + wineData.getWineNameList().get(thisWineNum) + "\n\n"
-                                    + "ワインの色: "  + color + "\n"
-                                    + "ワインタイプ: " + type + "\n"
-                                    + "価格: " + wineData.getWinePriceList().get(thisWineNum) + "円" + " "
-                                    + "容量: " + wineData.getWineCapacityList().get(thisWineNum) + "mL" + "\n"
-                                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineNum);
+                                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
+                                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex) + "\n"
+                                    + "色: "  + wineData.getWineColorList().get(thisWineIndex) + "\n"
+                                    + "タイプ: " + wineData.getWineTypeList().get(thisWineIndex) + "\n"
+                                    + "容量: " + wineData.getWineCapacityList().get(thisWineIndex) + "\n"
+                                    + "ぶどう品種: " + wineData.getWineGrapeList().get(thisWineIndex) + "\n"
+                                    + "産地: " + wineData.getWineOriginList().get(thisWineIndex) + "\n"
+                                    + "収穫年: " + wineData.getWineHarvestList().get(thisWineIndex) + "\n"
+                                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex);
+
                             wine_name.setText(str_wine);
 
                             TextView wine_explanation = findViewById(R.id.wine_detail_explanation);
                             String str_wine_exp =
-                                    wineData.getWineNameList().get(thisWineNum) + ": " + "\n\n"
-                                    + wineData.getWineExplanationList().get(thisWineNum);
+                                    wineData.getWineNameList().get(thisWineIndex) + ": " + "\n\n"
+                                    + wineData.getWineExplanationList().get(thisWineIndex);
                             wine_explanation.setText(str_wine_exp);
 
                             RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
@@ -609,8 +605,8 @@ public class MainActivity extends AppCompatActivity {
                                 public void onClick(View view) {
                                     //ワインリストへ登録ボタンが押されたときの処理(仮)
                                     AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                    builder.setTitle(wineData.getWineNameList().get(thisWineNum));
-                                    if( addWineList(wineData.getWineIndexList().get(thisWineNum)) ) {
+                                    builder.setTitle(wineData.getWineNameList().get(thisWineIndex));
+                                    if( addWineList(wineData.getWineIndexList().get(thisWineIndex)) ) {
                                         builder.setMessage("Myワインリストへ登録しました");
                                     }
                                     else

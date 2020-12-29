@@ -8,8 +8,8 @@ public class MyWineListItem {
     private String mFurigana = null;
     private String mWinery = null;
     private int mWineID = 0;
-    private int mWineColor = 0;
-    private int mWinePrice = 0;
+    private String mWineColor = null;
+    private int mWinePriceNum = 0;
 
     /**
      * 空のコンストラクタ
@@ -22,14 +22,14 @@ public class MyWineListItem {
      * @param title タイトル
      * @param furigana ふりがな
      */
-    public MyWineListItem(Bitmap thumbnail, String title, String furigana, String winery, int wineID, int wineColor, int winePrice) {
+    public MyWineListItem(Bitmap thumbnail, String title, String furigana, String winery, int wineID, String wineColor, int winePrice) {
         mThumbnail = thumbnail;
         mTitle = title;
         mFurigana = furigana;
         mWinery = winery;
         mWineID = wineID;
         mWineColor = wineColor;
-        mWinePrice = winePrice;
+        mWinePriceNum = winePrice;
     }
 
     /**
@@ -64,12 +64,12 @@ public class MyWineListItem {
         mWineID = wineID;
     }
 
-    public void setWineColor(int wineColor){
+    public void setWineColor(String  wineColor){
         mWineColor = wineColor;
     }
 
     public void setWinePrice(int winePrice){
-        mWinePrice = winePrice;
+        mWinePriceNum = winePrice;
     }
 
 
@@ -105,12 +105,12 @@ public class MyWineListItem {
         return mWineID;
     }
 
-    public int getWineColor(){
+    public String getWineColor(){
         return mWineColor;
     }
 
     public  int getWinePrice(){
-        return mWinePrice;
+        return mWinePriceNum;
     }
 
 }
