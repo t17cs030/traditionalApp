@@ -421,7 +421,7 @@ public class MyWineActivity extends AppCompatActivity
                     LinearLayout for_eval = findViewById(R.id.for_eval);
                     for_eval.setVisibility(View.VISIBLE);
                     for_eval.bringToFront();
-                    /*
+
                     for_eval.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -429,7 +429,7 @@ public class MyWineActivity extends AppCompatActivity
                         }
                     });
 
- */
+
 
                     TextView eval_enter = findViewById(R.id.eval_enter);
                     eval_enter.setOnClickListener(new View.OnClickListener() {
