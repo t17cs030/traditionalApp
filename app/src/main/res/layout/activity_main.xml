@@ -117,12 +117,22 @@
 
             <TextView
                 android:id="@+id/to_wine_list"
-                android:layout_width="260dp"
+                android:layout_width="230dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginTop="100dp"
                 android:background="#FFFFFF"
                 android:text="ワインリストへ登録する" />
+
+            <TextView
+                android:id="@+id/to_info"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="100dp"
+                android:layout_toEndOf="@+id/to_wine_list"
+                android:layout_toRightOf="@+id/to_wine_list"
+                android:background="#FFFFFF"
+                android:text="詳細▼" />
 
         </RelativeLayout>
 

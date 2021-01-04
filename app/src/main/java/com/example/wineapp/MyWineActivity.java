@@ -387,7 +387,11 @@ public class MyWineActivity extends AppCompatActivity
                     //評価ボタンが押された時の処理
 
                     RatingBar star = findViewById(R.id.eval_star);
-                    star.setRating(wineData.getWineEvalList().get(thisWineIndex));
+                    if(wineData.getWineEvalList().size() != 0) {
+                        star.setRating(wineData.getWineEvalList().get(thisWineIndex));
+                    }
+                    else
+                        star.setRating(0);
 
 
                     RelativeLayout close_eval = findViewById(R.id.for_close_eval);

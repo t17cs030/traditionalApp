@@ -502,30 +502,28 @@ public class MainActivity extends AppCompatActivity {
             usingLayout.addView(imageView[i], lp);
 
 
-            if(wineData.getWineEvalList().get(i) != 0){
-                int drawImage=0;
-                if(wineData.getWineEvalList().get(i) == 1){
-                    drawImage=R.drawable.rate_01;
-                }
-                else if(wineData.getWineEvalList().get(i) == 2){
-                    drawImage=R.drawable.rate_02;
-                }
-                else if(wineData.getWineEvalList().get(i) == 3){
-                    drawImage=R.drawable.rate_03;
-                }
-                else if(wineData.getWineEvalList().get(i) == 4){
-                    drawImage=R.drawable.rate_04;
-                }
-                else if(wineData.getWineEvalList().get(i) == 5){
-                    drawImage=R.drawable.rate_05;
-                }
+            if(wineData.getWineEvalList().size() != 0) {
+                if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
+                    int drawImage = 0;
+                    if (wineData.getWineEvalList().get(thisWineIndex) == 1) {
+                        drawImage = R.drawable.rate_01;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 2) {
+                        drawImage = R.drawable.rate_02;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 3) {
+                        drawImage = R.drawable.rate_03;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 4) {
+                        drawImage = R.drawable.rate_04;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 5) {
+                        drawImage = R.drawable.rate_05;
+                    }
 
-                Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
+                    Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
 
-                ratingImage[i].setImageBitmap(bitmap2);
-                ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
+                    ratingImage[i].setImageBitmap(bitmap2);
+                    ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
 
-                usingLayout.addView(ratingImage[i],Rlp);
+                    usingLayout.addView(ratingImage[i], Rlp);
+                }
             }
         }
     }
@@ -808,6 +806,20 @@ public class MainActivity extends AppCompatActivity {
 
         return (before_myWineListLength != myWineListLength);
 
+    }
+
+    private void keepCenter(){//中心のワインを保存できるようにする関数
+        File file = new File(this.getFilesDir(), "centerIndex.txt");
+        String filename = "centerIndex.txt";
+        FileOutputStream outputStream;
+
+        try {
+            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
+            outputStream.write(centerIndex);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void readMyWineList() throws IOException {//MyWineリストのCSVを読み込む関数
