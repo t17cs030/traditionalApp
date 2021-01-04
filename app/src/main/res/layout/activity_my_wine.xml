@@ -11,14 +11,14 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#ffffff"
-        app:itemTextColor="@drawable/bottom_navigation_item_state"
-        app:itemIconTint="@drawable/bottom_navigation_item_state"
         app:itemBackground="@color/colorTabBar"
+        app:itemIconTint="@drawable/bottom_navigation_item_state"
+        app:itemTextColor="@drawable/bottom_navigation_item_state"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/item_bottom_navigation"
-        app:layout_constraintHorizontal_bias="0.0"/>
+        app:menu="@menu/item_bottom_navigation" />
 
 
     <ListView
@@ -172,35 +172,36 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-
-        <LinearLayout
-            android:id="@+id/for_eval"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:elevation="6dp"
-            android:layout_marginTop="150dp"
-            android:background="#ffffff"
-            android:visibility="invisible"
-            android:orientation="horizontal">
-
-
-            <RatingBar
-                android:id="@+id/eval_star"
-                android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:stepSize="1" />
-
-            <TextView
-                android:id="@+id/eval_enter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="評価" />
-
-        </LinearLayout>
-
-
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/for_eval"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#ffffff"
+        android:elevation="6dp"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.84"
+        tools:ignore="MissingConstraints">
+
+
+        <RatingBar
+            android:id="@+id/eval_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:stepSize="1" />
+
+        <TextView
+            android:id="@+id/eval_enter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="評価" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/my_wine_list_multiple"

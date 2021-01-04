@@ -389,9 +389,11 @@ public class MyWineActivity extends AppCompatActivity
                     RatingBar star = findViewById(R.id.eval_star);
                     star.setRating(wineData.getWineEvalList().get(thisWineIndex));
 
-                    RelativeLayout close_delete = findViewById(R.id.for_close_eval);
-                    close_delete.setVisibility(View.VISIBLE);
-                    close_delete.setOnClickListener(new View.OnClickListener() {
+
+                    RelativeLayout close_eval = findViewById(R.id.for_close_eval);
+                    close_eval.setVisibility(View.VISIBLE);
+
+                    close_eval.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             //評価タブ表示中は何を押しても何もしない
@@ -412,14 +414,22 @@ public class MyWineActivity extends AppCompatActivity
                         }
                     });
 
+
+
+
+
                     LinearLayout for_eval = findViewById(R.id.for_eval);
                     for_eval.setVisibility(View.VISIBLE);
+                    for_eval.bringToFront();
+                    /*
                     for_eval.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
                             //評価タブを押しても何もしない
                         }
                     });
+
+ */
 
                     TextView eval_enter = findViewById(R.id.eval_enter);
                     eval_enter.setOnClickListener(new View.OnClickListener() {
@@ -438,7 +448,7 @@ public class MyWineActivity extends AppCompatActivity
                             builder.setMessage("このワインを星" + (int)eval.getRating() + "で評価しました");
                             builder.show();
 
-                            RelativeLayout close_delete = findViewById(R.id.for_close_delete);
+                            RelativeLayout close_delete = findViewById(R.id.for_close_eval);
                             close_delete.setVisibility(View.INVISIBLE);
 
                             LinearLayout for_delete = findViewById(R.id.for_eval);
@@ -1113,6 +1123,9 @@ public class MyWineActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
 
+                boolean color_search = false;
+                boolean price_search = false;
+
                 //色のチェックボックス
                 final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
                 final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
@@ -1158,7 +1171,15 @@ public class MyWineActivity extends AppCompatActivity
                 else if(selected_price_top.equals("20000"))
                     top_price = 20000;
 
-                //色のチェックボックス
+
+                if( !(color_All.isChecked())){
+                    color_search = true;
+                }
+                if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
+                    price_search = true;
+                }
+
+                //評価ワインのチェックボックス
                 final CheckBox nonda = findViewById(R.id.my_wine_eval);
 
                 ArrayList<Integer> searchedMyWineListIndex = new ArrayList<>();
@@ -1202,23 +1223,48 @@ public class MyWineActivity extends AppCompatActivity
                     }
 
                     //価格についての検索
-                    if( ((bottom_price != -1) && (top_price != -1)) && (bottom_price <= top_price) ){
-                        if( ((wineData.getWinePriceNumList().get(thisWineIndex) <= top_price) && (bottom_price <= wineData.getWinePriceNumList().get(thisWineIndex)))){
+                    if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
+                        if(color_search) {
+                            if ( !((wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i))) ){
+                                if( (searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                    int wineIndex = searchedMyWineListIndex.indexOf(myWineListIndex.get(i));
+                                    searchedMyWineListIndex.remove(wineIndex);
+                                    searchedMyWineListLength--;
 
-                            if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
-                                searchedMyWineListIndex.add(myWineListIndex.get(i));
-                                searchedMyWineListLength++;
-
+                                }
+                            }
+                        }
+                        else{
+                            if ( ((wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i))) ){
+                                if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
+                                    searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                    searchedMyWineListLength++;
+                                }
                             }
                         }
                     }
 
 
-                    //Myワイン検索
-                    if(evalList.get(thisWineIndex) != 0 && nonda.isChecked()){
-                        if( !(searchedMyWineListIndex.contains(myWineListIndex.get(i))) ){
-                            searchedMyWineListIndex.add(myWineListIndex.get(i));
-                            searchedMyWineListLength++;
+                    //評価済みワイン検索
+                    if(color_search || price_search) {
+                        if(nonda.isChecked()) {
+                            if(evalList.get(thisWineIndex) == 0) {
+                                if ((searchedMyWineListIndex.contains(myWineListIndex.get(i)))) {
+                                    int wineIndex = searchedMyWineListIndex.indexOf(myWineListIndex.get(i));
+                                    searchedMyWineListIndex.remove(wineIndex);
+                                    searchedMyWineListLength--;
+                                }
+                            }
+                        }
+                    }
+                    else{
+                        if(nonda.isChecked()) {
+                            if(evalList.get(thisWineIndex) != 0) {
+                                if (!(searchedMyWineListIndex.contains(myWineListIndex.get(i)))) {
+                                    searchedMyWineListIndex.add(myWineListIndex.get(i));
+                                    searchedMyWineListLength++;
+                                }
+                            }
                         }
                     }
 

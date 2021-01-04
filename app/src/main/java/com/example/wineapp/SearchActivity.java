@@ -176,29 +176,6 @@ public class SearchActivity extends AppCompatActivity
                 String selected_price_bottom = (String) spinner_price_bottom.getSelectedItem();
                 String selected_price_top = (String) spinner_price_top.getSelectedItem();
 
-                //デバック
-                /*
-                String result
-                        = "色: " + checkedButton.getText() + "\n"
-                        + "味わい(赤): " + selected_red_bottom + "～" + selected_red_top + "\n"
-                        + "味わい(白): " + selected_white_bottom + "～" + selected_white_top + "\n"
-                        + "価格: " + selected_price_bottom + "～" + selected_price_top;
-                TextView result_text = findViewById(R.id.result);
-                result_text.setText(result);
-                 */
-
-
-
-                //入力値を実数値に変換
-                /*
-                int colorNum = 0;
-                if(checkedButton.getId() == R.id.Color_Red)
-                    colorNum = 5;
-                else if(checkedButton.getId() == R.id.Color_Rose)
-                    colorNum = 3;
-                else if(checkedButton.getId() == R.id.Color_white)
-                    colorNum = 1;
-                 */
 
                 int taste_Red_B = 0;
                 if(selected_red_bottom.equals("フルボディ"))
@@ -746,57 +723,6 @@ public class SearchActivity extends AppCompatActivity
                 flag[wineIndex] = false;
             }
         }
-        /*
-        if(SS.isChecked() && grapeData.getSS().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(KS.isChecked() && grapeData.getKS().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(PV.isChecked() && grapeData.getPV().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(BQ.isChecked() && grapeData.getBQ().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(KF.isChecked() && grapeData.getKF().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(KN.isChecked() && grapeData.getKN().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(SB.isChecked() && grapeData.getSB().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Tana.isChecked() && grapeData.getTana().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-        if(Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
-        }
-
-         */
     }
 
     public String selectedGrapes(){
