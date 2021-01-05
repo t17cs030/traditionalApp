@@ -5,20 +5,20 @@ import android.widget.TextView;
 
 public class DisplayingViews {
     private ImageView[] imageView;
-    private TextView[] textIndexView;
+    private ImageView[] ratingImage;
     private int ImageViewId[];
 
     public DisplayingViews(int num){//コンストラクタ
         imageView = new ImageView[num];
-        textIndexView = new TextView[num];
+        ratingImage = new ImageView[num];
     }
 
     public ImageView[] getImageView() {
         return imageView;
     }
 
-    public TextView[] getTextIndexView() {
-        return textIndexView;
+    public ImageView[] getRatingImage() {
+        return ratingImage;
     }
 
     /*

@@ -130,24 +130,13 @@ public class SearchActivity extends AppCompatActivity
             }
         });
 
-        //ラジオボタンを登録
-        /*
-        RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_Color);
-        color.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup radioGroup, int checkedRadioButtonId) {
-                //RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
-                //TextView color = findViewById(R.id.text_color);
-                //color.setText(checkedButton.getText());
-            }
-        });
-         */
 
         //色のチェックボックス
         final CheckBox color_Red = findViewById(R.id.color_Red);
         final CheckBox color_Rose = findViewById(R.id.color_Rose);
         final CheckBox color_White = findViewById(R.id.color_White);
-        final CheckBox color_Other = findViewById(R.id.color_Other);
+        final CheckBox color_Orange = findViewById(R.id.color_Orange);
+        final CheckBox color_Sparkling = findViewById(R.id.color_Sparkling);
         final CheckBox color_All = findViewById(R.id.color_All);
 
         //チェックボックスのアクション
@@ -160,12 +149,13 @@ public class SearchActivity extends AppCompatActivity
         enter.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //押されているラジオボタン
-                /*
-                RadioGroup color = (RadioGroup) findViewById(R.id.RadioGroup_Color);
-                int checkedRadioButtonId = color.getCheckedRadioButtonId();
-                RadioButton checkedButton = (RadioButton)findViewById(checkedRadioButtonId);
-                 */
+
+                boolean color_search = false;
+                boolean taste_red_search = false;
+                boolean taste_white_search = false;
+                boolean price_search = false;
+                boolean grape_search = false;
+                boolean free_search = false;
 
 
                 //赤ワインの味わい
@@ -186,29 +176,6 @@ public class SearchActivity extends AppCompatActivity
                 String selected_price_bottom = (String) spinner_price_bottom.getSelectedItem();
                 String selected_price_top = (String) spinner_price_top.getSelectedItem();
 
-                //デバック
-                /*
-                String result
-                        = "色: " + checkedButton.getText() + "\n"
-                        + "味わい(赤): " + selected_red_bottom + "～" + selected_red_top + "\n"
-                        + "味わい(白): " + selected_white_bottom + "～" + selected_white_top + "\n"
-                        + "価格: " + selected_price_bottom + "～" + selected_price_top;
-                TextView result_text = findViewById(R.id.result);
-                result_text.setText(result);
-                 */
-
-
-
-                //入力値を実数値に変換
-                /*
-                int colorNum = 0;
-                if(checkedButton.getId() == R.id.Color_Red)
-                    colorNum = 5;
-                else if(checkedButton.getId() == R.id.Color_Rose)
-                    colorNum = 3;
-                else if(checkedButton.getId() == R.id.Color_white)
-                    colorNum = 1;
-                 */
 
                 int taste_Red_B = 0;
                 if(selected_red_bottom.equals("フルボディ"))
@@ -285,17 +252,44 @@ public class SearchActivity extends AppCompatActivity
                     }
                 });
 
-                /*
-                String result
-                        = "色: " + colorNum + "\n"
-                        + "味わい(赤): " + taste_Red_B + "～" + taste_Red_T+ "\n"
-                        + "味わい(白): " + taste_white_B + "～" + taste_white_T + "\n"
-                        + "価格: " + bottom_price + "～" + top_price + "\n";
-                TextView result_text = findViewById(R.id.result);
-                result_text.setText(result);
-                 */
+                if( !(color_All.isChecked())){
+                    color_search = true;
+                }
+                if(taste_Red_B != 0 && taste_Red_T != 0 && (taste_Red_B <= taste_Red_T) ){
+                    taste_red_search = true;
+                }
+                if(taste_white_B != 0 && taste_white_T != 0 && (taste_white_B <= taste_white_T) ){
+                    taste_white_search = true;
+                }
+                if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
+                    price_search = true;
+                }
+                if(search.getQuery().toString().trim().length() != 0){
+                    free_search = true;
+                }
+                CheckBox MBA = findViewById(R.id.check_MBA);
+                CheckBox SS = findViewById(R.id.check_SS);
+                CheckBox Kosyu = findViewById(R.id.check_Kosyu);
+                CheckBox KS = findViewById(R.id.check_KS);
+                CheckBox Merlot = findViewById(R.id.check_Merlot);
+                CheckBox PV = findViewById(R.id.check_PV);
+                CheckBox BQ = findViewById(R.id.check_BQ);
+                CheckBox KF = findViewById(R.id.check_KF);
+                CheckBox KN = findViewById(R.id.check_KaiN);
+                CheckBox SB = findViewById(R.id.check_SB);
+                CheckBox Delaware = findViewById(R.id.check_Delaware);
+                CheckBox Tana = findViewById(R.id.check_Tana);
+                CheckBox Tempranillo = findViewById(R.id.check_Tempranillo);
+                CheckBox Syrah = findViewById(R.id.check_Syrah);
+                CheckBox Mourvedre = findViewById(R.id.check_Mourvedre);
+                CheckBox Carmenere = findViewById(R.id.check_Carm);
+                CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
+                if( MBA.isChecked() || SS.isChecked() || Kosyu.isChecked() || KS.isChecked() || Merlot.isChecked()
+                || PV.isChecked() || BQ.isChecked() || KF.isChecked() || KN.isChecked() || SB.isChecked()
+                || Delaware.isChecked() || Tana.isChecked() || Tempranillo.isChecked() || Syrah.isChecked()
+                || Mourvedre.isChecked() || Carmenere.isChecked() || Chardonnay.isChecked())
+                    grape_search = true;
 
-                //SpannableStringBuilder sb = (SpannableStringBuilder)search.getText();
 
                 for(int i=0; i<wineData.getWineNum(); i++){
 
@@ -305,44 +299,89 @@ public class SearchActivity extends AppCompatActivity
 
                     //色についての検索
                     if(! (color_All.isChecked()) ) {
-                        if(wineData.getWineColorList().get(i) == 1 && color_White.isChecked()){
+                        if(wineData.getWineColorList().get(i).equals("白ワイン") && color_White.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(wineData.getWineColorList().get(i) == 3 && color_Rose.isChecked()){
+                        else if(wineData.getWineColorList().get(i).equals("ロゼワイン") && color_Rose.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(wineData.getWineColorList().get(i) == 5 && color_Red.isChecked()){
+                        else if(wineData.getWineColorList().get(i).equals("赤ワイン") && color_Red.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
-                        else if(wineData.getWineColorList().get(i) != 1 && wineData.getWineColorList().get(i) != 3 && wineData.getWineColorList().get(i) != 5 && color_Other.isChecked()) {
+                        else if(wineData.getWineColorList().get(i).equals("オレンジワイン") && color_Orange.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(wineData.getWineColorList().get(i).equals("スパークリングワイン") && color_Sparkling.isChecked()){
                             deleteFlag[thisWineIndex] = false;
                         }
                     }
                     //味わい赤についての検索
                     if(taste_Red_B != 0 && taste_Red_T != 0 && (taste_Red_B <= taste_Red_T) ){
-                        if( (wineData.getWineColorList().get(i) == 5) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)) ){
-                            deleteFlag[thisWineIndex] = false;
+                        if(color_search) {
+                            if ( !((wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)))) {
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if ( ((wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)))) {
+                                    deleteFlag[thisWineIndex] = false;
+                            }
                         }
                     }
                     //味わい白についての検索
                     if(taste_white_B != 0 && taste_white_T != 0 && (taste_white_B <= taste_white_T) ){
-                        if( (wineData.getWineColorList().get(i) != 5) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)) ){
-                            deleteFlag[thisWineIndex] = false;
+                        if(color_search || taste_red_search) {
+                            if ( !(!(wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)))) {
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if ( (!(wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)))) {
+                                    deleteFlag[thisWineIndex] = false;
+                            }
                         }
                     }
                     //価格についての検索
                     if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
-                        if( (wineData.getWinePriceList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceList().get(i)) ){
-                            deleteFlag[thisWineIndex] = false;
+                        if(color_search || taste_red_search || taste_white_search) {
+                            if ( !((wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i))) ){
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if ( ((wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i))) ){
+                                    deleteFlag[thisWineIndex] = false;
+                            }
                         }
                     }
                     //自由検索についての検索
-                    if(search.getQuery().toString().trim().length() != 0 && (wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
-                        deleteFlag[thisWineIndex] = false;
+                    if(search.getQuery().toString().trim().length() != 0){
+                        if(color_search || taste_red_search || taste_white_search || price_search) {
+                            if( !(wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if( (wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
+                                    deleteFlag[thisWineIndex] = false;
+                            }
+                        }
                     }
                     //ブドウの品種についての検索
+                    boolean other_search = false;
+                    if(color_search || taste_red_search || taste_white_search || price_search || free_search){
+                        other_search = true;
+                    }
                     int thisWineIndex_for_grape = grapeData.getWineIndexList().indexOf((int)wineID);
-                    searchByGrape(thisWineIndex, thisWineIndex_for_grape, deleteFlag);
+                    searchByGrape(thisWineIndex, thisWineIndex_for_grape, deleteFlag, other_search);
                 }
 
                 boolean check = false;
@@ -370,52 +409,28 @@ public class SearchActivity extends AppCompatActivity
         });
 
     }
-    //ボタンが押された時の処理
-    /*
-    public void onClick (View view){
-        Intent intent;
-        if (view.getId() == R.id.wineMap) {//ワインマップ画面へ
-            intent = new Intent(this, MainActivity.class);
-        }
-        else if (view.getId() == R.id.myWine) {//MYワインリストへ
-            intent = new Intent(this, MyWineActivity.class);
-        }
-        else if (view.getId() == R.id.label) {//ラベル読み込みへ
-            intent = new Intent(this, LabelActivity.class);
-        }
-        else if (view.getId() == R.id.winery) {//ワイナリーマップへ
-            intent = new Intent(this, WineryActivity.class);
-        }
-        else{//検索画面を維持
-            intent = new Intent(this, SearchActivity.class);
-        }
-        intent.putExtra("WINE_DATA", wineData);
-        intent.putExtra("GRAPE_DATA", grapeData);
-        intent.putExtra("CENTER_WINE", centerIndex);
-        startActivity(intent);
-    }
-
-     */
 
     public void color_check_box(){
         //色のチェックボックス
         final CheckBox color_Red = findViewById(R.id.color_Red);
         final CheckBox color_Rose = findViewById(R.id.color_Rose);
         final CheckBox color_White = findViewById(R.id.color_White);
-        final CheckBox color_Other = findViewById(R.id.color_Other);
+        final CheckBox color_Orange = findViewById(R.id.color_Orange);
+        final CheckBox color_Sparkling = findViewById(R.id.color_Sparkling);
         final CheckBox color_All = findViewById(R.id.color_All);
 
         color_Red.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -426,14 +441,15 @@ public class SearchActivity extends AppCompatActivity
         color_Rose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -444,14 +460,15 @@ public class SearchActivity extends AppCompatActivity
         color_White.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -459,17 +476,37 @@ public class SearchActivity extends AppCompatActivity
                 }
             }
         });
-        color_Other.setOnClickListener(new View.OnClickListener() {
+        color_Orange.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Other.isChecked()){
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
-                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Other.isChecked()){
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Sparkling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
                     color_All.setChecked(true);
                 }
                 else if(color_All.isChecked()) {
@@ -485,7 +522,8 @@ public class SearchActivity extends AppCompatActivity
                     color_Red.setChecked(false);
                     color_Rose.setChecked(false);
                     color_White.setChecked(false);
-                    color_Other.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
                 }
                 else if(color_All.isChecked()) {
                     color_All.setChecked(false);
@@ -494,7 +532,7 @@ public class SearchActivity extends AppCompatActivity
         });
     }
 
-    public void searchByGrape(int wineIndex, int grapeIndex, boolean flag[]){
+    public void searchByGrape(int wineIndex, int grapeIndex, boolean flag[], boolean search){
         //ブドウの品種のチェックボックス
         CheckBox MBA = findViewById(R.id.check_MBA);
         CheckBox SS = findViewById(R.id.check_SS);
@@ -515,56 +553,175 @@ public class SearchActivity extends AppCompatActivity
         CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
 
         //ブドウの品種についての検索
-        if(MBA.isChecked() && grapeData.getMBA().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (MBA.isChecked() && grapeData.getMBA().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(SS.isChecked() && grapeData.getSS().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(MBA.isChecked() && grapeData.getMBA().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (SS.isChecked() && grapeData.getSS().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(KS.isChecked() && grapeData.getKS().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(SS.isChecked() && grapeData.getSS().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(PV.isChecked() && grapeData.getPV().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(BQ.isChecked() && grapeData.getBQ().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (KS.isChecked() && grapeData.getKS().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(KF.isChecked() && grapeData.getKF().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(KS.isChecked() && grapeData.getKS().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(KN.isChecked() && grapeData.getKN().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(SB.isChecked() && grapeData.getSB().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (PV.isChecked() && grapeData.getPV().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(Tana.isChecked() && grapeData.getTana().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(PV.isChecked() && grapeData.getPV().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (BQ.isChecked() && grapeData.getBQ().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(BQ.isChecked() && grapeData.getBQ().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (KF.isChecked() && grapeData.getKF().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        if(Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        else{
+            if(KF.isChecked() && grapeData.getKF().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-        if(Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) == 1){
-            flag[wineIndex] = false;
+        if(search) {
+            if (KN.isChecked() && grapeData.getKN().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(KN.isChecked() && grapeData.getKN().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (SB.isChecked() && grapeData.getSB().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(SB.isChecked() && grapeData.getSB().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Tana.isChecked() && grapeData.getTana().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Tana.isChecked() && grapeData.getTana().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
     }
 

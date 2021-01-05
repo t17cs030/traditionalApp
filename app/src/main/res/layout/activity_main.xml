@@ -19,61 +19,12 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:menu="@menu/item_bottom_navigation"
+        app:labelVisibilityMode="labeled"
         app:layout_constraintHorizontal_bias="0.0"/>
 
-    <!--
-    <LinearLayout
-        android:id="@+id/icons"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0"
-        tools:ignore="MissingConstraints">
-
-        <Button
-            android:id="@+id/wineMap"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="#0000" />
-
-        <Button
-            android:id="@+id/search"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="#0000" />
-
-        <Button
-            android:id="@+id/myWine"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="#0000" />
-
-        <Button
-            android:id="@+id/label"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="#0000" />
-
-        <Button
-            android:id="@+id/winery"
-            android:layout_width="0dp"
-            android:layout_height="70dp"
-            android:layout_weight="1"
-            android:background="#0000" />
-
-    </LinearLayout>
-    -->
 
 
-
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -81,32 +32,42 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:clipChildren="false"
+        android:clipToPadding="false"
         tools:ignore="MissingConstraints">
 
 
-        <Button
-            android:id="@+id/expansion"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_above="@+id/reduction"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
-            android:text="+" />
 
-        <Button
-            android:id="@+id/reduction"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="0dp"
-            android:layout_marginRight="0dp"
-            android:layout_marginBottom="0dp"
-            android:text="-" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom|right"
+            android:elevation="1dp">
+            <Button
+                android:id="@+id/expansion"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@+id/reduction"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="0dp"
+                android:text="+" />
+
+            <Button
+                android:id="@+id/reduction"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="false"
+                android:layout_alignParentBottom="false"
+                android:layout_marginEnd="0dp"
+                android:layout_marginRight="0dp"
+                android:layout_marginBottom="0dp"
+                android:text="-" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_view"
@@ -133,6 +94,7 @@
             android:layout_height="150dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
+            android:layout_gravity="bottom"
             android:background="#FFFFFF"
             android:elevation="2dp"
             android:visibility="invisible">
@@ -155,12 +117,22 @@
 
             <TextView
                 android:id="@+id/to_wine_list"
-                android:layout_width="260dp"
+                android:layout_width="230dp"
                 android:layout_height="50dp"
                 android:layout_marginLeft="150dp"
                 android:layout_marginTop="100dp"
                 android:background="#FFFFFF"
                 android:text="ワインリストへ登録する" />
+
+            <TextView
+                android:id="@+id/to_info"
+                android:layout_width="30dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="100dp"
+                android:layout_toEndOf="@+id/to_wine_list"
+                android:layout_toRightOf="@+id/to_wine_list"
+                android:background="#FFFFFF"
+                android:text="詳細▼" />
 
         </RelativeLayout>
 
@@ -170,6 +142,7 @@
             android:layout_height="345dp"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="0dp"
+            android:layout_gravity="bottom"
             android:background="#FFFFFF"
             android:elevation="3dp"
             android:visibility="invisible">
@@ -219,6 +192,6 @@
         </RelativeLayout>
 
 
-    </RelativeLayout>
+    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

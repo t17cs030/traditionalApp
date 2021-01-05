@@ -11,14 +11,15 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="#ffffff"
-        app:itemTextColor="@drawable/bottom_navigation_item_state"
-        app:itemIconTint="@drawable/bottom_navigation_item_state"
         app:itemBackground="@color/colorTabBar"
+        app:itemIconTint="@drawable/bottom_navigation_item_state"
+        app:itemTextColor="@drawable/bottom_navigation_item_state"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:menu="@menu/item_bottom_navigation"
-        app:layout_constraintHorizontal_bias="0.0"/>
+        app:labelVisibilityMode="labeled"
+        app:menu="@menu/item_bottom_navigation" />
 
 
     <ListView
@@ -47,6 +48,17 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:elevation="3dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/for_close_eval"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:elevation="5dp"
         android:visibility="invisible"
         app:layout_constraintBottom_toTopOf="@+id/navigation"
         app:layout_constraintEnd_toEndOf="parent"
@@ -161,34 +173,36 @@
                 android:textStyle="bold" />
         </RelativeLayout>
 
-        <LinearLayout
-            android:id="@+id/for_eval"
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:elevation="5dp"
-            android:layout_marginTop="150dp"
-            android:background="#ffffff"
-            android:visibility="invisible"
-            android:orientation="horizontal">
-
-
-            <RatingBar
-                android:id="@+id/eval_star"
-                android:layout_marginTop="20dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:stepSize="1" />
-
-            <TextView
-                android:id="@+id/eval_enter"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="評価" />
-
-        </LinearLayout>
-
-
     </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/for_eval"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#ffffff"
+        android:elevation="6dp"
+        android:orientation="horizontal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/navigation"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.84"
+        tools:ignore="MissingConstraints">
+
+
+        <RatingBar
+            android:id="@+id/eval_star"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:stepSize="1" />
+
+        <TextView
+            android:id="@+id/eval_enter"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="評価" />
+
+    </LinearLayout>
 
     <ListView
         android:id="@+id/my_wine_list_multiple"
@@ -557,16 +571,34 @@
             app:layout_constraintVertical_bias="0.2" />
 
         <CheckBox
-            android:id="@+id/my_wine_color_Other"
+            android:id="@+id/my_wine_color_Orange"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text_my_wine_list_color"
+            android:layout_below="@+id/my_wine_color_Red"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginStart="40dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginTop="8dp"
+            android:text="オレンジ"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.05"
+            app:layout_constraintStart_toEndOf="@+id/color_White"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.2" />
+
+        <CheckBox
+            android:id="@+id/my_wine_color_Sparkling"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/my_wine_color_Red"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/my_wine_color_White"
-            android:layout_toRightOf="@+id/my_wine_color_White"
-            android:text="その他"
+            android:layout_toEndOf="@+id/my_wine_color_Orange"
+            android:layout_toRightOf="@+id/my_wine_color_Orange"
+            android:text="スパークリング"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
@@ -578,26 +610,27 @@
             android:id="@+id/my_wine_color_All"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/text_my_wine_list_color"
+            android:layout_alignTop="@+id/my_wine_color_White"
+            android:layout_alignBottom="@+id/my_wine_color_Sparkling"
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_toEndOf="@+id/my_wine_color_Other"
-            android:layout_toRightOf="@+id/my_wine_color_Other"
+            android:layout_marginTop="0dp"
+            android:layout_toEndOf="@+id/my_wine_color_Sparkling"
+            android:layout_toRightOf="@+id/my_wine_color_Sparkling"
             android:checked="true"
             android:text="ALL"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
-            app:layout_constraintStart_toEndOf="@+id/color_Other"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.2" />
+
 
         <TextView
             android:id="@+id/text_my_wine_list_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/my_wine_color_Red"
+            android:layout_below="@+id/my_wine_color_Orange"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"
             android:layout_marginStart="8dp"
