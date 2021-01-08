@@ -41,4 +41,16 @@ public class ViewsPoint {
         yPoints.clear();
         zPoints.clear();
     }
+
+    public void setxPoints(ArrayList<Double> xPoints) {
+        this.xPoints = xPoints;
+    }
+
+    public void setyPoints(ArrayList<Double> yPoints) {
+        this.yPoints = yPoints;
+    }
+
+    public void setzPoints(ArrayList<Double> zPoints) {
+        this.zPoints = zPoints;
+    }
 }

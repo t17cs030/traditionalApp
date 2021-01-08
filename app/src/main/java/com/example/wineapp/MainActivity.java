@@ -59,8 +59,8 @@ public class MainActivity extends AppCompatActivity {
     private int myWineListLength = 0;//Myワインリストの長さ
 
     private int centerIndex = 0;//中央のワインのインデックス(初期値は0)
-    private double magnification=2.5;//拡大率
-    private double pic_magnification=1;
+    private double magnification=6.0;//拡大率
+    private double pic_magnification=1.2;
 
     private int imageViewId[]={
             R.drawable.wine_01,
@@ -177,8 +177,8 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
         Intent me = getIntent();
-        int center = me.getIntExtra("CENTER_WINE", 0);
-        if(center == 0)
+        int center = me.getIntExtra("CENTER_WINE", -1);
+        if(center == -1)
             centerIndex = randCenter();
         else
             centerIndex = center;
@@ -186,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
         //ボトムナビゲーションビューの初期値の設定
         BottomNavigationView navi;
         navi = (BottomNavigationView) findViewById(R.id.navigation);
-        //navi.setSelectedItemId(R.id.search_navi);
         navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -231,16 +230,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.expansion).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( (pic_magnification * 1.3) < 1.0) {
-                    magnification *= 1.2;
-                    pic_magnification *= 1.3;
+                if(magnification+1 <= 8){
+                    if(magnification >= 6){
+                        magnification += 1;
+                        pic_magnification += 0.4;
+                    }
+                    else {
+                        magnification += 1;
+                        pic_magnification += 0.2;
+                    }
                 }
-                else{
-                    magnification*=1.2;
-                    pic_magnification = 1.0;
-                }
-                deleteView(displayingViews.getImageView(), displayingViews.getRatingImage());
-                drawPicture();
+                scaleImage(displayingViews.getImageView(), displayingViews.getRatingImage());
             }
         });
 
@@ -248,16 +248,17 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.reduction).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if( (magnification / 1.2) >= 2.5) {
-                    magnification /= 1.2;
-                    pic_magnification = 1.0;
+                if(magnification-1 >= 4){
+                    if(magnification <= 6){
+                        magnification -= 1;
+                        pic_magnification -= 0.2;
+                    }
+                    else {
+                        magnification -= 1;
+                        pic_magnification -= 0.4;
+                    }
                 }
-                else{
-                    magnification /= 1.2;
-                    pic_magnification /= 1.3;
-                }
-                deleteView(displayingViews.getImageView(), displayingViews.getRatingImage());
-                drawPicture();
+                scaleImage(displayingViews.getImageView(), displayingViews.getRatingImage());
             }
         });
     }
@@ -271,15 +272,13 @@ public class MainActivity extends AppCompatActivity {
 
         switch (motionEvent.getAction()) {
             case MotionEvent.ACTION_MOVE://ドラッグイベントが発生した際の処理
-                slideViews(displayingViews.getImageView(), displayingViews.getRatingImage(), newXPoint, newYPoint);//画面全体をスライド
+                roleImage(newXPoint, newYPoint, displayingViews.getImageView(), displayingViews.getRatingImage());
                 break;
             case MotionEvent.ACTION_CANCEL://タッチダウンとタッチアップが同時に発生した際の処理
                 break;
             case MotionEvent.ACTION_DOWN://タッチダウンが発生した際の処理
                 break;
             case MotionEvent.ACTION_UP://タッチアップが発生した際の処理
-                //deleteView(displayingViews.getImageView(), displayingViews.getTextIndexView());
-                //drawPicture();
                 break;
         }
         //タッチした位置を画像の位置に更新する
@@ -293,7 +292,6 @@ public class MainActivity extends AppCompatActivity {
     public void onWindowFocusChanged(boolean hasFocus) {//画像を張り付けるのに使う関数
         super.onWindowFocusChanged(hasFocus);
         //画像を載せるレイアウトを決定
-        //RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
         FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
 
         //描画可能域の中心をゼロとする
@@ -303,178 +301,173 @@ public class MainActivity extends AppCompatActivity {
         zeroPoint = new ZeroPoint((int)( (point[0]+usingLayout.getWidth())/2 ), (int)( (point[1]+usingLayout.getHeight()-navi.getHeight())/2) ) ;
 
         drawPicture();
-
-        //デバッグ用
-        /*
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("てすとだいあろぐ");
-        String str = String.valueOf(grapeData.getWineIndexList().get(0)) + String.valueOf(grapeData.getMBA().get(0));
-        builder.setMessage(str);
-        builder.show();
-         */
     }
 
-    //ここから通常関数
-    public void readCSV() {//CSVファイルを読み込む関数
-        try {
-            InputStream inputStream =
-                    getResources().getAssets().open("wineList.csv");
-
-            InputStreamReader inputStreamReader =
-                    new InputStreamReader(inputStream);
-
-            BufferedReader bufferReader =
-                    new BufferedReader(inputStreamReader);
-
-            String line = "";
-
-            while ((line = bufferReader.readLine()) != null) {
-                StringTokenizer stringTokenizer =
-                        new StringTokenizer(line, ",");
-
-                wineData.addWineIndexList(stringTokenizer.nextToken());
-                wineData.addWineIdoList(stringTokenizer.nextToken());
-                wineData.addWineKedoList(stringTokenizer.nextToken());
-                wineData.addWineColorList(stringTokenizer.nextToken());
-                wineData.addWineTypeList(stringTokenizer.nextToken());
-                wineData.addWineTasteList(stringTokenizer.nextToken());
-                wineData.addWinePriceList(stringTokenizer.nextToken());
-                wineData.addWinePriceNumList(stringTokenizer.nextToken());
-                wineData.addWineCapacityList(stringTokenizer.nextToken());
-                wineData.addWineGrapeList(stringTokenizer.nextToken());
-                wineData.addWineOriginList(stringTokenizer.nextToken());
-                wineData.addWineHarvestList(stringTokenizer.nextToken());
-                wineData.addWineNameList(stringTokenizer.nextToken());
-                wineData.addWineFuriganaList(stringTokenizer.nextToken());
-                wineData.addWineryIDList(stringTokenizer.nextToken());
-                wineData.addWineryNameList(stringTokenizer.nextToken());
-                wineData.addWineExplanationList(stringTokenizer.nextToken());
-            }
-            bufferReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        wineData.setWineNum(wineData.getWineIndexList().size());
-    }
-
-    public void readGrape() {//CSVファイルを読み込む関数
-        try {
-            InputStream inputStream =
-                    getResources().getAssets().open("grape.csv");
-
-            InputStreamReader inputStreamReader =
-                    new InputStreamReader(inputStream);
-
-            BufferedReader bufferReader =
-                    new BufferedReader(inputStreamReader);
-
-            String line = "";
-
-            while ((line = bufferReader.readLine()) != null) {
-                StringTokenizer stringTokenizer =
-                        new StringTokenizer(line, ",");
-
-                grapeData.addWineIndexList(stringTokenizer.nextToken());
-                grapeData.addMBA(stringTokenizer.nextToken());
-                grapeData.addSS(stringTokenizer.nextToken());
-                grapeData.addKosyu(stringTokenizer.nextToken());
-                grapeData.addKS(stringTokenizer.nextToken());
-                grapeData.addMerlot(stringTokenizer.nextToken());
-                grapeData.addPV(stringTokenizer.nextToken());
-                grapeData.addBQ(stringTokenizer.nextToken());
-                grapeData.addKF(stringTokenizer.nextToken());
-                grapeData.addKN(stringTokenizer.nextToken());
-                grapeData.addSB(stringTokenizer.nextToken());
-                grapeData.addDelaware(stringTokenizer.nextToken());
-                grapeData.addTana(stringTokenizer.nextToken());
-                grapeData.addTempranillo(stringTokenizer.nextToken());
-                grapeData.addSyrah(stringTokenizer.nextToken());
-                grapeData.addMourvale(stringTokenizer.nextToken());
-                grapeData.addCarmenere(stringTokenizer.nextToken());
-                grapeData.addChardonnay(stringTokenizer.nextToken());
-
-            }
-            bufferReader.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void calPoint(int index){//選んだワインを中心にした時の各ワインの座標を計算する
-
-        ArrayList<Integer> Index = wineData.getWineIndexList();
+    public void calPointOnSphere(){//前回選んだワインを中心にした時の各ワインの座標を計算する(起動時のとき)
         ArrayList<Double> Ido = wineData.getWineIdoList();
         ArrayList<Double> Kedo = wineData.getWineKedoList();
 
-        //選んだワインの緯度と経度を求める
         int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
         double phi0 = Ido.get(picIndexNum);
         double theta0 = Kedo.get(picIndexNum);
-        double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
+
+        double picWineX = Math.sin(phi0)*Math.cos(theta0);
+        double picWineY = Math.sin(phi0)*Math.sin(theta0);
+        double picWineZ = Math.cos(phi0);
+
+        double rotationX;
+        if(picWineZ >= 0){
+            rotationX = -Math.asin(picWineY);
+        }
+        else{
+            rotationX = -Math.PI + Math.asin(picWineY);
+        }
+        double rotationY = Math.asin(picWineX);
+
 
         //各ワインの座標を求める
         for(int i=0; i<wineData.getWineNum(); i++){
-            double phi_before = Ido.get(i);
-            double theta = Kedo.get(i);
-            double phi = Math.toRadians(90-(Math.toDegrees(phi_before)));
 
-            double c = Math.acos( Math.sin(phi1)*Math.sin(phi)+Math.cos(phi1)*Math.cos(phi)*Math.cos(theta-theta0) );
-            double k = c/( Math.sin(c) );
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
-            double x = k*Math.cos(phi)*Math.sin(theta-theta0);
-            double y = k*( Math.cos(phi1)*Math.sin(phi) - Math.sin(phi1)*Math.cos(phi)*Math.cos(theta-theta0) );
-            if(Double.isNaN(x)){
-                x=0;
+            double phi = Ido.get(thisWineIndex);
+            double theta = Kedo.get(thisWineIndex);
+
+            double x = Math.sin(phi)*Math.cos(theta);
+            double y = Math.sin(phi)*Math.sin(theta);
+            double z = Math.cos(phi);
+
+            double afterX = x;
+            double afterY = y*Math.cos(rotationX) + z*Math.sin(rotationX);
+            double afterZ = -y*Math.sin(rotationX) + z*Math.cos(rotationX);
+
+            double X = afterX*Math.cos(rotationY) - afterZ*Math.sin(rotationY);
+            double Y = afterY;
+            double Z = afterX*Math.sin(rotationY) + afterZ*Math.cos(rotationY);
+
+            viewsPoint.addxPoint(X);
+            viewsPoint.addyPoint(Y);
+            viewsPoint.addzPints(Z);
+        }
+    }
+
+    public void roleImage(int newX, int newY, ImageView[] imageView, ImageView[] ratingImage){//スクロール時の座標計算
+        int xZero = zeroPoint.getxZeroPoint();
+        int yZero = zeroPoint.getyZeroPoint();
+        //x方向増加量
+        Double xMoved = -( ((double)newY - yPoint)/yZero );
+        //y方向増加量
+        Double yMoved = -( ((double)newX - xPoint)/xZero );
+
+
+        double movedPhi = -Math.asin(xMoved);
+        double movedTheta = Math.asin(yMoved);
+
+        ArrayList<Double> newXPoints = new ArrayList<>();
+        ArrayList<Double> newYPoints = new ArrayList<>();
+        ArrayList<Double> newZPoints = new ArrayList<>();
+
+        for(int i=0; i<wineData.getWineNum(); i++) {
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
+
+            double beforeX = viewsPoint.getxPoints().get(thisWineIndex);
+            double beforeY = viewsPoint.getyPoints().get(thisWineIndex);
+            double beforeZ = viewsPoint.getzPoints().get(thisWineIndex);
+
+            double afterX = beforeX;
+            double afterY = beforeY * Math.cos(movedPhi) + beforeZ * Math.sin(movedPhi);
+            double afterZ = -beforeY * Math.sin(movedPhi) + beforeZ * Math.cos(movedPhi);
+
+            double X = afterX * Math.cos(movedTheta) - afterZ * Math.sin(movedTheta);
+            double Y = afterY;
+            double Z = afterX * Math.sin(movedTheta) + afterZ * Math.cos(movedTheta);
+
+            newXPoints.add(X);
+            newYPoints.add(Y);
+            newZPoints.add(Z);
+
+            double dx = X*xZero*magnification/3 + xZero;
+            double dy = Y*xZero*magnification/3 + yZero;
+            double imgW = dx + pic_magnification*80;
+            double imgH = dy + pic_magnification*200;
+            imageView[i].layout((int)dx, (int)dy, (int)imgW, (int)imgH);
+
+
+            double Rdx = X*xZero*magnification/3 + xZero - 50*pic_magnification;
+            double Rdy = Y*xZero*magnification/3 + yZero;
+            double RimgW = Rdx + pic_magnification*50;
+            double RimgH = Rdy + pic_magnification*200;
+            ratingImage[i].layout((int)Rdx, (int)Rdy, (int)RimgW, (int)RimgH);
+
+            if(Z < 0){
+                imageView[i].setVisibility(View.INVISIBLE);
+                ratingImage[i].setVisibility(View.INVISIBLE);
             }
-            if(Double.isNaN(y)){
-                y=0;
+            else{
+                imageView[i].setVisibility(View.VISIBLE);
+                ratingImage[i].setVisibility(View.VISIBLE);
             }
-            viewsPoint.addxPoint(x);
-            viewsPoint.addyPoint(y);
+
+
+        }
+
+        viewsPoint.setxPoints(newXPoints);
+        viewsPoint.setyPoints(newYPoints);
+        viewsPoint.setzPoints(newZPoints);
+    }
+
+    public void scaleImage(ImageView[] imageView, ImageView[] ratingImage){//拡大縮小時の座標計算
+        int xZero = zeroPoint.getxZeroPoint();
+        int yZero = zeroPoint.getyZeroPoint();
+
+        for(int i=0; i<wineData.getWineNum(); i++) {
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
+
+            double beforeX = viewsPoint.getxPoints().get(thisWineIndex);
+            double beforeY = viewsPoint.getyPoints().get(thisWineIndex);
+            double beforeZ = viewsPoint.getzPoints().get(thisWineIndex);
+
+            double dx = beforeX*xZero*magnification/3 + xZero;
+            double dy = beforeY*xZero*magnification/3 + yZero;
+            double imgW = dx + pic_magnification*80;
+            double imgH = dy + pic_magnification*200;
+            imageView[i].layout((int)dx, (int)dy, (int)imgW, (int)imgH);
+
+
+            double Rdx = beforeX*xZero*magnification/3 + xZero - 50*pic_magnification;
+            double Rdy = beforeY*xZero*magnification/3 + yZero;
+            double RimgW = Rdx + pic_magnification*50;
+            double RimgH = Rdy + pic_magnification*200;
+            ratingImage[i].layout((int)Rdx, (int)Rdy, (int)RimgW, (int)RimgH);
+
+            if(beforeZ < 0){
+                imageView[i].setVisibility(View.INVISIBLE);
+                ratingImage[i].setVisibility(View.INVISIBLE);
+            }
+            else{
+                imageView[i].setVisibility(View.VISIBLE);
+                ratingImage[i].setVisibility(View.VISIBLE);
+            }
+
+
         }
     }
 
     //球状で動かす用
-    public void calPoint2(int index){//選んだワインを中心にした時の各ワインの座標を計算する
+    public void setPictureOnSphere(ImageView[] imageView, ImageView[] ratingImage){
 
-        ArrayList<Integer> Index = wineData.getWineIndexList();
-        ArrayList<Double> Ido = wineData.getWineIdoList();
-        ArrayList<Double> Kedo = wineData.getWineKedoList();
-
-        //選んだワインの緯度と経度を求める
-        //int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
-        int picIndexNum = 0;
-        double phi0 = Ido.get(picIndexNum);
-        double theta0 = Kedo.get(picIndexNum);
-        //double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
-
-        //各ワインの座標を求める
-        for(int i=0; i<wineData.getWineNum(); i++){
-            double phi_before = Ido.get(i);
-            double theta = Kedo.get(i);
-            //double phi = Math.toRadians(90-(Math.toDegrees(phi_before)));
-
-            double thisPhi = phi_before-phi0;
-            double thisTheta = theta-theta0;
-
-            double x = Math.sin(thisPhi)*Math.cos(thisTheta);
-            double y = Math.sin(thisPhi)*Math.sin(thisTheta);
-            double z = Math.cos(thisPhi);
-            viewsPoint.addxPoint(x);
-            viewsPoint.addyPoint(y);
-            viewsPoint.addzPints(z);
-        }
-    }
-
-    public void setPicture(ImageView[] imageView, ImageView[] ratingImage){
-
-        //RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
         FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
 
         //画像を設定
         for(int i=0;i<wineData.getWineNum();i++) {
             imageView[i] = new ImageView(this);
             ratingImage[i] = new ImageView(this);
+
 
             double wineID = wineData.getWineIndexList().get(i);
             int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
@@ -484,23 +477,20 @@ public class MainActivity extends AppCompatActivity {
 
             ArrayList<Double> xPoints = viewsPoint.getxPoints();
             ArrayList<Double> yPoints = viewsPoint.getyPoints();
+            ArrayList<Double> zPoints = viewsPoint.getzPoints();
 
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int)(pic_magnification*80), (int)(pic_magnification*200));
-            lp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification);
-            lp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (pic_magnification * 80), (int) (pic_magnification * 200));
+            lp.leftMargin = (int) (xZero + xPoints.get(i)*xZero*magnification/3);
+            lp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
 
             FrameLayout.LayoutParams Rlp = new FrameLayout.LayoutParams((int)(pic_magnification*50), (int)(pic_magnification*200));
-            Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification - 50);
-            Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
-
-            //imageView[i].measure(80,200);
-            //ratingImage[i].measure(10,200);
+            Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero*magnification/3 - 50*pic_magnification);//最後の50はラベルの左側に座標を指定するため
+            Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
 
             Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
             imageView[i].setImageBitmap(bitmap1);
             imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
             usingLayout.addView(imageView[i], lp);
-
 
             if(wineData.getWineEvalList().size() != 0) {
                 if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
@@ -521,46 +511,18 @@ public class MainActivity extends AppCompatActivity {
 
                     ratingImage[i].setImageBitmap(bitmap2);
                     ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
-
                     usingLayout.addView(ratingImage[i], Rlp);
+
                 }
             }
-        }
-    }
 
-    //球状で動かす用
-    public void setPicture2(ImageView[] imageView, TextView[] textIndexView){
-
-        //RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-
-        //画像を設定
-        for(int i=0;i<wineData.getWineNum();i++) {
-            imageView[i] = new ImageView(this);
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-
-            int xZero = zeroPoint.getxZeroPoint();
-            int yZero = zeroPoint.getyZeroPoint();
-
-            ArrayList<Double> xPoints = viewsPoint.getxPoints();
-            ArrayList<Double> yPoints = viewsPoint.getyPoints();
-            ArrayList<Double> zPoints = viewsPoint.getzPoints();
-
-            if(xPoints.get(i) >= 0) {
-
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (pic_magnification * 80), (int) (pic_magnification * 200));
-                lp.leftMargin = (int) (xZero + zPoints.get(i) * xZero / 3 * magnification);
-                lp.topMargin = (int) (yZero + yPoints.get(i) * xZero / 3 * magnification);
-
-                imageView[i].measure(80, 200);
-
-                Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-                imageView[i].setImageBitmap(bitmap1);
-                imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
-
-                usingLayout.addView(imageView[i], lp);
+            if(zPoints.get(thisWineIndex) < 0){
+                imageView[i].setVisibility(View.INVISIBLE);
+                ratingImage[i].setVisibility(View.INVISIBLE);
+            }
+            else{
+                imageView[i].setVisibility(View.VISIBLE);
+                ratingImage[i].setVisibility(View.VISIBLE);
             }
         }
     }
@@ -582,6 +544,11 @@ public class MainActivity extends AppCompatActivity {
                     double wineID = wineData.getWineIndexList().get(thisWineNum);
                     final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
                     winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
+
+                    centerIndex = (int)wineID;
+                    keepCenter();
+                    TextView textView = findViewById(R.id.text_view);
+                    textView.setText("中心のワイン" + centerIndex);
 
                     TextView wine_name = findViewById(R.id.wine_name);
                     String str_wine
@@ -713,68 +680,20 @@ public class MainActivity extends AppCompatActivity {
         //画像の初期設定
         displayingViews = new DisplayingViews(wineData.getWineNum());
         //座標の計算
-        calPoint(centerIndex);
+        calPointOnSphere();
         //画像の張り付け
-        setPicture(displayingViews.getImageView(), displayingViews.getRatingImage());
+        setPictureOnSphere(displayingViews.getImageView(), displayingViews.getRatingImage());
         setListener(displayingViews.getImageView());
-
-        //TextView textView = findViewById(R.id.text_view);
-        //String str = "現在の中央=" + centerIndex + "　　拡大率=" + magnification + "　　画像拡大率=" + pic_magnification ;
-        //textView.setText(str);
 
     }
 
-    public void deleteView(ImageView[] imageView, ImageView[] textIndexView){//画面上のビューと座標を削除する
+    public void deleteView(ImageView[] imageView, ImageView[] ratingImage){//画面上のビューと座標を削除する
         viewsPoint.deletePoint();
-        //RelativeLayout usingLayout = (RelativeLayout) findViewById(R.id.layout);
         FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
         for(int i=0; i<wineData.getWineNum(); i++) {
             usingLayout.removeView(imageView[i]);
-            usingLayout.removeView(textIndexView[i]);
+            usingLayout.removeView(ratingImage[i]);
         }
-    }
-
-
-    public int getDistance(int dx, int dy){//画面の中心からの距離を計算する
-        int xZero = zeroPoint.getxZeroPoint();
-        int yZero = zeroPoint.getyZeroPoint();
-        return (xZero-dx)*(xZero-dx)+(yZero-dy)*(yZero-dy);
-    }
-
-    public void slideImage(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画像をスライドする
-        //int distance = 10000;
-        for(int i=0; i<wineData.getWineNum(); i++) {
-            //if(viewsPoint.getzPoints().get(i) >= 0) {
-
-            //x方向増加量
-            int addingX = newX - xPoint;
-            //y方向増加量
-            int addingY = newY - yPoint;
-
-            int dx = imageView[i].getLeft() + addingX;
-            int dy = imageView[i].getTop() + addingY;
-            int imgW = dx + imageView[i].getWidth();
-            int imgH = dy + imageView[i].getHeight();
-            imageView[i].layout(dx, dy, imgW, imgH);
-
-
-            int Rdx = ratingImage[i].getLeft() + addingX;
-            int Rdy = ratingImage[i].getTop() + addingY;
-            int RimgW = Rdx + ratingImage[i].getWidth();
-            int RimgH = Rdy + ratingImage[i].getHeight();
-            ratingImage[i].layout(Rdx, Rdy, RimgW, RimgH);
-
-                //if(distance > getDistance(dx, dy)){
-                //ここで中心を変える
-                //centerIndex = wineData.getWineIndexList().get(i);
-                //}
-            //}
-        }
-    }
-
-
-    public void slideViews(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画面に表示されているものをスライドする
-        slideImage(imageView, ratingImage, newX, newY);
     }
 
     public int randCenter(){
@@ -855,6 +774,411 @@ public class MainActivity extends AppCompatActivity {
         }
         br.close();
     }
+
+    //ここから通常関数
+    public void readCSV() {//CSVファイルを読み込む関数
+        try {
+            InputStream inputStream =
+                    getResources().getAssets().open("wineList.csv");
+
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream);
+
+            BufferedReader bufferReader =
+                    new BufferedReader(inputStreamReader);
+
+            String line = "";
+
+            while ((line = bufferReader.readLine()) != null) {
+                StringTokenizer stringTokenizer =
+                        new StringTokenizer(line, ",");
+
+                wineData.addWineIndexList(stringTokenizer.nextToken());
+                wineData.addWineIdoList(stringTokenizer.nextToken());
+                wineData.addWineKedoList(stringTokenizer.nextToken());
+                wineData.addWineColorList(stringTokenizer.nextToken());
+                wineData.addWineTypeList(stringTokenizer.nextToken());
+                wineData.addWineTasteList(stringTokenizer.nextToken());
+                wineData.addWinePriceList(stringTokenizer.nextToken());
+                wineData.addWinePriceNumList(stringTokenizer.nextToken());
+                wineData.addWineCapacityList(stringTokenizer.nextToken());
+                wineData.addWineGrapeList(stringTokenizer.nextToken());
+                wineData.addWineOriginList(stringTokenizer.nextToken());
+                wineData.addWineHarvestList(stringTokenizer.nextToken());
+                wineData.addWineNameList(stringTokenizer.nextToken());
+                wineData.addWineFuriganaList(stringTokenizer.nextToken());
+                wineData.addWineryIDList(stringTokenizer.nextToken());
+                wineData.addWineryNameList(stringTokenizer.nextToken());
+                wineData.addWineExplanationList(stringTokenizer.nextToken());
+            }
+            bufferReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        wineData.setWineNum(wineData.getWineIndexList().size());
+    }
+
+    public void readGrape() {//CSVファイルを読み込む関数
+        try {
+            InputStream inputStream =
+                    getResources().getAssets().open("grape.csv");
+
+            InputStreamReader inputStreamReader =
+                    new InputStreamReader(inputStream);
+
+            BufferedReader bufferReader =
+                    new BufferedReader(inputStreamReader);
+
+            String line = "";
+
+            while ((line = bufferReader.readLine()) != null) {
+                StringTokenizer stringTokenizer =
+                        new StringTokenizer(line, ",");
+
+                grapeData.addWineIndexList(stringTokenizer.nextToken());
+                grapeData.addMBA(stringTokenizer.nextToken());
+                grapeData.addSS(stringTokenizer.nextToken());
+                grapeData.addKosyu(stringTokenizer.nextToken());
+                grapeData.addKS(stringTokenizer.nextToken());
+                grapeData.addMerlot(stringTokenizer.nextToken());
+                grapeData.addPV(stringTokenizer.nextToken());
+                grapeData.addBQ(stringTokenizer.nextToken());
+                grapeData.addKF(stringTokenizer.nextToken());
+                grapeData.addKN(stringTokenizer.nextToken());
+                grapeData.addSB(stringTokenizer.nextToken());
+                grapeData.addDelaware(stringTokenizer.nextToken());
+                grapeData.addTana(stringTokenizer.nextToken());
+                grapeData.addTempranillo(stringTokenizer.nextToken());
+                grapeData.addSyrah(stringTokenizer.nextToken());
+                grapeData.addMourvale(stringTokenizer.nextToken());
+                grapeData.addCarmenere(stringTokenizer.nextToken());
+                grapeData.addChardonnay(stringTokenizer.nextToken());
+
+            }
+            bufferReader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+        /*
+
+    public void calPoint(int index){//選んだワインを中心にした時の各ワインの座標を計算する
+
+        ArrayList<Integer> Index = wineData.getWineIndexList();
+        ArrayList<Double> Ido = wineData.getWineIdoList();
+        ArrayList<Double> Kedo = wineData.getWineKedoList();
+
+        //選んだワインの緯度と経度を求める
+        int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
+        picIndexNum = 2;
+        double phi0 = Ido.get(picIndexNum);
+        double theta0 = Kedo.get(picIndexNum);
+        double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
+
+        //各ワインの座標を求める
+        for(int i=0; i<wineData.getWineNum(); i++){
+            double phi_before = Ido.get(i);
+            double theta = Kedo.get(i);
+            double phi = Math.toRadians(90-(Math.toDegrees(phi_before)));
+
+            double c = Math.acos( Math.sin(phi1)*Math.sin(phi)+Math.cos(phi1)*Math.cos(phi)*Math.cos(theta-theta0) );
+            double k = c/( Math.sin(c) );
+
+            double x = k*Math.cos(phi)*Math.sin(theta-theta0);
+            double y = k*( Math.cos(phi1)*Math.sin(phi) - Math.sin(phi1)*Math.cos(phi)*Math.cos(theta-theta0) );
+            if(Double.isNaN(x)){
+                x=0;
+            }
+            if(Double.isNaN(y)){
+                y=0;
+            }
+            viewsPoint.addxPoint(x);
+            viewsPoint.addyPoint(y);
+        }
+    }
+
+    //球状で動かす用
+    public void calPoint2(int index){//選んだワインを中心にした時の各ワインの座標を計算する
+
+        ArrayList<Integer> Index = wineData.getWineIndexList();
+        ArrayList<Double> Ido = wineData.getWineIdoList();
+        ArrayList<Double> Kedo = wineData.getWineKedoList();
+
+        //選んだワインの緯度と経度を求める
+        //int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
+        int picIndexNum = 2;
+        double phi0 = Ido.get(picIndexNum);
+        double theta0 = Kedo.get(picIndexNum);
+        //double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
+
+        //各ワインの座標を求める
+        for(int i=0; i<wineData.getWineNum(); i++){
+            double phi = Ido.get(i);
+            double theta = Kedo.get(i);
+
+            double x = Math.sin(phi)*Math.cos(theta);
+            double y = Math.sin(phi)*Math.sin(theta);
+            double z = Math.cos(phi);
+            viewsPoint.addxPoint(x);
+            viewsPoint.addyPoint(y);
+            viewsPoint.addzPints(z);
+        }
+
+        TextView text = findViewById(R.id.text_view);
+        String str = "";
+        for(int k=0; k<viewsPoint.getxPoints().size(); k++){
+            str += "x=" + viewsPoint.getxPoints().get(k) + "y=" + viewsPoint.getyPoints().get(k) + "z=" + viewsPoint.getzPoints().get(k)+ "\n";
+        }
+        text.setText(str);
+    }
+
+        public void setPicture(ImageView[] imageView, ImageView[] ratingImage){
+
+        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
+
+        //画像を設定
+        for(int i=0;i<wineData.getWineNum();i++) {
+            imageView[i] = new ImageView(this);
+            ratingImage[i] = new ImageView(this);
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+            int xZero = zeroPoint.getxZeroPoint();
+            int yZero = zeroPoint.getyZeroPoint();
+
+            ArrayList<Double> xPoints = viewsPoint.getxPoints();
+            ArrayList<Double> yPoints = viewsPoint.getyPoints();
+
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int)(pic_magnification*80), (int)(pic_magnification*200));
+            lp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification);
+            lp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
+
+            FrameLayout.LayoutParams Rlp = new FrameLayout.LayoutParams((int)(pic_magnification*50), (int)(pic_magnification*200));
+            Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification - 50);
+            Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
+
+            //imageView[i].measure(80,200);
+            //ratingImage[i].measure(10,200);
+
+            Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+            imageView[i].setImageBitmap(bitmap1);
+            imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
+            usingLayout.addView(imageView[i], lp);
+
+
+            if(wineData.getWineEvalList().size() != 0) {
+                if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
+                    int drawImage = 0;
+                    if (wineData.getWineEvalList().get(thisWineIndex) == 1) {
+                        drawImage = R.drawable.rate_01;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 2) {
+                        drawImage = R.drawable.rate_02;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 3) {
+                        drawImage = R.drawable.rate_03;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 4) {
+                        drawImage = R.drawable.rate_04;
+                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 5) {
+                        drawImage = R.drawable.rate_05;
+                    }
+
+                    Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
+
+                    ratingImage[i].setImageBitmap(bitmap2);
+                    ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
+
+                    usingLayout.addView(ratingImage[i], Rlp);
+                }
+            }
+        }
+    }
+
+        /*
+    public void reCalPoint(int newX, int newY){//スクロール時の座標計算
+        int xZero = zeroPoint.getxZeroPoint();
+        int yZero = zeroPoint.getyZeroPoint();
+        //x方向増加量
+        Double xMoved = -( ((double)newY - yPoint)/yZero );
+        //y方向増加量
+        Double yMoved = -( ((double)newX - xPoint)/xZero );
+
+
+        double movedPhi = -Math.asin(xMoved);
+        double movedTheta = Math.asin(yMoved);
+
+        ArrayList<Double> newXPoints = new ArrayList<>();
+        ArrayList<Double> newYPoints = new ArrayList<>();
+        ArrayList<Double> newZPoints = new ArrayList<>();
+
+        for(int i=0; i<wineData.getWineNum(); i++) {
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
+
+            double beforeX = viewsPoint.getxPoints().get(thisWineIndex);
+            double beforeY = viewsPoint.getyPoints().get(thisWineIndex);
+            double beforeZ = viewsPoint.getzPoints().get(thisWineIndex);
+
+            double afterX = beforeX;
+            double afterY = beforeY * Math.cos(movedPhi) + beforeZ * Math.sin(movedPhi);
+            double afterZ = -beforeY * Math.sin(movedPhi) + beforeZ * Math.cos(movedPhi);
+
+            double X = afterX * Math.cos(movedTheta) - afterZ * Math.sin(movedTheta);
+            double Y = afterY;
+            double Z = afterX * Math.sin(movedTheta) + afterZ * Math.cos(movedTheta);
+
+            newXPoints.add(X);
+            newYPoints.add(Y);
+            newZPoints.add(Z);
+
+            double moveX = X - beforeX;
+            double moveY = Y - beforeY;
+            double moveZ = Z - beforeZ;
+        }
+
+        viewsPoint.deletePoint();
+        viewsPoint.setxPoints(newXPoints);
+        viewsPoint.setyPoints(newYPoints);
+        viewsPoint.setzPoints(newZPoints);
+
+
+        TextView text = findViewById(R.id.text_view);
+        String str = "";
+        for(int k=0; k<viewsPoint.getxPoints().size(); k++){
+            str += "x=" + viewsPoint.getxPoints().get(k) + "y=" + viewsPoint.getyPoints().get(k) + "z=" + viewsPoint.getzPoints().get(k)+ "\n";
+        }
+        text.setText(str);
+
+
+    }
+
+
+
+     */
+    /*
+
+    //球状で動かす用
+    public void setPicture2(ImageView[] imageView, ImageView[] ratingImage){
+
+        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
+
+        //画像を設定
+        for(int i=0;i<wineData.getWineNum();i++) {
+            imageView[i] = new ImageView(this);
+            ratingImage[i] = new ImageView(this);
+
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+            int xZero = zeroPoint.getxZeroPoint();
+            int yZero = zeroPoint.getyZeroPoint();
+
+            ArrayList<Double> xPoints = viewsPoint.getxPoints();
+            ArrayList<Double> yPoints = viewsPoint.getyPoints();
+            ArrayList<Double> zPoints = viewsPoint.getzPoints();
+
+            if(zPoints.get(i) >= 0) {
+
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (pic_magnification * 80), (int) (pic_magnification * 200));
+                lp.leftMargin = (int) (xZero + xPoints.get(i)*xZero*magnification/3);
+                lp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
+
+                FrameLayout.LayoutParams Rlp = new FrameLayout.LayoutParams((int)(pic_magnification*50), (int)(pic_magnification*200));
+                Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero*magnification/3 - 50*pic_magnification);//最後の50はラベルの左側に座標を指定するため
+                Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
+
+                //imageView[i].measure(80, 200);
+
+                Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                imageView[i].setImageBitmap(bitmap1);
+                imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
+                usingLayout.addView(imageView[i], lp);
+
+                if(wineData.getWineEvalList().size() != 0) {
+                    if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
+                        int drawImage = 0;
+                        if (wineData.getWineEvalList().get(thisWineIndex) == 1) {
+                            drawImage = R.drawable.rate_01;
+                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 2) {
+                            drawImage = R.drawable.rate_02;
+                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 3) {
+                            drawImage = R.drawable.rate_03;
+                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 4) {
+                            drawImage = R.drawable.rate_04;
+                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 5) {
+                            drawImage = R.drawable.rate_05;
+                        }
+
+                        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
+
+                        ratingImage[i].setImageBitmap(bitmap2);
+                        ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
+                        usingLayout.addView(ratingImage[i], Rlp);
+
+                    }
+                }
+            }
+        }
+    }
+    */
+
+/*
+    public void slideImage(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画像をスライドする
+        //int distance = 10000;
+        //x方向増加量
+        int addingX = newX - xPoint;
+        //y方向増加量
+        int addingY = newY - yPoint;
+        for(int i=0; i<wineData.getWineNum(); i++) {
+            //if(viewsPoint.getzPoints().get(i) >= 0) {
+
+            double dx = imageView[i].getLeft() + addingX;
+            double dy = imageView[i].getTop() + addingY;
+            double imgW = dx + imageView[i].getWidth();
+            double imgH = dy + imageView[i].getHeight();
+            imageView[i].layout((int)dx, (int)dy, (int)imgW, (int)imgH);
+
+
+            int Rdx = ratingImage[i].getLeft() + addingX;
+            int Rdy = ratingImage[i].getTop() + addingY;
+            int RimgW = Rdx + ratingImage[i].getWidth();
+            int RimgH = Rdy + ratingImage[i].getHeight();
+            ratingImage[i].layout(Rdx, Rdy, RimgW, RimgH);
+
+        }
+    }
+
+    public void slideImage2(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画像をスライドする
+        //x方向増加量
+        int addingX = newX - xPoint;
+        //y方向増加量
+        int addingY = newY - yPoint;
+
+
+        for(int i=0; i<wineData.getWineNum(); i++) {
+            int dx = imageView[i].getLeft() + addingX;
+            int dy = imageView[i].getTop() + addingY;
+            int imgW = dx + imageView[i].getWidth();
+            int imgH = dy + imageView[i].getHeight();
+            imageView[i].layout(dx, dy, imgW, imgH);
+
+
+            int Rdx = ratingImage[i].getLeft() + addingX;
+            int Rdy = ratingImage[i].getTop() + addingY;
+            int RimgW = Rdx + ratingImage[i].getWidth();
+            int RimgH = Rdy + ratingImage[i].getHeight();
+            ratingImage[i].layout(Rdx, Rdy, RimgW, RimgH);
+        }
+    }
+
+
+    public void slideViews(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画面に表示されているものをスライドする
+        slideImage(imageView, ratingImage, newX, newY);
+    }
+
+     */
 
 }
 
