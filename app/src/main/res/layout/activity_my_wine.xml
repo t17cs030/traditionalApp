@@ -92,7 +92,8 @@
             android:layout_marginLeft="150dp"
             android:layout_marginTop="0dp"
             android:background="#FFFFFF"
-            android:text="ワイン名:" />
+            android:text="ワイン名:"
+            android:textSize="10sp" />
 
         <TextView
             android:id="@+id/my_wine_explanation"

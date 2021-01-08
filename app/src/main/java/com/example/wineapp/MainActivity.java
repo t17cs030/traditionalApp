@@ -547,8 +547,11 @@ public class MainActivity extends AppCompatActivity {
 
                     centerIndex = (int)wineID;
                     keepCenter();
-                    TextView textView = findViewById(R.id.text_view);
-                    textView.setText("中心のワイン" + centerIndex);
+                    //TextView textView = findViewById(R.id.text_view);
+                    //textView.setText("中心のワイン" + centerIndex);
+
+
+                    reDraw(displayingViews.getImageView(), displayingViews.getRatingImage());
 
                     TextView wine_name = findViewById(R.id.wine_name);
                     String str_wine
@@ -694,6 +697,19 @@ public class MainActivity extends AppCompatActivity {
             usingLayout.removeView(imageView[i]);
             usingLayout.removeView(ratingImage[i]);
         }
+    }
+
+    public void reDraw(ImageView[] imageView, ImageView[] ratingImage){
+        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
+        for(int i=0; i<wineData.getWineNum(); i++) {
+            usingLayout.removeView(imageView[i]);
+            usingLayout.removeView(ratingImage[i]);
+        }
+        //画像の初期設定
+        displayingViews = new DisplayingViews(wineData.getWineNum());
+        //画像の張り付け
+        setPictureOnSphere(displayingViews.getImageView(), displayingViews.getRatingImage());
+        setListener(displayingViews.getImageView());
     }
 
     public int randCenter(){
