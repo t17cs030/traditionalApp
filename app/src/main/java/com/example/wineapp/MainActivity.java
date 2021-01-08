@@ -279,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
             case MotionEvent.ACTION_DOWN://タッチダウンが発生した際の処理
                 break;
             case MotionEvent.ACTION_UP://タッチアップが発生した際の処理
+                reDraw(displayingViews.getImageView(), displayingViews.getRatingImage());
                 break;
         }
         //タッチした位置を画像の位置に更新する
@@ -551,7 +552,7 @@ public class MainActivity extends AppCompatActivity {
                     //textView.setText("中心のワイン" + centerIndex);
 
 
-                    reDraw(displayingViews.getImageView(), displayingViews.getRatingImage());
+                    //reDraw(displayingViews.getImageView(), displayingViews.getRatingImage());
 
                     TextView wine_name = findViewById(R.id.wine_name);
                     String str_wine
