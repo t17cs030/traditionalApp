@@ -749,7 +749,7 @@ public class MainActivity extends AppCompatActivity {
         //画像の張り付け
         setPictureOnSphere(displayingViews.getImageView(), displayingViews.getRatingImage());
         //setPicture(displayingViews.getImageView(), displayingViews.getRatingImage());
-        setListener(displayingViews.getImageView());
+        setListener(displayingViews.getImageView()); 
 
     }
 
