@@ -3,7 +3,6 @@ package com.example.wineapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,7 +35,7 @@ public class LabelActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.wineMap_navi:
-                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        Intent intent_wine = new Intent(getApplication(), BeforeMainActivity.class);
                         intent_wine.putExtra("WINE_DATA", wineData);
                         intent_wine.putExtra("GRAPE_DATA", grapeData);
                         intent_wine.putExtra("CENTER_WINE", centerIndex);
@@ -50,7 +49,7 @@ public class LabelActivity extends AppCompatActivity
                         startActivity(intent_search);
                         return true;
                     case R.id.myWine_navi:
-                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        Intent intent_myWine = new Intent(getApplication(), MainActivity.class);
                         intent_myWine.putExtra("WINE_DATA", wineData);
                         intent_myWine.putExtra("GRAPE_DATA", grapeData);
                         intent_myWine.putExtra("CENTER_WINE", centerIndex);

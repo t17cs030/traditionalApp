@@ -10,7 +10,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -24,10 +23,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.GroundOverlayOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -35,8 +32,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-
-import android.location.Location;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -92,7 +87,7 @@ public class WineryActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.wineMap_navi:
-                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        Intent intent_wine = new Intent(getApplication(), BeforeMainActivity.class);
                         intent_wine.putExtra("WINE_DATA", wineData);
                         intent_wine.putExtra("GRAPE_DATA", grapeData);
                         intent_wine.putExtra("CENTER_WINE", centerIndex);
@@ -106,7 +101,7 @@ public class WineryActivity extends AppCompatActivity
                         startActivity(intent_search);
                         return true;
                     case R.id.myWine_navi:
-                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        Intent intent_myWine = new Intent(getApplication(), MainActivity.class);
                         intent_myWine.putExtra("WINE_DATA", wineData);
                         intent_myWine.putExtra("GRAPE_DATA", grapeData);
                         intent_myWine.putExtra("CENTER_WINE", centerIndex);
@@ -208,7 +203,7 @@ public class WineryActivity extends AppCompatActivity
                             }
                         }
 
-                        Intent intent = new Intent(getApplication(), MainActivity.class);
+                        Intent intent = new Intent(getApplication(), BeforeMainActivity.class);
                         intent.putExtra("DELETE_FLAG", deleteFlag);
                         intent.putExtra("CENTER_WINE", centerIndex);
                         startActivity(intent);

@@ -5,62 +5,44 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.net.Uri;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.FrameLayout;
+import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.RatingBar;
 import android.widget.RelativeLayout;
+import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity {
 
-    private int xPoint, yPoint; //画面スクロール用
+    private WineData wineData = new WineData();
+    private GrapeData grapeData = new GrapeData();
 
-    private DisplayingViews displayingViews;//画面に張り付ける画像群クラス
-
-    private ZeroPoint zeroPoint;//画面の原点を保持するクラス
-
-    private WineData wineData = new WineData();//ワインのインデックスや緯度経度リストのクラス
-    private GrapeData grapeData = new GrapeData();//ワインに用いられているブドウのリストのクラス
-
-    private ViewsPoint viewsPoint = new ViewsPoint();//各ビューの座標を保存するクラス
-
-    private ArrayList<Integer> myWineListIndex = new ArrayList<>();//Myワインに登録されているのワインインデックスを保存する
-    private int myWineListLength = 0;//Myワインリストの長さ
-
-    private int centerIndex = 0;//中央のワインのインデックス(初期値は0)
-    private double magnification=6.0;//拡大率
-    private double pic_magnification=1.2;
+    private ArrayList<Integer> myWineListIndex = new ArrayList<>();
+    private int myWineListLength = 0;
 
     private int imageViewId[]={
             R.drawable.wine_01,
@@ -163,633 +145,988 @@ public class MainActivity extends AppCompatActivity {
             R.drawable.wine_98
     };//画像のIDを配列に格納//最終的にDisplayViewsに移動予定
 
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate (Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_my_wine);
+
+        Intent me = getIntent();
 
         readCSV();//最初にデータを読み込む
         readGrape();
-        try {
-            readMyWineList();
-            readEvalList();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Intent me = getIntent();
-        int center = me.getIntExtra("CENTER_WINE", -1);
-        if(center == -1)
-            centerIndex = randCenter();
-        else
-            centerIndex = center;
 
-        //ボトムナビゲーションビューの初期値の設定
-        BottomNavigationView navi;
-        navi = (BottomNavigationView) findViewById(R.id.navigation);
-        navi.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.wineMap_navi:
-                        return true;
-                    case R.id.search_navi:
-                        Intent intent_Search = new Intent(getApplication(), SearchActivity.class);
-                        intent_Search.putExtra("WINE_DATA", wineData);
-                        intent_Search.putExtra("GRAPE_DATA", grapeData);
-                        intent_Search.putExtra("CENTER_WINE", centerIndex);
-                        startActivity(intent_Search);
-                        return true;
-                    case R.id.myWine_navi:
-                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
-                        intent_myWine.putExtra("WINE_DATA", wineData);
-                        intent_myWine.putExtra("GRAPE_DATA", grapeData);
-                        intent_myWine.putExtra("CENTER_WINE", centerIndex);
-                        startActivity(intent_myWine);
-                        return true;
-                    case R.id.label_navi:
-                        Intent intent_label = new Intent(getApplication(), LabelActivity.class);
-                        intent_label.putExtra("WINE_DATA", wineData);
-                        intent_label.putExtra("GRAPE_DATA", grapeData);
-                        intent_label.putExtra("CENTER_WINE", centerIndex);
-                        startActivity(intent_label);
-                        return true;
-                    case R.id.winery_navi:
-                        Intent intent_winery = new Intent(getApplication(), WineryActivity.class);
-                        intent_winery.putExtra("WINE_DATA", wineData);
-                        intent_winery.putExtra("GRAPE_DATA", grapeData);
-                        intent_winery.putExtra("CENTER_WINE", centerIndex);
-                        startActivity(intent_winery);
-                        return true;
+        final boolean [] deleteFlag = new boolean[wineData.getWineNum()];
+        Arrays.fill(deleteFlag, true);
 
-                }
-                return false;
-            }
-        });
-
-        //拡大ボタン
-        findViewById(R.id.expansion).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(magnification+1 <= 8){
-                    if(magnification >= 6){
-                        magnification += 1;
-                        pic_magnification += 0.4;
-                    }
-                    else {
-                        magnification += 1;
-                        pic_magnification += 0.2;
-                    }
-                }
-                scaleImage(displayingViews.getImageView(), displayingViews.getRatingImage());
-            }
-        });
-
-        //縮小ボタン
-        findViewById(R.id.reduction).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(magnification-1 >= 4){
-                    if(magnification <= 6){
-                        magnification -= 1;
-                        pic_magnification -= 0.2;
-                    }
-                    else {
-                        magnification -= 1;
-                        pic_magnification -= 0.4;
-                    }
-                }
-                scaleImage(displayingViews.getImageView(), displayingViews.getRatingImage());
-            }
-        });
+        //チェックボックスのアクション
+        color_check_box();
+        setButtonClick(deleteFlag);
+        updateMyWineList(deleteFlag);
     }
 
+    private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
 
-    @Override
-    public boolean onTouchEvent(MotionEvent motionEvent) {
-        //タッチした場所の絶対座標を取得
-        int newXPoint = (int)motionEvent.getRawX();
-        int newYPoint = (int)motionEvent.getRawY();
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
 
-        switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_MOVE://ドラッグイベントが発生した際の処理
-                roleImage(newXPoint, newYPoint, displayingViews.getImageView(), displayingViews.getRatingImage());
-                break;
-            case MotionEvent.ACTION_CANCEL://タッチダウンとタッチアップが同時に発生した際の処理
-                break;
-            case MotionEvent.ACTION_DOWN://タッチダウンが発生した際の処理
-                break;
-            case MotionEvent.ACTION_UP://タッチアップが発生した際の処理
-                reDraw(displayingViews.getImageView(), displayingViews.getRatingImage());
-                break;
-        }
-        //タッチした位置を画像の位置に更新する
+            // タップしたアイテムの取得//元々あったもの
+            ListView thisListView = (ListView)parent;
+            MyWineListItem thisItem = (MyWineListItem)thisListView.getItemAtPosition(position);  // SampleListItemにキャスト
 
-        xPoint = newXPoint;
-        yPoint = newYPoint;
-        return false;
-    }
+            //リストが押された時
+            ImageView winePicture = findViewById(R.id.my_wine_info);
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {//画像を張り付けるのに使う関数
-        super.onWindowFocusChanged(hasFocus);
-        //画像を載せるレイアウトを決定
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
+            //final double wineID = myWineListIndex.get(position);
+            final double wineID = thisItem.getWineID();
+            final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
-        //描画可能域の中心をゼロとする
-        int point[] = new int[2];
-        usingLayout.getLocationOnScreen(point);
-        BottomNavigationView navi = findViewById(R.id.navigation);
-        zeroPoint = new ZeroPoint((int)( (point[0]+usingLayout.getWidth())/2 ), (int)( (point[1]+usingLayout.getHeight()-navi.getHeight())/2) ) ;
+            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
 
-        drawPicture();
-    }
+            TextView my_wine_name = findViewById(R.id.my_wine_name);
 
-    public void calPointOnSphere(){//前回選んだワインを中心にした時の各ワインの座標を計算する(起動時のとき)
-        ArrayList<Double> Ido = wineData.getWineIdoList();
-        ArrayList<Double> Kedo = wineData.getWineKedoList();
+            String str_wine
+                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
+                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex) + "\n"
+                    + "色: "  + wineData.getWineColorList().get(thisWineIndex) + "\n"
+                    + "タイプ: " + wineData.getWineTypeList().get(thisWineIndex) + "\n"
+                    + "容量: " + wineData.getWineCapacityList().get(thisWineIndex) + "\n"
+                    + "ぶどう品種: " + wineData.getWineGrapeList().get(thisWineIndex) + "\n"
+                    + "産地: " + wineData.getWineOriginList().get(thisWineIndex) + "\n"
+                    + "収穫年: " + wineData.getWineHarvestList().get(thisWineIndex) + "\n"
+                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex);
 
-        int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
-        double phi0 = Ido.get(picIndexNum);
-        double theta0 = Kedo.get(picIndexNum);
+            my_wine_name.setText(str_wine);
 
-        double picWineX = Math.sin(phi0)*Math.cos(theta0);
-        double picWineY = Math.sin(phi0)*Math.sin(theta0);
-        double picWineZ = Math.cos(phi0);
+            TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
+            String str_wine_exp = wineData.getWineNameList().get(thisWineIndex) + ": " + "\n\n" + wineData.getWineExplanationList().get(thisWineIndex);
+            my_wine_explanation.setText(str_wine_exp);
 
-        double rotationX;
-        if(picWineZ >= 0){
-            rotationX = -Math.asin(picWineY);
-        }
-        else{
-            rotationX = -Math.PI + Math.asin(picWineY);
-        }
-        double rotationY = Math.asin(picWineX);
+            //ワイン情報の乗っているレイアウトを表示
+            RelativeLayout my_wine_info_layout = findViewById(R.id.for_my_wine_info);
+            my_wine_info_layout.setVisibility(View.VISIBLE);
 
+            RelativeLayout close_my_wine_info = findViewById(R.id.for_close_wine_info);
+            close_my_wine_info.setVisibility(View.VISIBLE);
 
-        //各ワインの座標を求める
-        for(int i=0; i<wineData.getWineNum(); i++){
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-
-            double phi = Ido.get(thisWineIndex);
-            double theta = Kedo.get(thisWineIndex);
-
-            double x = Math.sin(phi)*Math.cos(theta);
-            double y = Math.sin(phi)*Math.sin(theta);
-            double z = Math.cos(phi);
-
-            double afterX = x;
-            double afterY = y*Math.cos(rotationX) + z*Math.sin(rotationX);
-            double afterZ = -y*Math.sin(rotationX) + z*Math.cos(rotationX);
-
-            double X = afterX*Math.cos(rotationY) - afterZ*Math.sin(rotationY);
-            double Y = afterY;
-            double Z = afterX*Math.sin(rotationY) + afterZ*Math.cos(rotationY);
-
-            viewsPoint.addxPoint(X);
-            viewsPoint.addyPoint(Y);
-            viewsPoint.addzPints(Z);
-        }
-    }
-
-    public void roleImage(int newX, int newY, ImageView[] imageView, ImageView[] ratingImage){//スクロール時の座標計算
-        int xZero = zeroPoint.getxZeroPoint();
-        int yZero = zeroPoint.getyZeroPoint();
-        //x方向増加量
-        Double xMoved = -( ((double)newY - yPoint)/yZero );
-        //y方向増加量
-        Double yMoved = -( ((double)newX - xPoint)/xZero );
-
-
-        double movedPhi = -Math.asin(xMoved);
-        double movedTheta = Math.asin(yMoved);
-
-        ArrayList<Double> newXPoints = new ArrayList<>();
-        ArrayList<Double> newYPoints = new ArrayList<>();
-        ArrayList<Double> newZPoints = new ArrayList<>();
-
-        for(int i=0; i<wineData.getWineNum(); i++) {
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
-
-            double beforeX = viewsPoint.getxPoints().get(thisWineIndex);
-            double beforeY = viewsPoint.getyPoints().get(thisWineIndex);
-            double beforeZ = viewsPoint.getzPoints().get(thisWineIndex);
-
-            double afterX = beforeX;
-            double afterY = beforeY * Math.cos(movedPhi) + beforeZ * Math.sin(movedPhi);
-            double afterZ = -beforeY * Math.sin(movedPhi) + beforeZ * Math.cos(movedPhi);
-
-            double X = afterX * Math.cos(movedTheta) - afterZ * Math.sin(movedTheta);
-            double Y = afterY;
-            double Z = afterX * Math.sin(movedTheta) + afterZ * Math.cos(movedTheta);
-
-            newXPoints.add(X);
-            newYPoints.add(Y);
-            newZPoints.add(Z);
-
-            double dx = X*xZero*magnification/3 + xZero;
-            double dy = Y*xZero*magnification/3 + yZero;
-            double imgW = dx + pic_magnification*80;
-            double imgH = dy + pic_magnification*200;
-            imageView[i].layout((int)dx, (int)dy, (int)imgW, (int)imgH);
-
-
-            double Rdx = X*xZero*magnification/3 + xZero - 50*pic_magnification;
-            double Rdy = Y*xZero*magnification/3 + yZero;
-            double RimgW = Rdx + pic_magnification*50;
-            double RimgH = Rdy + pic_magnification*200;
-            ratingImage[i].layout((int)Rdx, (int)Rdy, (int)RimgW, (int)RimgH);
-
-            if(Z < 0){
-                imageView[i].setVisibility(View.INVISIBLE);
-                ratingImage[i].setVisibility(View.INVISIBLE);
-            }
-            else{
-                imageView[i].setVisibility(View.VISIBLE);
-                ratingImage[i].setVisibility(View.VISIBLE);
-            }
-
-
-        }
-
-        viewsPoint.setxPoints(newXPoints);
-        viewsPoint.setyPoints(newYPoints);
-        viewsPoint.setzPoints(newZPoints);
-    }
-
-    public void scaleImage(ImageView[] imageView, ImageView[] ratingImage){//拡大縮小時の座標計算
-        int xZero = zeroPoint.getxZeroPoint();
-        int yZero = zeroPoint.getyZeroPoint();
-
-        for(int i=0; i<wineData.getWineNum(); i++) {
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
-
-            double beforeX = viewsPoint.getxPoints().get(thisWineIndex);
-            double beforeY = viewsPoint.getyPoints().get(thisWineIndex);
-            double beforeZ = viewsPoint.getzPoints().get(thisWineIndex);
-
-            double dx = beforeX*xZero*magnification/3 + xZero;
-            double dy = beforeY*xZero*magnification/3 + yZero;
-            double imgW = dx + pic_magnification*80;
-            double imgH = dy + pic_magnification*200;
-            imageView[i].layout((int)dx, (int)dy, (int)imgW, (int)imgH);
-
-
-            double Rdx = beforeX*xZero*magnification/3 + xZero - 50*pic_magnification;
-            double Rdy = beforeY*xZero*magnification/3 + yZero;
-            double RimgW = Rdx + pic_magnification*50;
-            double RimgH = Rdy + pic_magnification*200;
-            ratingImage[i].layout((int)Rdx, (int)Rdy, (int)RimgW, (int)RimgH);
-
-            if(beforeZ < 0){
-                imageView[i].setVisibility(View.INVISIBLE);
-                ratingImage[i].setVisibility(View.INVISIBLE);
-            }
-            else{
-                imageView[i].setVisibility(View.VISIBLE);
-                ratingImage[i].setVisibility(View.VISIBLE);
-            }
-
-
-        }
-    }
-
-    //球状で動かす用
-    public void setPictureOnSphere(ImageView[] imageView, ImageView[] ratingImage){
-
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-
-        //画像を設定
-        for(int i=0;i<wineData.getWineNum();i++) {
-            imageView[i] = new ImageView(this);
-            ratingImage[i] = new ImageView(this);
-
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-
-            int xZero = zeroPoint.getxZeroPoint();
-            int yZero = zeroPoint.getyZeroPoint();
-
-            ArrayList<Double> xPoints = viewsPoint.getxPoints();
-            ArrayList<Double> yPoints = viewsPoint.getyPoints();
-            ArrayList<Double> zPoints = viewsPoint.getzPoints();
-
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (pic_magnification * 80), (int) (pic_magnification * 200));
-            lp.leftMargin = (int) (xZero + xPoints.get(i)*xZero*magnification/3);
-            lp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
-
-            FrameLayout.LayoutParams Rlp = new FrameLayout.LayoutParams((int)(pic_magnification*50), (int)(pic_magnification*200));
-            Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero*magnification/3 - 50*pic_magnification);//最後の50はラベルの左側に座標を指定するため
-            Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
-
-            Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-            imageView[i].setImageBitmap(bitmap1);
-            imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
-            usingLayout.addView(imageView[i], lp);
-
-            if(wineData.getWineEvalList().size() != 0) {
-                if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
-                    int drawImage = 0;
-                    if (wineData.getWineEvalList().get(thisWineIndex) == 1) {
-                        drawImage = R.drawable.rate_01;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 2) {
-                        drawImage = R.drawable.rate_02;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 3) {
-                        drawImage = R.drawable.rate_03;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 4) {
-                        drawImage = R.drawable.rate_04;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 5) {
-                        drawImage = R.drawable.rate_05;
-                    }
-
-                    Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
-
-                    ratingImage[i].setImageBitmap(bitmap2);
-                    ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
-                    usingLayout.addView(ratingImage[i], Rlp);
-
-                }
-            }
-
-            if(zPoints.get(thisWineIndex) < 0){
-                imageView[i].setVisibility(View.INVISIBLE);
-                ratingImage[i].setVisibility(View.INVISIBLE);
-            }
-            else{
-                imageView[i].setVisibility(View.VISIBLE);
-                ratingImage[i].setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    public void setListener(final ImageView[] imageView){
-
-        //画像にリスナーを設定
-        for(int i=0;i<wineData.getWineNum();i++) {
-            final int thisWineNum = i;
-            //final RelativeLayout usingLayout = findViewById(R.id.layout);
-            final FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-
-
-            imageView[i].setOnClickListener(new View.OnClickListener() {
+            my_wine_info_layout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v) {
-                    //画像が押された時のやつ
-                    ImageView winePicture = findViewById(R.id.wine_info);
-                    double wineID = wineData.getWineIndexList().get(thisWineNum);
-                    final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-                    winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
-
-                    centerIndex = (int)wineID;
-                    keepCenter();
-                    //TextView textView = findViewById(R.id.text_view);
-                    //textView.setText("中心のワイン" + centerIndex);
-
-
-                    //reDraw(displayingViews.getImageView(), displayingViews.getRatingImage());
-
-                    TextView wine_name = findViewById(R.id.wine_name);
-                    String str_wine
-                            = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
-                            + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex);
-                    wine_name.setText(str_wine);
-
-                    //簡易情報の乗っているレイアウトを表示
-                    RelativeLayout wine_info_layout = findViewById(R.id.for_wine_info);
-                    wine_info_layout.setVisibility(View.VISIBLE);
-
-                    TextView to_wine_list = findViewById(R.id.to_wine_list);
-                    to_wine_list.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            //ワインリストへ登録ボタンが押されたときの処理(仮)
-                            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                            builder.setTitle(wineData.getWineNameList().get(thisWineIndex));
-                            if( addWineList(wineData.getWineIndexList().get(thisWineIndex)) ) {
-                                builder.setMessage("Myワインリストへ登録しました");
-                            }
-                            else
-                                builder.setMessage("既に登録されています");
-                            builder.show();
-                        }
-                    });
-
-                    //簡易情報をクリックした際のアクション
-                    wine_info_layout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            ImageView winePicture = findViewById(R.id.wine_detail_info);
-                            double wineID = wineData.getWineIndexList().get(thisWineIndex);
-                            final int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-                            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
-
-                            TextView wine_name = findViewById(R.id.wine_detail_name);
-
-                            String str_wine
-                                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
-                                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex) + "\n"
-                                    + "色: "  + wineData.getWineColorList().get(thisWineIndex) + "\n"
-                                    + "タイプ: " + wineData.getWineTypeList().get(thisWineIndex) + "\n"
-                                    + "容量: " + wineData.getWineCapacityList().get(thisWineIndex) + "\n"
-                                    + "ぶどう品種: " + wineData.getWineGrapeList().get(thisWineIndex) + "\n"
-                                    + "産地: " + wineData.getWineOriginList().get(thisWineIndex) + "\n"
-                                    + "収穫年: " + wineData.getWineHarvestList().get(thisWineIndex) + "\n"
-                                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex);
-
-                            wine_name.setText(str_wine);
-
-                            TextView wine_explanation = findViewById(R.id.wine_detail_explanation);
-                            String str_wine_exp =
-                                    wineData.getWineNameList().get(thisWineIndex) + ": " + "\n\n"
-                                    + wineData.getWineExplanationList().get(thisWineIndex);
-                            wine_explanation.setText(str_wine_exp);
-
-                            RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
-                            wine_detail_info_layout.setVisibility(View.VISIBLE);
-                            wine_detail_info_layout.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    //詳細情報がクリックされたときは何もしない
-                                }
-                            });
-
-                            TextView to_wine_list_2 = findViewById(R.id.to_wine_list_2);
-                            to_wine_list_2.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    //ワインリストへ登録ボタンが押されたときの処理(仮)
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                                    builder.setTitle(wineData.getWineNameList().get(thisWineIndex));
-                                    if( addWineList(wineData.getWineIndexList().get(thisWineIndex)) ) {
-                                        builder.setMessage("Myワインリストへ登録しました");
-                                    }
-                                    else
-                                        builder.setMessage("既に登録されています");
-                                    builder.show();
-                                }
-                            });
-
-                            TextView to_want_drink = findViewById(R.id.to_want_drink);
-                            to_want_drink.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    //飲みたいボタンが押された時の処理
-                                }
-                            });
-
-                            for (int i = 0; i < wineData.getWineNum(); i++) {
-                                imageView[i].setClickable(false);
-                            }
-                        }
-                    });
-
-                    usingLayout.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-
-                            //簡易情報と詳細情報の乗っているレイアウトを非表示
-                            RelativeLayout wine_info_layout = findViewById(R.id.for_wine_info);
-                            wine_info_layout.setVisibility(View.INVISIBLE);
-                            RelativeLayout wine_detail_info_layout = findViewById(R.id.for_wine_detail_info);
-                            wine_detail_info_layout.setVisibility(View.INVISIBLE);
-
-                            usingLayout.setClickable(false);
-                            for (int i = 0; i < wineData.getWineNum(); i++) {
-                                imageView[i].setClickable(true);
-                            }
-                        }
-                    });
-
-
-
-
-                    //クリックしたワインを表示(デバック用)
-                    //TextView textView = findViewById(R.id.text_view);
-                    //String str = "画像をクリックしました" + wineData.getWineIndexList().get(thisWineNum);
-                    //textView.setText(str);
+                public void onClick(View view) {
+                    //詳細情報がクリックされたときは何もしない
                 }
             });
+
+            close_my_wine_info.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //ワイン情報閉じる用レイアウトがクリックされたときの処理
+                    RelativeLayout my_wine_info_layout = findViewById(R.id.for_my_wine_info);
+                    my_wine_info_layout.setVisibility(View.INVISIBLE);
+
+                    RelativeLayout close_my_wine_info = findViewById(R.id.for_close_wine_info);
+                    close_my_wine_info.setVisibility(View.INVISIBLE);
+                }
+            });
+
+
+            ListView listView = findViewById(R.id.my_wine_list);
+            listView.setClickable(false);
         }
-    }
+    };
 
-    public void drawPicture(){//画像の再描画
+    private void updateMyWineList(boolean[] deleteFlag){
+        // レイアウトからリストビューを取得
+        ListView listView = (ListView)findViewById(R.id.my_wine_list);
+        // リストビューに表示する要素を設定
+        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+        for (int i = 0; i < wineData.getWineNum(); i++) {
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
 
+            if (!deleteFlag[thisWineIndex]) {
 
-        //画像の初期設定
-        displayingViews = new DisplayingViews(wineData.getWineNum());
-        //座標の計算
-        calPointOnSphere();
-        //画像の張り付け
-        setPictureOnSphere(displayingViews.getImageView(), displayingViews.getRatingImage());
-        setListener(displayingViews.getImageView());
-
-    }
-
-    public void deleteView(ImageView[] imageView, ImageView[] ratingImage){//画面上のビューと座標を削除する
-        viewsPoint.deletePoint();
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-        for(int i=0; i<wineData.getWineNum(); i++) {
-            usingLayout.removeView(imageView[i]);
-            usingLayout.removeView(ratingImage[i]);
-        }
-    }
-
-    public void reDraw(ImageView[] imageView, ImageView[] ratingImage){
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-        for(int i=0; i<wineData.getWineNum(); i++) {
-            usingLayout.removeView(imageView[i]);
-            usingLayout.removeView(ratingImage[i]);
-        }
-        //画像の初期設定
-        displayingViews = new DisplayingViews(wineData.getWineNum());
-        //画像の張り付け
-        setPictureOnSphere(displayingViews.getImageView(), displayingViews.getRatingImage());
-        setListener(displayingViews.getImageView());
-    }
-
-    public int randCenter(){
-        Random random = new Random();
-        int randomValue = random.nextInt(wineData.getWineNum());
-        int centerIndex = wineData.getWineIndexList().get(randomValue);
-        return centerIndex;
-    }
-
-    private boolean addWineList(int wineIndex){
-        File file = new File(this.getFilesDir(), "myWineList.txt");
-        String filename = "myWineList.txt";
-        FileOutputStream outputStream;
-        int before_myWineListLength = myWineListLength;
-
-        try {
-            if( !(myWineListIndex.contains(Integer.parseInt(String.valueOf(wineIndex)))) ){
-                myWineListIndex.add(Integer.parseInt(String.valueOf(wineIndex)));
-                myWineListLength++;
+                    Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                    MyWineListItem item = new MyWineListItem(bmp,
+                            wineData.getWineNameList().get(thisWineIndex),
+                            wineData.getWineFuriganaList().get(thisWineIndex),
+                            wineData.getWineryNameList().get(thisWineIndex),
+                            wineData.getWineIndexList().get(thisWineIndex),
+                            wineData.getWineColorList().get(thisWineIndex),
+                            wineData.getWinePriceNumList().get(thisWineIndex));
+                    listItems.add(item);
             }
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
-            for(int i=0; i<myWineListLength; i++){
-                outputStream.write((String.valueOf(myWineListIndex.get(i)) + "\n").getBytes());
+        }
+
+        if(listItems.size() == 0) {
+            for (int i = 0; i < wineData.getWineNum(); i++) {
+                double wineID = wineData.getWineIndexList().get(i);
+                int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
+                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                MyWineListItem item = new MyWineListItem(bmp,
+                        wineData.getWineNameList().get(thisWineIndex),
+                        wineData.getWineFuriganaList().get(thisWineIndex),
+                        wineData.getWineryNameList().get(thisWineIndex),
+                        wineData.getWineIndexList().get(thisWineIndex),
+                        wineData.getWineColorList().get(thisWineIndex),
+                        wineData.getWinePriceNumList().get(thisWineIndex));
+                listItems.add(item);
             }
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
         }
+        // 出力結果をリストビューに表示
+        MyWineListAdapter adapter = new MyWineListAdapter(this, R.layout.my_wine_list_item, listItems);
+        listView.setAdapter(adapter);
 
-        return (before_myWineListLength != myWineListLength);
 
+        listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
     }
 
-    private void keepCenter(){//中心のワインを保存できるようにする関数
-        File file = new File(this.getFilesDir(), "centerIndex.txt");
-        String filename = "centerIndex.txt";
-        FileOutputStream outputStream;
 
-        try {
-            outputStream = openFileOutput(filename, Context.MODE_PRIVATE);//上書きモード
-            outputStream.write(centerIndex);
-            outputStream.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+    public void setButtonClick(final boolean [] deleteFlag){
 
-    public void readMyWineList() throws IOException {//MyWineリストのCSVを読み込む関数
-        File file = new File(this.getFilesDir(), "myWineList.txt");
-        FileReader filereader = new FileReader(file);
-        BufferedReader br = new BufferedReader(filereader);
-
-        String str = br.readLine();
-        while(str != null){
-            if( !(myWineListIndex.contains(Integer.parseInt(str))) ){
-                myWineListIndex.add(Integer.parseInt(str));
+        findViewById(R.id.open_grape).setOnClickListener(new View.OnClickListener() {//ブドウ品種で検索
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.for_search_grape).setVisibility(View.VISIBLE);
+                findViewById(R.id.for_close_search_grape).setVisibility(View.VISIBLE);
             }
-            str = br.readLine();
-        }
-        myWineListLength = myWineListIndex.size();
+        });
+        findViewById(R.id.for_search_grape).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //ブドウの品種で検索ウィンドウが押されたとき
+            }
+        });
+        findViewById(R.id.for_close_search_grape).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.for_search_grape).setVisibility(View.INVISIBLE);
+                findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
+                TextView grape = findViewById(R.id.text_selected_grape);
+                grape.setText(selectedGrapes());
+            }
+        });
+        findViewById(R.id.grape_enter).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.for_search_grape).setVisibility(View.INVISIBLE);
+                findViewById(R.id.for_close_search_grape).setVisibility(View.INVISIBLE);
+                TextView grape = findViewById(R.id.text_selected_grape);
+                grape.setText(selectedGrapes());
+            }
+        });
 
-        br.close();
+        //検索ボタンが押されたとき
+        findViewById(R.id.search_list).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bar_search).setVisibility(View.VISIBLE);
+                findViewById(R.id.search_list_menu).setVisibility(View.VISIBLE);
+                
+                //検索のエンターが押されたとき
+                searchMyWine(deleteFlag);
+                //タブ上の戻るボタンが押されたとき
+                findViewById(R.id.return_search_mode).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                        findViewById(R.id.bar_search).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.search_list_menu).setVisibility(View.INVISIBLE);
+                        updateMyWineList(deleteFlag);
+                    }
+                });
+            }
+        });
 
+        //ソートボタンが押されたとき
+        findViewById(R.id.sort).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                findViewById(R.id.bar_list).setVisibility(View.INVISIBLE);
+                findViewById(R.id.bar_sort).setVisibility(View.VISIBLE);
+                findViewById(R.id.sort_my_wine).setVisibility(View.VISIBLE);
+                //名前で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_name_up).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new NameComparator());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //名前で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_name_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new NameComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+
+                //ワイナリー名で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_winery_up).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineryComparator());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワイナリー名で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_winery_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineryComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインIDで並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_wineID_up).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineIDComparator());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインIDで並び変えボタン降順が押されたとき
+                findViewById(R.id.sort_wineID_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineIDComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインの色で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_wineColor_up).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineColorComparator());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインの色で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_wineColor_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WineColorComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインの価格で並び変え昇順ボタンが押されたとき
+                findViewById(R.id.sort_winePrice_up).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WinePriceComparator());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+                //ワインの価格で並び変え降順ボタンが押されたとき
+                findViewById(R.id.sort_winePrice_down).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                        ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                        for (int i = 0; i < wineData.getWineNum(); i++) {
+                            double wineID = wineData.getWineIndexList().get(i);
+                            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                            if(!deleteFlag[thisWineIndex]) {
+
+                                Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                                MyWineListItem item = new MyWineListItem(bmp,
+                                        wineData.getWineNameList().get(thisWineIndex),
+                                        wineData.getWineFuriganaList().get(thisWineIndex),
+                                        wineData.getWineryNameList().get(thisWineIndex),
+                                        wineData.getWineIndexList().get(thisWineIndex),
+                                        wineData.getWineColorList().get(thisWineIndex),
+                                        wineData.getWinePriceNumList().get(thisWineIndex));
+
+                                listItems.add(item);
+                            }
+                        }
+                        MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                        Collections.sort(listItems, new WinePriceComparatorDown());
+                        adapter.notifyDataSetChanged();
+                        listView.setAdapter(adapter);
+
+
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                    }
+                });
+
+
+
+                findViewById(R.id.return_sort_mode).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        findViewById(R.id.bar_list).setVisibility(View.VISIBLE);
+                        findViewById(R.id.bar_sort).setVisibility(View.INVISIBLE);
+                        findViewById(R.id.sort_my_wine).setVisibility(View.INVISIBLE);
+                        updateMyWineList(deleteFlag);
+                    }
+                });
+            }
+        });
     }
 
-    public void readEvalList() throws IOException {//評価リストのCSVを読み込む関数
-        File file = new File(this.getFilesDir(), "evalList.txt");
-        FileReader filereader = new FileReader(file);
-        BufferedReader br = new BufferedReader(filereader);
+    public void searchMyWine(final boolean [] deleteFlag){
+        //検索のエンターが押されたとき
+        findViewById(R.id.enter_my_wine).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-        String str = br.readLine();
-        for(int i=0; i<wineData.getWineNum(); i++){
-            if(str == null)
-                wineData.addWineEvalList("0");
-            else
-                wineData.addWineEvalList(str);
-            str = br.readLine();
-        }
-        br.close();
+                Arrays.fill(deleteFlag, true);
+
+                //色のチェックボックス
+                final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
+                final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
+                final CheckBox color_White = findViewById(R.id.my_wine_color_White);
+                final CheckBox color_Orange = findViewById(R.id.my_wine_color_Orange);
+                final CheckBox color_Sparkling = findViewById(R.id.my_wine_color_Sparkling);
+                final CheckBox color_All = findViewById(R.id.my_wine_color_All);
+
+                boolean color_search = false;
+                boolean taste_red_search = false;
+                boolean taste_white_search = false;
+                boolean price_search = false;
+                boolean grape_search = false;
+                boolean free_search = false;
+
+
+                //赤ワインの味わい
+                Spinner spinner_taste_red_bottom = (Spinner) findViewById(R.id.spinner_red_bottom);
+                Spinner spinner_taste_red_top = (Spinner) findViewById(R.id.spinner_red_top);
+                String selected_red_bottom = (String) spinner_taste_red_bottom.getSelectedItem();
+                String selected_red_top = (String) spinner_taste_red_top.getSelectedItem();
+
+                //白ワインの味わい
+                Spinner spinner_taste_white_bottom = (Spinner) findViewById(R.id.spinner_white_bottom);
+                Spinner spinner_taste_white_top = (Spinner) findViewById(R.id.spinner_white_top);
+                String selected_white_bottom = (String) spinner_taste_white_bottom.getSelectedItem();
+                String selected_white_top = (String) spinner_taste_white_top.getSelectedItem();
+
+                //価格
+                Spinner spinner_price_bottom = (Spinner) findViewById(R.id.spinner_price_bottom);
+                Spinner spinner_price_top = (Spinner) findViewById(R.id.spinner_price_top);
+                String selected_price_bottom = (String) spinner_price_bottom.getSelectedItem();
+                String selected_price_top = (String) spinner_price_top.getSelectedItem();
+
+
+                int taste_Red_B = 0;
+                if(selected_red_bottom.equals("フルボディ"))
+                    taste_Red_B = 5;
+                else if(selected_red_bottom.equals("ミディアムボディ") )
+                    taste_Red_B = 3;
+                else if(selected_red_bottom.equals("ライトボディ") )
+                    taste_Red_B = 1;
+
+                int taste_Red_T = 0;
+                if(selected_red_top.equals("フルボディ"))
+                    taste_Red_T = 5;
+                else if(selected_red_top.equals("ミディアムボディ"))
+                    taste_Red_T = 3;
+                else if(selected_red_top.equals("ライトボディ"))
+                    taste_Red_T = 1;
+
+                int taste_white_B = 0;
+                if(selected_white_bottom.equals("辛口"))
+                    taste_white_B = 5;
+                else if(selected_white_bottom.equals("普通"))
+                    taste_white_B = 3;
+                else if(selected_white_bottom.equals("甘口"))
+                    taste_white_B = 1;
+
+                int taste_white_T = 0;
+                if(selected_white_top.equals("辛口"))
+                    taste_white_T = 5;
+                else if(selected_white_top.equals("普通"))
+                    taste_white_T = 3;
+                else if(selected_white_top.equals("甘口"))
+                    taste_white_T = 1;
+
+                //価格下
+                int bottom_price = -1;
+                if(selected_price_bottom.equals("0"))
+                    bottom_price = 0;
+                else if(selected_price_bottom.equals("2000"))
+                    bottom_price = 2000;
+                else if(selected_price_bottom.equals("3000"))
+                    bottom_price = 3000;
+                else if(selected_price_bottom.equals("4000"))
+                    bottom_price = 4000;
+                else if(selected_price_bottom.equals("5000"))
+                    bottom_price = 5000;
+                else if(selected_price_bottom.equals("20000"))
+                    bottom_price = 20000;
+
+                //価格上
+                int top_price = -1;
+                if(selected_price_top.equals("0"))
+                    top_price = 0;
+                else if(selected_price_top.equals("2000"))
+                    top_price = 2000;
+                else if(selected_price_top.equals("3000"))
+                    top_price = 3000;
+                else if(selected_price_top.equals("4000"))
+                    top_price = 4000;
+                else if(selected_price_top.equals("5000"))
+                    top_price = 5000;
+                else if(selected_price_top.equals("20000"))
+                    top_price = 20000;
+
+                //文字入力の自由検索
+                final SearchView search = findViewById(R.id.free_search);
+                search.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+                    @Override
+                    public boolean onQueryTextSubmit(String s) {
+                        return false;
+                    }
+                    @Override
+                    public boolean onQueryTextChange(String s) {
+                        return false;
+                    }
+                });
+
+                if( !(color_All.isChecked())){
+                    color_search = true;
+                }
+                if(taste_Red_B != 0 && taste_Red_T != 0 && (taste_Red_B <= taste_Red_T) ){
+                    taste_red_search = true;
+                }
+                if(taste_white_B != 0 && taste_white_T != 0 && (taste_white_B <= taste_white_T) ){
+                    taste_white_search = true;
+                }
+                if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
+                    price_search = true;
+                }
+                if(search.getQuery().toString().trim().length() != 0){
+                    free_search = true;
+                }
+                CheckBox MBA = findViewById(R.id.check_MBA);
+                CheckBox SS = findViewById(R.id.check_SS);
+                CheckBox Kosyu = findViewById(R.id.check_Kosyu);
+                CheckBox KS = findViewById(R.id.check_KS);
+                CheckBox Merlot = findViewById(R.id.check_Merlot);
+                CheckBox PV = findViewById(R.id.check_PV);
+                CheckBox BQ = findViewById(R.id.check_BQ);
+                CheckBox KF = findViewById(R.id.check_KF);
+                CheckBox KN = findViewById(R.id.check_KaiN);
+                CheckBox SB = findViewById(R.id.check_SB);
+                CheckBox Delaware = findViewById(R.id.check_Delaware);
+                CheckBox Tana = findViewById(R.id.check_Tana);
+                CheckBox Tempranillo = findViewById(R.id.check_Tempranillo);
+                CheckBox Syrah = findViewById(R.id.check_Syrah);
+                CheckBox Mourvedre = findViewById(R.id.check_Mourvedre);
+                CheckBox Carmenere = findViewById(R.id.check_Carm);
+                CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
+                if( MBA.isChecked() || SS.isChecked() || Kosyu.isChecked() || KS.isChecked() || Merlot.isChecked()
+                        || PV.isChecked() || BQ.isChecked() || KF.isChecked() || KN.isChecked() || SB.isChecked()
+                        || Delaware.isChecked() || Tana.isChecked() || Tempranillo.isChecked() || Syrah.isChecked()
+                        || Mourvedre.isChecked() || Carmenere.isChecked() || Chardonnay.isChecked())
+                    grape_search = true;
+
+
+                for(int i=0; i<wineData.getWineNum(); i++){
+
+                    double wineID = wineData.getWineIndexList().get(i);
+                    int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+
+                    //色についての検索
+                    if(! (color_All.isChecked()) ) {
+                        if(wineData.getWineColorList().get(i).equals("白ワイン") && color_White.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(wineData.getWineColorList().get(i).equals("ロゼワイン") && color_Rose.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(wineData.getWineColorList().get(i).equals("赤ワイン") && color_Red.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(wineData.getWineColorList().get(i).equals("オレンジワイン") && color_Orange.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                        else if(wineData.getWineColorList().get(i).equals("スパークリングワイン") && color_Sparkling.isChecked()){
+                            deleteFlag[thisWineIndex] = false;
+                        }
+                    }
+                    //味わい赤についての検索
+                    if(taste_Red_B != 0 && taste_Red_T != 0 && (taste_Red_B <= taste_Red_T) ){
+                        if(color_search) {
+                            if ( !((wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)))) {
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if ( ((wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_Red_B) && (taste_Red_T >= wineData.getWineTasteList().get(i)))) {
+                                deleteFlag[thisWineIndex] = false;
+                            }
+                        }
+                    }
+                    //味わい白についての検索
+                    if(taste_white_B != 0 && taste_white_T != 0 && (taste_white_B <= taste_white_T) ){
+                        if(color_search || taste_red_search) {
+                            if ( !(!(wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)))) {
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if ( (!(wineData.getWineColorList().get(i).equals("赤ワイン")) && (wineData.getWineTasteList().get(i) >= taste_white_B) && (taste_white_T >= wineData.getWineTasteList().get(i)))) {
+                                deleteFlag[thisWineIndex] = false;
+                            }
+                        }
+                    }
+                    //価格についての検索
+                    if( (bottom_price != -1) && (top_price != -1) && (bottom_price <= top_price) ){
+                        if(color_search || taste_red_search || taste_white_search) {
+                            if ( !((wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i))) ){
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if ( ((wineData.getWinePriceNumList().get(i) >= bottom_price) && (top_price >= wineData.getWinePriceNumList().get(i))) ){
+                                deleteFlag[thisWineIndex] = false;
+                            }
+                        }
+                    }
+                    //自由検索についての検索
+                    if(search.getQuery().toString().trim().length() != 0){
+                        if(color_search || taste_red_search || taste_white_search || price_search) {
+                            if( !(wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
+                                if(deleteFlag[thisWineIndex] == false){
+                                    deleteFlag[thisWineIndex] = true;
+                                }
+                            }
+                        }
+                        else{
+                            if( (wineData.getWineNameList().get(i).contains(search.getQuery().toString()))){
+                                deleteFlag[thisWineIndex] = false;
+                            }
+                        }
+                    }
+                    //ブドウの品種についての検索
+                    boolean other_search = false;
+                    if(color_search || taste_red_search || taste_white_search || price_search || free_search){
+                        other_search = true;
+                    }
+                    int thisWineIndex_for_grape = grapeData.getWineIndexList().indexOf((int)wineID);
+                    searchByGrape(thisWineIndex, thisWineIndex_for_grape, deleteFlag, other_search);
+                }
+
+                boolean check = false;
+                for(int j=0; j<wineData.getWineNum(); j++){
+                    if(deleteFlag[j] == false)
+                        check = true;
+                }
+
+
+                if(check){//検索結果に当てはまるものがある場合
+                    // レイアウトからリストビューを取得
+                    ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                    // リストビューに表示する要素を設定
+                    ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                    for (int i = 0; i < wineData.getWineNum(); i++) {
+                        double wineID = wineData.getWineIndexList().get(i);
+                        int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+                        if(!deleteFlag[thisWineIndex]) {
+                            Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                            MyWineListItem item = new MyWineListItem(bmp,
+                                    wineData.getWineNameList().get(thisWineIndex),
+                                    wineData.getWineFuriganaList().get(thisWineIndex),
+                                    wineData.getWineryNameList().get(thisWineIndex),
+                                    wineData.getWineIndexList().get(thisWineIndex),
+                                    wineData.getWineColorList().get(thisWineIndex),
+                                    wineData.getWinePriceNumList().get(thisWineIndex));
+                            listItems.add(item);
+                        }
+                    }
+                    // 出力結果をリストビューに表示
+                    MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                    listView.setAdapter(adapter);
+
+
+                    listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
+                }
+                else{//検索結果に当てはまるものがない場合
+// レイアウトからリストビューを取得
+                    ListView listView = (ListView) findViewById(R.id.my_wine_list);
+                    // リストビューに表示する要素を設定
+                    ArrayList<MyWineListItem> listItems = new ArrayList<>();
+                    for (int i = 0; i < wineData.getWineNum(); i++) {
+                        double wineID = wineData.getWineIndexList().get(i);
+                        int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+                        Bitmap bmp = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+                        MyWineListItem item = new MyWineListItem(bmp,
+                                wineData.getWineNameList().get(thisWineIndex),
+                                wineData.getWineFuriganaList().get(thisWineIndex),
+                                wineData.getWineryNameList().get(thisWineIndex),
+                                wineData.getWineIndexList().get(thisWineIndex),
+                                wineData.getWineColorList().get(thisWineIndex),
+                                wineData.getWinePriceNumList().get(thisWineIndex));
+                        listItems.add(item);
+                    }
+                    // 出力結果をリストビューに表示
+                    MyWineListAdapter adapter = new MyWineListAdapter(getApplication(), R.layout.my_wine_list_item, listItems);
+                    listView.setAdapter(adapter);
+
+
+                    listView.setOnItemClickListener(onItemClickListener);  // タップ時のイベントを追加
+                }
+                findViewById(R.id.search_list_menu).setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    public void color_check_box(){
+        //色のチェックボックス
+        final CheckBox color_Red = findViewById(R.id.my_wine_color_Red);
+        final CheckBox color_Rose = findViewById(R.id.my_wine_color_Rose);
+        final CheckBox color_White = findViewById(R.id.my_wine_color_White);
+        final CheckBox color_Orange = findViewById(R.id.my_wine_color_Orange);
+        final CheckBox color_Sparkling = findViewById(R.id.my_wine_color_Sparkling);
+        final CheckBox color_All = findViewById(R.id.my_wine_color_All);
+
+        color_Red.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Rose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_White.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Orange.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_Sparkling.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_Red.isChecked() && color_Rose.isChecked() && color_White.isChecked() && color_Orange.isChecked() && color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(!color_Red.isChecked() && !color_Rose.isChecked() && !color_White.isChecked() && !color_Orange.isChecked() && !color_Sparkling.isChecked()){
+                    color_All.setChecked(true);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
+        color_All.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(color_All.isChecked()) {
+                    color_All.setChecked(true);
+                    color_Red.setChecked(false);
+                    color_Rose.setChecked(false);
+                    color_White.setChecked(false);
+                    color_Orange.setChecked(false);
+                    color_Sparkling.setChecked(false);
+                }
+                else if(color_All.isChecked()) {
+                    color_All.setChecked(false);
+                }
+            }
+        });
     }
 
     //ここから通常関数
@@ -878,324 +1215,280 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-        /*
+    public void searchByGrape(int wineIndex, int grapeIndex, boolean flag[], boolean search){
+        //ブドウの品種のチェックボックス
+        CheckBox MBA = findViewById(R.id.check_MBA);
+        CheckBox SS = findViewById(R.id.check_SS);
+        CheckBox Kosyu = findViewById(R.id.check_Kosyu);
+        CheckBox KS = findViewById(R.id.check_KS);
+        CheckBox Merlot = findViewById(R.id.check_Merlot);
+        CheckBox PV = findViewById(R.id.check_PV);
+        CheckBox BQ = findViewById(R.id.check_BQ);
+        CheckBox KF = findViewById(R.id.check_KF);
+        CheckBox KN = findViewById(R.id.check_KaiN);
+        CheckBox SB = findViewById(R.id.check_SB);
+        CheckBox Delaware = findViewById(R.id.check_Delaware);
+        CheckBox Tana = findViewById(R.id.check_Tana);
+        CheckBox Tempranillo = findViewById(R.id.check_Tempranillo);
+        CheckBox Syrah = findViewById(R.id.check_Syrah);
+        CheckBox Mourvedre = findViewById(R.id.check_Mourvedre);
+        CheckBox Carmenere = findViewById(R.id.check_Carm);
+        CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
 
-    public void calPoint(int index){//選んだワインを中心にした時の各ワインの座標を計算する
-
-        ArrayList<Integer> Index = wineData.getWineIndexList();
-        ArrayList<Double> Ido = wineData.getWineIdoList();
-        ArrayList<Double> Kedo = wineData.getWineKedoList();
-
-        //選んだワインの緯度と経度を求める
-        int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
-        picIndexNum = 2;
-        double phi0 = Ido.get(picIndexNum);
-        double theta0 = Kedo.get(picIndexNum);
-        double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
-
-        //各ワインの座標を求める
-        for(int i=0; i<wineData.getWineNum(); i++){
-            double phi_before = Ido.get(i);
-            double theta = Kedo.get(i);
-            double phi = Math.toRadians(90-(Math.toDegrees(phi_before)));
-
-            double c = Math.acos( Math.sin(phi1)*Math.sin(phi)+Math.cos(phi1)*Math.cos(phi)*Math.cos(theta-theta0) );
-            double k = c/( Math.sin(c) );
-
-            double x = k*Math.cos(phi)*Math.sin(theta-theta0);
-            double y = k*( Math.cos(phi1)*Math.sin(phi) - Math.sin(phi1)*Math.cos(phi)*Math.cos(theta-theta0) );
-            if(Double.isNaN(x)){
-                x=0;
-            }
-            if(Double.isNaN(y)){
-                y=0;
-            }
-            viewsPoint.addxPoint(x);
-            viewsPoint.addyPoint(y);
-        }
-    }
-
-    //球状で動かす用
-    public void calPoint2(int index){//選んだワインを中心にした時の各ワインの座標を計算する
-
-        ArrayList<Integer> Index = wineData.getWineIndexList();
-        ArrayList<Double> Ido = wineData.getWineIdoList();
-        ArrayList<Double> Kedo = wineData.getWineKedoList();
-
-        //選んだワインの緯度と経度を求める
-        //int picIndexNum = wineData.getWineIndexList().indexOf(centerIndex);//選んだワインのインデックス番号を取得
-        int picIndexNum = 2;
-        double phi0 = Ido.get(picIndexNum);
-        double theta0 = Kedo.get(picIndexNum);
-        //double phi1 = Math.toRadians(90-(Math.toDegrees(phi0)));
-
-        //各ワインの座標を求める
-        for(int i=0; i<wineData.getWineNum(); i++){
-            double phi = Ido.get(i);
-            double theta = Kedo.get(i);
-
-            double x = Math.sin(phi)*Math.cos(theta);
-            double y = Math.sin(phi)*Math.sin(theta);
-            double z = Math.cos(phi);
-            viewsPoint.addxPoint(x);
-            viewsPoint.addyPoint(y);
-            viewsPoint.addzPints(z);
-        }
-
-        TextView text = findViewById(R.id.text_view);
-        String str = "";
-        for(int k=0; k<viewsPoint.getxPoints().size(); k++){
-            str += "x=" + viewsPoint.getxPoints().get(k) + "y=" + viewsPoint.getyPoints().get(k) + "z=" + viewsPoint.getzPoints().get(k)+ "\n";
-        }
-        text.setText(str);
-    }
-
-        public void setPicture(ImageView[] imageView, ImageView[] ratingImage){
-
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-
-        //画像を設定
-        for(int i=0;i<wineData.getWineNum();i++) {
-            imageView[i] = new ImageView(this);
-            ratingImage[i] = new ImageView(this);
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-
-            int xZero = zeroPoint.getxZeroPoint();
-            int yZero = zeroPoint.getyZeroPoint();
-
-            ArrayList<Double> xPoints = viewsPoint.getxPoints();
-            ArrayList<Double> yPoints = viewsPoint.getyPoints();
-
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int)(pic_magnification*80), (int)(pic_magnification*200));
-            lp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification);
-            lp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
-
-            FrameLayout.LayoutParams Rlp = new FrameLayout.LayoutParams((int)(pic_magnification*50), (int)(pic_magnification*200));
-            Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero/3*magnification - 50);
-            Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero/3*magnification);
-
-            //imageView[i].measure(80,200);
-            //ratingImage[i].measure(10,200);
-
-            Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-            imageView[i].setImageBitmap(bitmap1);
-            imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
-            usingLayout.addView(imageView[i], lp);
-
-
-            if(wineData.getWineEvalList().size() != 0) {
-                if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
-                    int drawImage = 0;
-                    if (wineData.getWineEvalList().get(thisWineIndex) == 1) {
-                        drawImage = R.drawable.rate_01;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 2) {
-                        drawImage = R.drawable.rate_02;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 3) {
-                        drawImage = R.drawable.rate_03;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 4) {
-                        drawImage = R.drawable.rate_04;
-                    } else if (wineData.getWineEvalList().get(thisWineIndex) == 5) {
-                        drawImage = R.drawable.rate_05;
-                    }
-
-                    Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
-
-                    ratingImage[i].setImageBitmap(bitmap2);
-                    ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
-
-                    usingLayout.addView(ratingImage[i], Rlp);
-                }
+        //ブドウの品種についての検索
+        if(search) {
+            if (MBA.isChecked() && grapeData.getMBA().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
             }
         }
-    }
-
-        /*
-    public void reCalPoint(int newX, int newY){//スクロール時の座標計算
-        int xZero = zeroPoint.getxZeroPoint();
-        int yZero = zeroPoint.getyZeroPoint();
-        //x方向増加量
-        Double xMoved = -( ((double)newY - yPoint)/yZero );
-        //y方向増加量
-        Double yMoved = -( ((double)newX - xPoint)/xZero );
-
-
-        double movedPhi = -Math.asin(xMoved);
-        double movedTheta = Math.asin(yMoved);
-
-        ArrayList<Double> newXPoints = new ArrayList<>();
-        ArrayList<Double> newYPoints = new ArrayList<>();
-        ArrayList<Double> newZPoints = new ArrayList<>();
-
-        for(int i=0; i<wineData.getWineNum(); i++) {
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int) wineID);
-
-            double beforeX = viewsPoint.getxPoints().get(thisWineIndex);
-            double beforeY = viewsPoint.getyPoints().get(thisWineIndex);
-            double beforeZ = viewsPoint.getzPoints().get(thisWineIndex);
-
-            double afterX = beforeX;
-            double afterY = beforeY * Math.cos(movedPhi) + beforeZ * Math.sin(movedPhi);
-            double afterZ = -beforeY * Math.sin(movedPhi) + beforeZ * Math.cos(movedPhi);
-
-            double X = afterX * Math.cos(movedTheta) - afterZ * Math.sin(movedTheta);
-            double Y = afterY;
-            double Z = afterX * Math.sin(movedTheta) + afterZ * Math.cos(movedTheta);
-
-            newXPoints.add(X);
-            newYPoints.add(Y);
-            newZPoints.add(Z);
-
-            double moveX = X - beforeX;
-            double moveY = Y - beforeY;
-            double moveZ = Z - beforeZ;
+        else{
+            if(MBA.isChecked() && grapeData.getMBA().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
         }
-
-        viewsPoint.deletePoint();
-        viewsPoint.setxPoints(newXPoints);
-        viewsPoint.setyPoints(newYPoints);
-        viewsPoint.setzPoints(newZPoints);
-
-
-        TextView text = findViewById(R.id.text_view);
-        String str = "";
-        for(int k=0; k<viewsPoint.getxPoints().size(); k++){
-            str += "x=" + viewsPoint.getxPoints().get(k) + "y=" + viewsPoint.getyPoints().get(k) + "z=" + viewsPoint.getzPoints().get(k)+ "\n";
+        if(search) {
+            if (SS.isChecked() && grapeData.getSS().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
         }
-        text.setText(str);
-
-
-    }
-
-
-
-     */
-    /*
-
-    //球状で動かす用
-    public void setPicture2(ImageView[] imageView, ImageView[] ratingImage){
-
-        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
-
-        //画像を設定
-        for(int i=0;i<wineData.getWineNum();i++) {
-            imageView[i] = new ImageView(this);
-            ratingImage[i] = new ImageView(this);
-
-
-            double wineID = wineData.getWineIndexList().get(i);
-            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
-
-            int xZero = zeroPoint.getxZeroPoint();
-            int yZero = zeroPoint.getyZeroPoint();
-
-            ArrayList<Double> xPoints = viewsPoint.getxPoints();
-            ArrayList<Double> yPoints = viewsPoint.getyPoints();
-            ArrayList<Double> zPoints = viewsPoint.getzPoints();
-
-            if(zPoints.get(i) >= 0) {
-
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams((int) (pic_magnification * 80), (int) (pic_magnification * 200));
-                lp.leftMargin = (int) (xZero + xPoints.get(i)*xZero*magnification/3);
-                lp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
-
-                FrameLayout.LayoutParams Rlp = new FrameLayout.LayoutParams((int)(pic_magnification*50), (int)(pic_magnification*200));
-                Rlp.leftMargin = (int)(xZero + xPoints.get(i)*xZero*magnification/3 - 50*pic_magnification);//最後の50はラベルの左側に座標を指定するため
-                Rlp.topMargin = (int) (yZero + yPoints.get(i)*xZero*magnification/3);
-
-                //imageView[i].measure(80, 200);
-
-                Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
-                imageView[i].setImageBitmap(bitmap1);
-                imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
-                usingLayout.addView(imageView[i], lp);
-
-                if(wineData.getWineEvalList().size() != 0) {
-                    if (wineData.getWineEvalList().get(thisWineIndex) != 0) {
-                        int drawImage = 0;
-                        if (wineData.getWineEvalList().get(thisWineIndex) == 1) {
-                            drawImage = R.drawable.rate_01;
-                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 2) {
-                            drawImage = R.drawable.rate_02;
-                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 3) {
-                            drawImage = R.drawable.rate_03;
-                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 4) {
-                            drawImage = R.drawable.rate_04;
-                        } else if (wineData.getWineEvalList().get(thisWineIndex) == 5) {
-                            drawImage = R.drawable.rate_05;
-                        }
-
-                        Bitmap bitmap2 = BitmapFactory.decodeResource(getResources(), drawImage);
-
-                        ratingImage[i].setImageBitmap(bitmap2);
-                        ratingImage[i].setScaleType(ImageView.ScaleType.FIT_XY);
-                        usingLayout.addView(ratingImage[i], Rlp);
-
-                    }
-                }
+        else{
+            if(SS.isChecked() && grapeData.getSS().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Kosyu.isChecked() && grapeData.getKosyu().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (KS.isChecked() && grapeData.getKS().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(KS.isChecked() && grapeData.getKS().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Merlot.isChecked() && grapeData.getMerlot().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (PV.isChecked() && grapeData.getPV().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(PV.isChecked() && grapeData.getPV().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (BQ.isChecked() && grapeData.getBQ().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(BQ.isChecked() && grapeData.getBQ().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (KF.isChecked() && grapeData.getKF().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(KF.isChecked() && grapeData.getKF().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (KN.isChecked() && grapeData.getKN().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(KN.isChecked() && grapeData.getKN().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (SB.isChecked() && grapeData.getSB().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(SB.isChecked() && grapeData.getSB().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Delaware.isChecked() && grapeData.getDelaware().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Tana.isChecked() && grapeData.getTana().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Tana.isChecked() && grapeData.getTana().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Tempranillo.isChecked() && grapeData.getTempranillo().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Syrah.isChecked() && grapeData.getSyrah().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Mourvedre.isChecked() && grapeData.getMourvale().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Carmenere.isChecked() && grapeData.getCarmenere().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
+            }
+        }
+        if(search) {
+            if (Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) != 1) {
+                flag[wineIndex] = true;
+            }
+        }
+        else{
+            if(Chardonnay.isChecked() && grapeData.getChardonnay().get(grapeIndex) == 1){
+                flag[wineIndex] = false;
             }
         }
     }
-    */
 
-/*
-    public void slideImage(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画像をスライドする
-        //int distance = 10000;
-        //x方向増加量
-        int addingX = newX - xPoint;
-        //y方向増加量
-        int addingY = newY - yPoint;
-        for(int i=0; i<wineData.getWineNum(); i++) {
-            //if(viewsPoint.getzPoints().get(i) >= 0) {
+    public String selectedGrapes(){
+        String selected = "";
 
-            double dx = imageView[i].getLeft() + addingX;
-            double dy = imageView[i].getTop() + addingY;
-            double imgW = dx + imageView[i].getWidth();
-            double imgH = dy + imageView[i].getHeight();
-            imageView[i].layout((int)dx, (int)dy, (int)imgW, (int)imgH);
+        CheckBox MBA = findViewById(R.id.check_MBA);
+        CheckBox SS = findViewById(R.id.check_SS);
+        CheckBox Kosyu = findViewById(R.id.check_Kosyu);
+        CheckBox KS = findViewById(R.id.check_KS);
+        CheckBox Merlot = findViewById(R.id.check_Merlot);
+        CheckBox PV = findViewById(R.id.check_PV);
+        CheckBox BQ = findViewById(R.id.check_BQ);
+        CheckBox KF = findViewById(R.id.check_KF);
+        CheckBox KN = findViewById(R.id.check_KaiN);
+        CheckBox SB = findViewById(R.id.check_SB);
+        CheckBox Delaware = findViewById(R.id.check_Delaware);
+        CheckBox Tana = findViewById(R.id.check_Tana);
+        CheckBox Tempranillo = findViewById(R.id.check_Tempranillo);
+        CheckBox Syrah = findViewById(R.id.check_Syrah);
+        CheckBox Mourvedre = findViewById(R.id.check_Mourvedre);
+        CheckBox Carmenere = findViewById(R.id.check_Carm);
+        CheckBox Chardonnay = findViewById(R.id.check_Chardonnay);
 
-
-            int Rdx = ratingImage[i].getLeft() + addingX;
-            int Rdy = ratingImage[i].getTop() + addingY;
-            int RimgW = Rdx + ratingImage[i].getWidth();
-            int RimgH = Rdy + ratingImage[i].getHeight();
-            ratingImage[i].layout(Rdx, Rdy, RimgW, RimgH);
-
+        if(MBA.isChecked()){
+            selected += "マスカット・ベーリーA, ";
         }
-    }
-
-    public void slideImage2(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画像をスライドする
-        //x方向増加量
-        int addingX = newX - xPoint;
-        //y方向増加量
-        int addingY = newY - yPoint;
-
-
-        for(int i=0; i<wineData.getWineNum(); i++) {
-            int dx = imageView[i].getLeft() + addingX;
-            int dy = imageView[i].getTop() + addingY;
-            int imgW = dx + imageView[i].getWidth();
-            int imgH = dy + imageView[i].getHeight();
-            imageView[i].layout(dx, dy, imgW, imgH);
-
-
-            int Rdx = ratingImage[i].getLeft() + addingX;
-            int Rdy = ratingImage[i].getTop() + addingY;
-            int RimgW = Rdx + ratingImage[i].getWidth();
-            int RimgH = Rdy + ratingImage[i].getHeight();
-            ratingImage[i].layout(Rdx, Rdy, RimgW, RimgH);
+        if(SS.isChecked()){
+            selected += "サンセミヨン, ";
         }
+        if(Kosyu.isChecked()){
+            selected += "甲州, ";
+        }
+        if(KS.isChecked()){
+            selected += "カベルネ・ソーヴィニョン, ";
+        }
+        if(Merlot.isChecked()){
+            selected += "メルロー, ";
+        }
+        if(PV.isChecked()){
+            selected += "プティ・ヴェルド, ";
+        }
+        if(BQ.isChecked()){
+            selected += "ブラック・クィーン, ";
+        }
+        if(KF.isChecked()){
+            selected += "カベルネ・フラン, ";
+        }
+        if(KN.isChecked()){
+            selected += "甲斐ノワール, ";
+        }
+        if(SB.isChecked()){
+            selected += "ソーヴィニヨン・ブラン, ";
+        }
+        if(Delaware.isChecked()){
+            selected += "デラウェア, ";
+        }
+        if(Tana.isChecked()){
+            selected += "タナ, ";
+        }
+        if(Tempranillo.isChecked()){
+            selected += "テンプラニーリョ, ";
+        }
+        if(Syrah.isChecked()){
+            selected += "シラー, ";
+        }
+        if(Mourvedre.isChecked()){
+            selected += "ムールヴェール, ";
+        }
+        if(Carmenere.isChecked()){
+            selected += "カルメネール, ";
+        }
+        if(Chardonnay.isChecked()){
+            selected += "シャルドネ, ";
+        }
+
+        if(selected.equals("")){
+            selected += "なし";
+        }
+        return selected;
     }
 
 
-    public void slideViews(ImageView[] imageView, ImageView[] ratingImage, int newX, int newY){//画面に表示されているものをスライドする
-        slideImage(imageView, ratingImage, newX, newY);
-    }
 
-     */
 
 }
 

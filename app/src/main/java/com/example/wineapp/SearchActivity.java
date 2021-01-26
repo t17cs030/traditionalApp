@@ -3,27 +3,19 @@ package com.example.wineapp;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.SpannableStringBuilder;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class SearchActivity extends AppCompatActivity
@@ -58,7 +50,7 @@ public class SearchActivity extends AppCompatActivity
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.wineMap_navi:
-                        Intent intent_wine = new Intent(getApplication(), MainActivity.class);
+                        Intent intent_wine = new Intent(getApplication(), BeforeMainActivity.class);
                         intent_wine.putExtra("WINE_DATA", wineData);
                         intent_wine.putExtra("GRAPE_DATA", grapeData);
                         intent_wine.putExtra("CENTER_WINE", centerIndex);
@@ -67,7 +59,7 @@ public class SearchActivity extends AppCompatActivity
                     case R.id.search_navi:
                         return true;
                     case R.id.myWine_navi:
-                        Intent intent_myWine = new Intent(getApplication(), MyWineActivity.class);
+                        Intent intent_myWine = new Intent(getApplication(), MainActivity.class);
                         intent_myWine.putExtra("WINE_DATA", wineData);
                         intent_myWine.putExtra("GRAPE_DATA", grapeData);
                         intent_myWine.putExtra("CENTER_WINE", centerIndex);
@@ -392,7 +384,7 @@ public class SearchActivity extends AppCompatActivity
 
 
                 if(check){//検索結果に当てはまるものがある場合
-                    Intent intent = new Intent(getApplication(), MainActivity.class);
+                    Intent intent = new Intent(getApplication(), BeforeMainActivity.class);
                     intent.putExtra("DELETE_FLAG", deleteFlag);
                     intent.putExtra("CENTER_WINE", centerIndex);
                     startActivity(intent);

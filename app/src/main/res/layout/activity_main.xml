@@ -5,7 +5,7 @@
     android:id="@+id/mainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".BeforeMainActivity">
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/navigation"
@@ -39,6 +39,7 @@
 
 
         <LinearLayout
+            android:id="@+id/ER"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
