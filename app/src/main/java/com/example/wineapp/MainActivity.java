@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -353,6 +354,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void calPoint(){
+        ArrayList<Double> Ido = wineData.getWineIdoList();
+        ArrayList<Double> Kedo = wineData.getWineKedoList();
+
+        //各ワインの座標を求める
+        for(int i=0; i<wineData.getWineNum(); i++){
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+            viewsPoint.addxPoint(Kedo.get(thisWineIndex));
+            viewsPoint.addyPoint(Ido.get(thisWineIndex));
+            viewsPoint.addzPints(0.1);
+        }
+    }
+
     public void roleImage(int newX, int newY, ImageView[] imageView, ImageView[] ratingImage){//スクロール時の座標計算
         int xZero = zeroPoint.getxZeroPoint();
         int yZero = zeroPoint.getyZeroPoint();
@@ -528,6 +545,49 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setPicture(ImageView[] imageView, ImageView[] ratingImage){
+
+        FrameLayout usingLayout = (FrameLayout) findViewById(R.id.layout);
+
+        BottomNavigationView navi = findViewById(R.id.navigation);
+        int xMax = usingLayout.getWidth();
+        int yMax = usingLayout.getHeight();
+
+        TextView textView = findViewById(R.id.text_view);
+        String str = "X =" + xMax + "\n" + "Y =" + yMax;
+        //textView.setText(str);
+
+        LinearLayout ll = findViewById(R.id.ER);
+        ll.setVisibility(View.INVISIBLE);
+
+        int point[] = new int[2];
+        usingLayout.getLocationOnScreen(point);
+
+
+        //画像を設定
+        for(int i=0;i<wineData.getWineNum();i++) {
+            imageView[i] = new ImageView(this);
+            ratingImage[i] = new ImageView(this);
+
+
+            double wineID = wineData.getWineIndexList().get(i);
+            int thisWineIndex = wineData.getWineIndexList().indexOf((int)wineID);
+
+            ArrayList<Double> xPoints = viewsPoint.getxPoints();
+            ArrayList<Double> yPoints = viewsPoint.getyPoints();
+            ArrayList<Double> zPoints = viewsPoint.getzPoints();
+
+            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(30, 75);
+            lp.leftMargin = (int) (xPoints.get(i)/Math.PI*yMax);
+            lp.topMargin = (int) (yPoints.get(i)/Math.PI*yMax);
+
+            Bitmap bitmap1 = BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]);
+            imageView[i].setImageBitmap(bitmap1);
+            imageView[i].setScaleType(ImageView.ScaleType.FIT_XY);
+            usingLayout.addView(imageView[i], lp);
+        }
+    }
+
     public void setListener(final ImageView[] imageView){
 
         //画像にリスナーを設定
@@ -685,8 +745,10 @@ public class MainActivity extends AppCompatActivity {
         displayingViews = new DisplayingViews(wineData.getWineNum());
         //座標の計算
         calPointOnSphere();
+        //calPoint();
         //画像の張り付け
         setPictureOnSphere(displayingViews.getImageView(), displayingViews.getRatingImage());
+        //setPicture(displayingViews.getImageView(), displayingViews.getRatingImage());
         setListener(displayingViews.getImageView());
 
     }
