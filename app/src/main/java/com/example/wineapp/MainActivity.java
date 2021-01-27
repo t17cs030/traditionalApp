@@ -164,6 +164,7 @@ public class MainActivity extends AppCompatActivity {
         color_check_box();
         setButtonClick(deleteFlag);
         updateMyWineList(deleteFlag);
+        
     }
 
     private AdapterView.OnItemClickListener onItemClickListener = new AdapterView.OnItemClickListener() {
