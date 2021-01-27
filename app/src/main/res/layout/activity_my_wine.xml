@@ -77,21 +77,82 @@
         <TextView
             android:id="@+id/my_wine_name"
             android:layout_width="260dp"
-            android:layout_height="150dp"
+            android:layout_height="165dp"
             android:layout_marginLeft="150dp"
             android:layout_marginTop="0dp"
             android:background="#FFFFFF"
             android:text="ワイン名:"
+            android:textColor="#000000"
             android:textSize="10sp" />
 
         <TextView
             android:id="@+id/my_wine_explanation"
             android:layout_width="match_parent"
-            android:layout_height="195dp"
+            android:layout_height="180dp"
+            android:layout_above="@+id/recommendation3"
             android:layout_marginLeft="0dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="165dp"
             android:background="#FFFFFF"
-            android:text="説明:" />
+            android:text="説明:"
+            android:textColor="#000000"
+            android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/recommendation1"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/recommendation2"
+            android:layout_toLeftOf="@+id/recommendation2"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/recommendation2"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_toStartOf="@+id/recommendation3"
+            android:layout_toLeftOf="@+id/recommendation3"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <ImageView
+            android:id="@+id/recommendation3"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            tools:srcCompat="@tools:sample/avatars" />
+
+        <TextView
+            android:id="@+id/recommendationWine"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginTop="0dp"
+            android:layout_toStartOf="@+id/recommendation1"
+            android:layout_toLeftOf="@+id/recommendation1"
+            android:layout_toEndOf="@+id/return_before_wine"
+            android:layout_toRightOf="@+id/return_before_wine"
+            android:background="#FFFFFF"
+            android:gravity="right|center_vertical"
+            android:text="おすすめのワイン : "
+            android:textColor="#000000"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/return_before_wine"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginBottom="0dp"
+            android:background="#dcdcdc"
+            android:text="前のワインに戻る"
+            android:textColor="#000000" />
 
     </RelativeLayout>
 
@@ -116,6 +177,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="0dp"
             android:background="#00BFFF"
+            android:textColor="#000000"
             android:text="検索" />
 
         <Button
@@ -129,6 +191,7 @@
             android:layout_toEndOf="@+id/search_list"
             android:layout_toRightOf="@+id/search_list"
             android:background="#00FA9A"
+            android:textColor="#000000"
             android:text="並び替え" />
 
     </RelativeLayout>
@@ -155,6 +218,7 @@
             android:layout_marginTop="0dp"
             android:layout_marginBottom="0dp"
             android:background="#00BFFF"
+            android:textColor="#000000"
             android:text="検索" />
 
         <Button
@@ -167,6 +231,7 @@
             android:layout_marginRight="0dp"
             android:layout_toEndOf="@+id/search_mode"
             android:layout_toRightOf="@+id/search_mode"
+            android:textColor="#000000"
             android:text="戻る" />
 
     </RelativeLayout>
@@ -187,6 +252,7 @@
             android:layout_marginEnd="100dp"
             android:layout_marginRight="0dp"
             android:background="#00FA9A"
+            android:textColor="#000000"
             android:text="並び替え" />
 
         <Button
@@ -197,6 +263,7 @@
             android:layout_alignParentRight="true"
             android:layout_marginEnd="0dp"
             android:layout_marginRight="0dp"
+            android:textColor="#000000"
             android:text="戻る" />
 
     </RelativeLayout>
@@ -219,6 +286,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:queryHint="ワイン名, ワイナリー名を入力"
+            android:textColor="#000000"
             android:iconifiedByDefault="false"
             app:layout_constraintBottom_toTopOf="@+id/text_color"
             app:layout_constraintStart_toStartOf="parent"
@@ -252,6 +320,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginTop="8dp"
             android:text="赤"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.15"
@@ -270,6 +339,7 @@
             android:layout_toEndOf="@+id/my_wine_color_Red"
             android:layout_toRightOf="@+id/my_wine_color_Red"
             android:text="ロゼ"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
@@ -288,6 +358,7 @@
             android:layout_toEndOf="@+id/my_wine_color_Rose"
             android:layout_toRightOf="@+id/my_wine_color_Rose"
             android:text="白"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
@@ -306,6 +377,7 @@
             android:layout_marginLeft="40dp"
             android:layout_marginTop="8dp"
             android:text="オレンジ"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
@@ -324,6 +396,7 @@
             android:layout_toEndOf="@+id/my_wine_color_Orange"
             android:layout_toRightOf="@+id/my_wine_color_Orange"
             android:text="スパークリング"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
@@ -344,6 +417,7 @@
             android:layout_toRightOf="@+id/my_wine_color_Sparkling"
             android:checked="true"
             android:text="ALL"
+            android:textColor="#000000"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.05"
@@ -375,6 +449,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+            android:textColor="#000000"
             android:entries="@array/price"/>
 
         <TextView
@@ -387,6 +462,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/spinner_price_bottom"
             android:layout_toRightOf="@+id/spinner_price_bottom"
+            android:textColor="#000000"
             android:text="～" />
 
         <Spinner
@@ -399,6 +475,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/spinner_price"
             android:layout_toRightOf="@+id/spinner_price"
+            android:textColor="#000000"
             android:entries="@array/price" />
 
         <TextView
@@ -425,6 +502,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+            android:textColor="#000000"
             android:entries="@array/taste_red" />
 
         <TextView
@@ -437,6 +515,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/spinner_price_bottom"
             android:layout_toRightOf="@+id/spinner_price_bottom"
+            android:textColor="#000000"
             android:text="～" />
 
         <Spinner
@@ -449,6 +528,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/spinner_price"
             android:layout_toRightOf="@+id/spinner_price"
+            android:textColor="#000000"
             android:entries="@array/taste_red" />
 
         <TextView
@@ -475,6 +555,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"
+            android:textColor="#000000"
             android:entries="@array/taste_white" />
 
         <TextView
@@ -487,6 +568,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/spinner_price_bottom"
             android:layout_toRightOf="@+id/spinner_price_bottom"
+            android:textColor="#000000"
             android:text="～" />
 
         <Spinner
@@ -499,6 +581,7 @@
             android:layout_marginTop="8dp"
             android:layout_toEndOf="@+id/spinner_price"
             android:layout_toRightOf="@+id/spinner_price"
+            android:textColor="#000000"
             android:entries="@array/taste_white" />
 
         <TextView
@@ -522,6 +605,7 @@
             android:layout_marginTop="0dp"
             android:elevation="0dp"
             android:text="　品種を選択する　▼　"
+            android:textColor="#000000"
             app:layout_constraintEnd_toEndOf="@+id/text_grape"
             app:layout_constraintStart_toStartOf="@+id/text_grape"
             app:layout_constraintTop_toBottomOf="@+id/text_grape" />
@@ -549,6 +633,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginTop="0dp"
             android:text="なし"
+            android:textColor="#000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_checked_grape" />
 
@@ -569,6 +654,7 @@
             android:layout_marginEnd="150dp"
             android:layout_marginRight="150dp"
             android:layout_marginBottom="10dp"
+            android:textColor="#000000"
             android:text="検索" />
 
         <RelativeLayout
@@ -618,6 +704,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
+                android:textColor="#000000"
                 android:text="甲州" />
 
             <CheckBox
@@ -629,6 +716,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/check_Kosyu"
                 android:layout_toRightOf="@+id/check_Kosyu"
+                android:textColor="#000000"
                 android:text="マスカット・ベーリーA" />
 
             <CheckBox
@@ -640,6 +728,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/check_MBA"
                 android:layout_toRightOf="@+id/check_MBA"
+                android:textColor="#000000"
                 android:text="メルロー" />
 
             <CheckBox
@@ -652,6 +741,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
+                android:textColor="#000000"
                 android:text="カベルネ・ソーヴィニヨン" />
 
             <CheckBox
@@ -664,6 +754,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_KS"
                 android:layout_toRightOf="@+id/check_KS"
+                android:textColor="#000000"
                 android:text="ソーヴィニヨン・ブラン" />
 
             <CheckBox
@@ -676,6 +767,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
+                android:textColor="#000000"
                 android:text="甲斐ノワール" />
 
             <CheckBox
@@ -688,6 +780,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_KaiN"
                 android:layout_toRightOf="@+id/check_KaiN"
+                android:textColor="#000000"
                 android:text="カベルネ・フラン" />
 
             <CheckBox
@@ -699,6 +792,7 @@
                 android:layout_marginLeft="10dp"
                 android:layout_toEndOf="@+id/check_KF"
                 android:layout_toRightOf="@+id/check_KF"
+                android:textColor="#000000"
                 android:text="サンセミヨン" />
 
             <CheckBox
@@ -711,6 +805,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
+                android:textColor="#000000"
                 android:text="ブラック・クィーン" />
 
             <CheckBox
@@ -723,6 +818,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_BQ"
                 android:layout_toRightOf="@+id/check_BQ"
+                android:textColor="#000000"
                 android:text="プティ・ヴェルド" />
 
             <CheckBox
@@ -735,6 +831,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_PV"
                 android:layout_toRightOf="@+id/check_PV"
+                android:textColor="#000000"
                 android:text="タナ" />
 
             <CheckBox
@@ -747,6 +844,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
+                android:textColor="#000000"
                 android:text="デラウェア" />
 
             <CheckBox
@@ -759,6 +857,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_Delaware"
                 android:layout_toRightOf="@+id/check_Delaware"
+                android:textColor="#000000"
                 android:text="テンプラニーリョ" />
 
             <CheckBox
@@ -771,6 +870,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_Tempranillo"
                 android:layout_toRightOf="@+id/check_Tempranillo"
+                android:textColor="#000000"
                 android:text="カルメネール" />
 
             <CheckBox
@@ -783,6 +883,7 @@
                 android:layout_marginStart="0dp"
                 android:layout_marginLeft="0dp"
                 android:layout_marginTop="0dp"
+                android:textColor="#000000"
                 android:text="シラー" />
 
             <CheckBox
@@ -795,6 +896,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_Syrah"
                 android:layout_toRightOf="@+id/check_Syrah"
+                android:textColor="#000000"
                 android:text="ムールヴェードル" />
 
             <CheckBox
@@ -807,6 +909,7 @@
                 android:layout_marginTop="0dp"
                 android:layout_toEndOf="@+id/check_Mourvedre"
                 android:layout_toRightOf="@+id/check_Mourvedre"
+                android:textColor="#000000"
                 android:text="シャルドネ" />
 
             <Button
@@ -825,6 +928,7 @@
                 android:layout_marginEnd="100dp"
                 android:layout_marginRight="0dp"
                 android:layout_marginBottom="25dp"
+                android:textColor="#000000"
                 android:text="ぶどう品種を決定" />
 
 

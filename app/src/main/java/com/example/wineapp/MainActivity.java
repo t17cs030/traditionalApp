@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -199,7 +200,7 @@ public class MainActivity extends AppCompatActivity {
             my_wine_name.setText(str_wine);
 
             TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
-            String str_wine_exp = wineData.getWineNameList().get(thisWineIndex) + ": " + "\n\n" + wineData.getWineExplanationList().get(thisWineIndex);
+            String str_wine_exp = wineData.getWineExplanationList().get(thisWineIndex);
             my_wine_explanation.setText(str_wine_exp);
 
             //ワイン情報の乗っているレイアウトを表示
@@ -231,8 +232,182 @@ public class MainActivity extends AppCompatActivity {
 
             ListView listView = findViewById(R.id.my_wine_list);
             listView.setClickable(false);
+
+
+            //ここからレコメンデーションシステム
+            Double thisWineIdo = wineData.getWineIdoList().get(thisWineIndex);
+            Double thisWineKedo = wineData.getWineKedoList().get(thisWineIndex);
+
+            double thisWineX = Math.sin(thisWineIdo) * Math.cos(thisWineKedo);
+            double thisWineY = Math.sin(thisWineIdo) * Math.sin(thisWineKedo);
+            double thisWineZ = Math.cos(thisWineIdo);
+
+            double [] distance = new double[wineData.getWineNum()];
+
+            for(int i=0; i<wineData.getWineNum(); i++){
+                double wineID_ = wineData.getWineIndexList().get(i);
+                int thisWineIndex_ = wineData.getWineIndexList().indexOf((int) wineID_);
+
+                Double Ido = wineData.getWineIdoList().get(thisWineIndex_);
+                Double Kedo = wineData.getWineKedoList().get(thisWineIndex_);
+
+                double X = Math.sin(Ido) * Math.cos(Kedo);
+                double Y = Math.sin(Ido) * Math.sin(Kedo);
+                double Z = Math.cos(Ido);
+
+                distance[i] = (Math.cbrt( (X-thisWineX)*(X-thisWineX) + (Y-thisWineY)*(Y-thisWineY) + (Z-thisWineZ)*(Z-thisWineZ) ));
+            }
+
+            ArrayList<Double> before_distance = new ArrayList<>();
+            for(int i=0; i<wineData.getWineNum(); i++){
+                before_distance.add(distance[i]);
+            }
+            Arrays.sort(distance);
+
+            final int no1 = before_distance.indexOf(distance[1]);
+            final int no2 = before_distance.indexOf(distance[2]);
+            final int no3 = before_distance.indexOf(distance[3]);
+
+            ImageView recommendation1 = findViewById(R.id.recommendation1);
+            ImageView recommendation2 = findViewById(R.id.recommendation2);
+            ImageView recommendation3 = findViewById(R.id.recommendation3);
+
+            recommendation1.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[no1]));
+            recommendation2.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[no2]));
+            recommendation3.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[no3]));
+
+            recommendation1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(no1,thisWineIndex);
+                }
+            });
+            recommendation2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(no2,thisWineIndex);
+                }
+            });
+            recommendation3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(no3,thisWineIndex);
+                }
+            });
+            Button returnBefore = findViewById(R.id.return_before_wine);
+            returnBefore.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(-1, -1);
+                }
+            });
+
+            //ここまでレコメンデーションシステム
+
         }
     };
+
+    private void clickAction(int no, int beforeWineIndex){
+
+        if(no != -1) {
+            final int thisWineIndex = no;
+            final int beforeIndex = beforeWineIndex;
+            ImageView winePicture = findViewById(R.id.my_wine_info);
+            winePicture.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[thisWineIndex]));
+
+            TextView my_wine_name = findViewById(R.id.my_wine_name);
+
+            String str_wine
+                    = "ワイン名: " + wineData.getWineNameList().get(thisWineIndex) + "\n"
+                    + "ワイナリー名: " + wineData.getWineryNameList().get(thisWineIndex) + "\n"
+                    + "色: " + wineData.getWineColorList().get(thisWineIndex) + "\n"
+                    + "タイプ: " + wineData.getWineTypeList().get(thisWineIndex) + "\n"
+                    + "容量: " + wineData.getWineCapacityList().get(thisWineIndex) + "\n"
+                    + "ぶどう品種: " + wineData.getWineGrapeList().get(thisWineIndex) + "\n"
+                    + "産地: " + wineData.getWineOriginList().get(thisWineIndex) + "\n"
+                    + "収穫年: " + wineData.getWineHarvestList().get(thisWineIndex) + "\n"
+                    + "価格: " + wineData.getWinePriceList().get(thisWineIndex);
+
+            my_wine_name.setText(str_wine);
+
+            TextView my_wine_explanation = findViewById(R.id.my_wine_explanation);
+            String str_wine_exp = wineData.getWineExplanationList().get(thisWineIndex);
+            my_wine_explanation.setText(str_wine_exp);
+
+            //ここからレコメンデーションシステム
+            Double thisWineIdo = wineData.getWineIdoList().get(thisWineIndex);
+            Double thisWineKedo = wineData.getWineKedoList().get(thisWineIndex);
+
+            double thisWineX = Math.sin(thisWineIdo) * Math.cos(thisWineKedo);
+            double thisWineY = Math.sin(thisWineIdo) * Math.sin(thisWineKedo);
+            double thisWineZ = Math.cos(thisWineIdo);
+
+            double[] distance = new double[wineData.getWineNum()];
+
+            for (int i = 0; i < wineData.getWineNum(); i++) {
+                double wineID_ = wineData.getWineIndexList().get(i);
+                int thisWineIndex_ = wineData.getWineIndexList().indexOf((int) wineID_);
+
+                Double Ido = wineData.getWineIdoList().get(thisWineIndex_);
+                Double Kedo = wineData.getWineKedoList().get(thisWineIndex_);
+
+                double X = Math.sin(Ido) * Math.cos(Kedo);
+                double Y = Math.sin(Ido) * Math.sin(Kedo);
+                double Z = Math.cos(Ido);
+
+                distance[i] = (Math.cbrt((X - thisWineX) * (X - thisWineX) + (Y - thisWineY) * (Y - thisWineY) + (Z - thisWineZ) * (Z - thisWineZ)));
+            }
+
+            ArrayList<Double> before_distance = new ArrayList<>();
+            for (int i = 0; i < wineData.getWineNum(); i++) {
+                before_distance.add(distance[i]);
+            }
+            Arrays.sort(distance);
+
+            final int no1 = before_distance.indexOf(distance[1]);
+            final int no2 = before_distance.indexOf(distance[2]);
+            final int no3 = before_distance.indexOf(distance[3]);
+
+            ImageView recommendation1 = findViewById(R.id.recommendation1);
+            ImageView recommendation2 = findViewById(R.id.recommendation2);
+            ImageView recommendation3 = findViewById(R.id.recommendation3);
+
+            recommendation1.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[no1]));
+            recommendation2.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[no2]));
+            recommendation3.setImageBitmap(BitmapFactory.decodeResource(getResources(), imageViewId[no3]));
+
+            recommendation1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(no1, thisWineIndex);
+                }
+            });
+            recommendation2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(no2, thisWineIndex);
+                }
+            });
+            recommendation3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    clickAction(no3, thisWineIndex);
+                }
+            });
+            if (beforeIndex != -1) {
+                Button returnBefore = findViewById(R.id.return_before_wine);
+                returnBefore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clickAction(beforeIndex, -1);
+                    }
+                });
+            }
+        }
+
+        //ここまでレコメンデーションシステム
+
+    }
 
     private void updateMyWineList(boolean[] deleteFlag){
         // レイアウトからリストビューを取得
